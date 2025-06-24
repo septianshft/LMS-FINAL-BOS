@@ -1,0 +1,376 @@
+@startuml Talent_Request_Workflow
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Manual/Individual Talent Request Workflow - Form-Based Individual Recruitment\n(Laravel MVC Architecture - Manual Workflow)
+
+actor Recruiter
+actor "Admin Talenta" as TalentAdmin
+actor Talenta as Talent
+participant "Dashboard Recruiter\n(dashboard.blade.php)" as RecruiterView << View >>
+participant "Dashboard Admin Talenta\n(manage_requests.blade.php)" as AdminView << View >>
+participant "Dashboard Talenta\n(dashboard.blade.php)" as TalentView << View >>
+participant "RecruiterController" as RecruiterController << Controller >>
+participant "TalentAdminController" as AdminController << Controller >>
+participant "TalentController" as TalentController << Controller >>
+participant "ProjectController" as ProjectController << Controller >>
+participant "TalentDiscovery\nService" as DiscoveryService << Service >>
+participant "TalentRequest\nModel" as RequestModel << Model >>
+participant "Project\nModel" as ProjectModel << Model >>
+participant "TalentRequest\nNotificationService" as NotificationService << Service >>
+participant "User Model" as UserModel << Model >>
+participant "Talent Model" as TalentModel << Model >>
+database "MySQL Database" as Database << Database >>
+
+== Fase Penemuan Talenta ==
+Recruiter -> RecruiterView: 1. Navigasi ke penemuan talenta
+activate RecruiterView
+RecruiterView -> RecruiterController: 2. dashboard()
+activate RecruiterController
+RecruiterController -> DiscoveryService: 3. discoverTalents(filters)
+activate DiscoveryService
+DiscoveryService -> Database: 4. SELECT users.*, talents.*\nFROM users\nJOIN talents ON users.id = talents.user_id\nWHERE available_for_scouting=true\nAND is_active_talent=true\nAND NOT EXISTS (\n  SELECT 1 FROM talent_requests\n  WHERE talent_user_id = users.id\n  AND status IN ('onboarded', 'meeting_arranged')\n  AND is_blocking_talent = true\n)
+activate Database
+Database --> DiscoveryService: 5. Data talenta yang cocok (tersedia)
+deactivate Database
+DiscoveryService --> RecruiterController: 6. Koleksi talenta terfilter dengan status ketersediaan
+deactivate DiscoveryService
+RecruiterController --> RecruiterView: 7. Data profil talenta + status availability
+deactivate RecruiterController
+RecruiterView --> Recruiter: 8. Tampilkan antarmuka penemuan talenta\n(Available/Busy indicators)
+deactivate RecruiterView
+
+== Pembuatan Permintaan Talenta dengan Time-Blocking ==
+Recruiter -> RecruiterView: 9. Kirim formulir permintaan talenta
+activate RecruiterView
+RecruiterView -> RecruiterController: 10. submitTalentRequest(Request)
+activate RecruiterController
+
+note over RecruiterController
+  Request berisi:
+  - talent_id
+  - project_title
+  - project_description
+  - requirements
+  - budget_range
+  - employment_type
+  - salary_type
+  - project_duration
+  - project_start_date (auto: +7 days)
+  - project_end_date (calculated)
+end note
+
+RecruiterController -> RecruiterController: 11. Validasi ketersediaan talenta\nisTalentAvailable(talent_id, start_date, end_date)
+
+alt Talenta Tidak Tersedia
+    RecruiterController --> RecruiterView: 12a. Error: Talent not available\n+ blocking projects info
+    RecruiterView --> Recruiter: 12b. Tampilkan modal conflict\ndengan alternative suggestions
+else Talenta Tersedia
+    RecruiterController -> RequestModel: 12c. create(requestData)
+    activate RequestModel
+
+    RequestModel -> Database: 13. INSERT INTO talent_requests\n(recruiter_id, talent_id, talent_user_id,\nproject_title, project_description,\nrequirements, budget_range, employment_type,\nsalary_type, project_start_date, project_end_date,\nstatus='pending', talent_accepted=false,\nadmin_accepted=false, both_parties_accepted=false,\nis_blocking_talent=true, created_at, updated_at)
+    activate Database
+    Database --> RequestModel: 14. Permintaan dibuat dengan ID
+    deactivate Database
+    RequestModel --> RecruiterController: 15. Objek TalentRequest
+    deactivate RequestModel
+
+    RecruiterController -> NotificationService: 16. notifyNewTalentRequest(talentRequest)
+    activate NotificationService
+    NotificationService -> Database: 17. Simpan notifikasi untuk admin dan talenta
+    activate Database
+    Database --> NotificationService: 18. Notifikasi tersimpan
+    deactivate Database
+    NotificationService --> RecruiterController: 19. Notifikasi terkirim
+    deactivate NotificationService
+
+    RecruiterController --> RecruiterView: 20. Respons sukses + timeline info
+    deactivate RecruiterController
+    RecruiterView --> Recruiter: 21. Tampilkan pesan sukses\n"Permintaan dikirim untuk review admin"\n+ project timeline
+    deactivate RecruiterView
+end
+
+== Review & Persetujuan Admin (Dual Acceptance) ==
+TalentAdmin -> AdminView: 22. Navigasi ke kelola permintaan
+activate AdminView
+AdminView -> AdminController: 23. manageRequests()
+activate AdminController
+AdminController -> Database: 24. SELECT talent_requests.*\nWHERE status IN ('pending', 'approved')\nWITH recruiter.user, talent.user\nORDER BY created_at DESC
+activate Database
+Database --> AdminController: 25. Daftar permintaan dengan filter status
+deactivate Database
+AdminController --> AdminView: 26. Data permintaan untuk review + acceptance status
+deactivate AdminController
+AdminView --> TalentAdmin: 27. Tampilkan antarmuka permintaan\ndengan dual acceptance indicators
+deactivate AdminView
+
+TalentAdmin -> AdminView: 28. Setujui permintaan talenta (Admin Accept)
+activate AdminView
+AdminView -> AdminController: 29. updateRequestStatus(talentRequest, 'approved')
+activate AdminController
+AdminController -> RequestModel: 30. markAdminAccepted()
+activate RequestModel
+
+RequestModel -> Database: 31. UPDATE talent_requests SET\nstatus='approved',\nadmin_accepted=true,\nadmin_accepted_at=NOW()\nWHERE id=?
+activate Database
+Database --> RequestModel: 32. Persetujuan admin tercatat
+deactivate Database
+
+alt Talent Sudah Menerima
+    RequestModel -> Database: 33a. UPDATE talent_requests SET\nboth_parties_accepted=true,\nstatus='meeting_arranged',\nmeeting_arranged_at=NOW(),\nworkflow_completed_at=NOW()\nWHERE id=?
+    activate Database
+    Database --> RequestModel: 33b. Auto-transition ke meeting_arranged
+    deactivate Database
+
+    RequestModel -> RequestModel: 34a. startTimeBlocking()
+    note over RequestModel: Aktifkan time-blocking\nuntuk mencegah konflik jadwal
+else Talent Belum Menerima
+    RequestModel --> AdminController: 34b. Menunggu penerimaan talent
+end
+
+RequestModel --> AdminController: 35. Persetujuan admin selesai
+deactivate RequestModel
+
+AdminController -> NotificationService: 36. notifyStatusChange(request, old_status, 'approved')
+activate NotificationService
+NotificationService -> Database: 37. Simpan notifikasi untuk talent dan recruiter
+activate Database
+Database --> NotificationService: 38. Semua pihak diberi tahu
+deactivate Database
+NotificationService --> AdminController: 39. Notifikasi terkirim
+deactivate NotificationService
+
+AdminController --> AdminView: 40. Respons sukses + acceptance status
+deactivate AdminController
+AdminView --> TalentAdmin: 41. Tampilkan konfirmasi persetujuan\ndengan status dual acceptance
+deactivate AdminView
+
+== Review & Penerimaan Talenta (Dual Acceptance) ==
+Talent -> TalentView: 42. Lihat permintaan talenta
+activate TalentView
+TalentView -> TalentController: 43. getMyRequests()
+activate TalentController
+TalentController -> Database: 44. SELECT talent_requests.*\nWHERE talent_user_id=?\nAND status IN ('pending', 'approved')\nWITH recruiter.user\nORDER BY created_at DESC
+activate Database
+Database --> TalentController: 45. Permintaan dengan status approval
+deactivate Database
+TalentController --> TalentView: 46. Data peluang proyek + acceptance status
+deactivate TalentController
+TalentView --> Talent: 47. Tampilkan peluang proyek\ndengan dual acceptance info
+deactivate TalentView
+
+Talent -> TalentView: 48. Terima permintaan talenta (Talent Accept)
+activate TalentView
+TalentView -> TalentController: 49. acceptRequest(talentRequest)
+activate TalentController
+TalentController -> RequestModel: 50. markTalentAccepted()
+activate RequestModel
+
+== Cek Penerimaan Kedua Pihak (Enhanced) ==
+RequestModel -> Database: 51. UPDATE talent_requests SET\ntalent_accepted=true,\ntalent_accepted_at=NOW(),\nstatus='approved'\nWHERE id=?
+activate Database
+Database --> RequestModel: 52. Penerimaan talenta tercatat
+deactivate Database
+
+alt Admin Sudah Menerima
+    RequestModel -> Database: 53a. UPDATE talent_requests SET\nboth_parties_accepted=true,\nstatus='meeting_arranged',\nmeeting_arranged_at=NOW(),\nworkflow_completed_at=NOW()\nWHERE id=?
+    activate Database
+    Database --> RequestModel: 54a. Penerimaan kedua pihak tercatat
+    deactivate Database
+
+    == Aktivasi Time-Blocking System ==
+    RequestModel -> RequestModel: 55a. startTimeBlocking()
+    note over RequestModel: is_blocking_talent=true\nPrevent overlapping requests
+
+    == Notifikasi ke Semua Pihak ==
+    RequestModel -> NotificationService: 56a. notifyBothPartiesAccepted(request)
+    activate NotificationService
+    NotificationService -> Database: 57a. Simpan notifikasi untuk semua pihak
+    activate Database
+    Database --> NotificationService: 58a. Semua pihak diberi tahu
+    deactivate Database
+    NotificationService --> RequestModel: 59a. Notifikasi terkirim
+    deactivate NotificationService
+
+    RequestModel --> TalentController: 60a. Auto-transition ke meeting_arranged
+    deactivate RequestModel
+    TalentController --> TalentView: 61a. Respons sukses - meeting ready
+    deactivate TalentController
+    TalentView --> Talent: 62a. Tampilkan pesan sukses\n"Kedua pihak setuju - Pertemuan akan diatur"
+    deactivate TalentView
+
+else Admin Belum Menerima
+    RequestModel --> TalentController: 60b. Menunggu persetujuan admin
+    deactivate RequestModel
+    TalentController --> TalentView: 61b. Respons status tertunda
+    deactivate TalentController
+    TalentView --> Talent: 62b. Tampilkan status menunggu admin
+    deactivate TalentView
+end
+
+== Workflow Progression & Project Integration ==
+note over AdminController, RequestModel
+  Enhanced workflow status progression:
+  - pending → approved (admin acceptance)
+  - approved → meeting_arranged (both parties accepted)
+  - meeting_arranged → agreement_reached (admin manual)
+  - agreement_reached → onboarded (admin manual)
+  - onboarded → completed (admin manual OR auto from project closure)
+
+  Key Features:
+  - Dual acceptance required before meeting arrangement
+  - Time-blocking prevents scheduling conflicts
+  - Project integration for centralized management
+  - Auto-completion via project closure workflow
+end note
+
+== Admin Manual Status Progression ==
+TalentAdmin -> AdminView: 63. Update to next workflow stage
+activate AdminView
+AdminView -> AdminController: 64. updateRequestStatus(request, next_status)
+activate AdminController
+
+alt Status: meeting_arranged → agreement_reached
+    AdminController -> RequestModel: 65a. Update to agreement_reached
+    activate RequestModel
+    RequestModel -> Database: 66a. UPDATE talent_requests SET\nstatus='agreement_reached',\nagreement_reached_at=NOW()
+    activate Database
+    Database --> RequestModel: 67a. Status updated
+    deactivate Database
+    RequestModel --> AdminController: 68a. Agreement recorded
+    deactivate RequestModel
+
+else Status: agreement_reached → onboarded
+    AdminController -> RequestModel: 65b. Update to onboarded
+    activate RequestModel
+    RequestModel -> Database: 66b. UPDATE talent_requests SET\nstatus='onboarded',\nonboarded_at=NOW()
+    activate Database
+    Database --> RequestModel: 67b. Onboarding recorded
+    deactivate Database
+
+    == Project Assignment Integration ==
+    alt Project ID exists
+        RequestModel -> ProjectModel: 68b. Auto-create ProjectAssignment
+        activate ProjectModel
+        ProjectModel -> Database: 69b. INSERT project_assignments\n(project_id, talent_id, status='accepted')
+        activate Database
+        Database --> ProjectModel: 70b. Assignment created
+        deactivate Database
+        ProjectModel -> ProjectModel: 71b. checkAndActivateProject()
+        ProjectModel --> RequestModel: 72b. Project status updated
+        deactivate ProjectModel
+    end
+
+    RequestModel --> AdminController: 73b. Onboarding completed
+    deactivate RequestModel
+
+else Status: onboarded → completed (Manual)
+    AdminController -> RequestModel: 65c. Update to completed
+    activate RequestModel
+    RequestModel -> Database: 66c. UPDATE talent_requests SET\nstatus='completed',\ncompleted_at=NOW()
+    activate Database
+    Database --> RequestModel: 67c. Completion recorded
+    deactivate Database
+    RequestModel -> RequestModel: 68c. stopTimeBlocking()
+    note over RequestModel: is_blocking_talent=false\nTalent available for new requests
+    RequestModel --> AdminController: 69c. Manual completion done
+    deactivate RequestModel
+end
+
+AdminController -> NotificationService: 70. notifyStatusChange(request, old_status, new_status)
+activate NotificationService
+NotificationService --> AdminController: 71. Notifications sent
+deactivate NotificationService
+
+AdminController --> AdminView: 72. Status update success
+deactivate AdminController
+AdminView --> TalentAdmin: 73. Confirm status progression
+deactivate AdminView
+
+== Project Closure & Auto-Completion Workflow ==
+note over ProjectController, RequestModel
+  NEW FEATURE: Project-Centric Auto-Completion
+  When a project is closed, all related talent_requests
+  are automatically marked as 'completed'
+end note
+
+Recruiter -> RecruiterView: 74. Request project closure
+activate RecruiterView
+RecruiterView -> ProjectController: 75. requestClosure(project)
+activate ProjectController
+ProjectController -> ProjectModel: 76. Update status to 'closure_requested'
+activate ProjectModel
+ProjectModel -> Database: 77. UPDATE projects SET\nstatus='closure_requested',\nclosure_requested_at=NOW()
+activate Database
+Database --> ProjectModel: 78. Closure request recorded
+deactivate Database
+ProjectModel --> ProjectController: 79. Closure request submitted
+deactivate ProjectModel
+ProjectController --> RecruiterView: 80. Closure request success
+deactivate ProjectController
+RecruiterView --> Recruiter: 81. Notify: "Closure request submitted"
+deactivate RecruiterView
+
+TalentAdmin -> AdminView: 82. Review closure request
+activate AdminView
+AdminView -> ProjectController: 83. approveClosure(project)
+activate ProjectController
+ProjectController -> ProjectModel: 84. Update to 'completed' status
+activate ProjectModel
+ProjectModel -> Database: 85. UPDATE projects SET\nstatus='completed',\nclosure_approved_at=NOW()
+activate Database
+Database --> ProjectModel: 86. Project marked as completed
+deactivate Database
+
+== Auto-Complete Related Talent Requests ==
+ProjectModel -> Database: 87. SELECT talent_requests.*\nWHERE project_id=? AND\nstatus IN ('onboarded', 'meeting_arranged', 'agreement_reached')
+activate Database
+Database --> ProjectModel: 88. Related active talent requests
+deactivate Database
+
+ProjectModel -> RequestModel: 89. Auto-complete all related requests
+activate RequestModel
+RequestModel -> Database: 90. UPDATE talent_requests SET\nstatus='completed',\nworkflow_completed_at=NOW()\nWHERE project_id=? AND\nstatus IN ('onboarded', 'meeting_arranged', 'agreement_reached')
+activate Database
+Database --> RequestModel: 91. All requests auto-completed
+deactivate Database
+
+RequestModel -> RequestModel: 92. stopTimeBlocking() for all requests
+note over RequestModel: Release all affected talents\nfor new opportunities
+
+RequestModel -> RequestModel: 93. clearTalentAvailabilityCache()
+note over RequestModel: Immediate availability update\nfor recruiter dashboard
+
+RequestModel --> ProjectModel: 94. Auto-completion finished
+deactivate RequestModel
+ProjectModel --> ProjectController: 95. Project closure completed
+deactivate ProjectModel
+
+ProjectController -> NotificationService: 96. notifyProjectClosure(project, completed_requests_count)
+activate NotificationService
+NotificationService --> ProjectController: 97. All parties notified
+deactivate NotificationService
+
+ProjectController --> AdminView: 98. Closure approved + stats
+deactivate ProjectController
+AdminView --> TalentAdmin: 99. Confirm: "Project closed\nX talent requests auto-completed"
+deactivate AdminView
+
+== System State After Auto-Completion ==
+note over RecruiterView, Database
+  Result of Project Closure Auto-Completion:
+
+  1. Project status: 'completed'
+  2. All related talent_requests: 'completed'
+  3. All talents: available for new requests
+  4. Time-blocking: cleared for all affected talents
+  5. Cache: cleared for immediate dashboard updates
+  6. Notifications: sent to all affected parties
+
+  This enables seamless talent reallocation
+  and prevents workflow bottlenecks
+end note
+
+@enduml

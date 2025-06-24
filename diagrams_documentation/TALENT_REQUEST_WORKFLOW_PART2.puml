@@ -1,0 +1,67 @@
+@startuml Talent_Request_Workflow_Part2
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Alur Kerja Permintaan Talenta - Bagian 2
+
+actor "Admin Talenta" as Admin
+actor Recruiter
+participant "TalentAdminController" as AC << Controller >>
+participant "TalentRequest Model" as TR << Model >>
+participant "NotificationService" as NS << Service >>
+database "Database" as DB << Database >>
+
+== Fase 5: Progres Status Manual ==
+Admin -> AC: 1. Update status request
+activate AC
+
+alt Status: meeting_arranged → agreement_reached
+    AC -> TR: 2a. Update ke agreement_reached
+    activate TR
+    TR -> DB: 3a. UPDATE talent_requests SET\nstatus='agreement_reached',\nagreement_reached_at=NOW()
+    activate DB
+    DB --> TR: 4a. Status agreement tercatat
+    deactivate DB
+    TR --> AC: 5a. Status berhasil diupdate
+    deactivate TR
+
+else Status: agreement_reached → onboarded
+    AC -> TR: 2b. Update ke onboarded
+    activate TR
+    TR -> DB: 3b. UPDATE talent_requests SET\nstatus='onboarded',\nonboarded_at=NOW()
+    activate DB
+    DB --> TR: 4b. Onboarding tercatat
+    deactivate DB
+    TR --> AC: 5b. Onboarding selesai
+    deactivate TR
+
+else Status: onboarded → completed
+    AC -> TR: 2c. Update ke completed
+    activate TR
+    TR -> DB: 3c. UPDATE talent_requests SET\nstatus='completed',\ncompleted_at=NOW()
+    activate DB
+    DB --> TR: 4c. Penyelesaian tercatat
+    deactivate DB
+
+    TR -> TR: 5c. stopTimeBlocking()
+
+    TR -> TR: 6c. clearTalentAvailabilityCache()
+
+    TR --> AC: 7c. Penyelesaian manual selesai
+    deactivate TR
+end
+
+AC -> NS: 8. Notifikasi perubahan status
+activate NS
+NS -> DB: 9. Kirim notifikasi status
+activate DB
+DB --> NS: 10. Semua pihak diberitahu
+deactivate DB
+NS --> AC: 11. Notifikasi terkirim
+deactivate NS
+
+AC --> Admin: 12. Progres status dikonfirmasi
+deactivate AC
+
+@enduml

@@ -1,0 +1,167 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities{
+    .gradient-text-hero{
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+        background: linear-gradient(90deg, #71D0F7 0%, rgba(255, 255, 255, 0.76) 48.44%, #E6834A 100%);
+    }
+
+    .gradient-badge{
+        background: linear-gradient(180deg, #FF692E 0%, #FFF5F2 0.01%, #FFD8C8 100%);
+    }
+
+    .pause-animate{
+        animation-play-state: paused;
+    }
+
+    .accordion-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: all 300ms ease-in-out;
+    }
+
+    /* Used For Chrome, Opera and Safari */
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    /* Used For Firefox: */
+    .no-scrollbar {
+        scrollbar-width: none;
+    }
+    /* Used For MS Edge and IE: */
+    .no-scrollbar {
+        -ms-overflow-style: none;
+    }
+}
+
+/* Admin Sidebar Styling */
+@layer components {
+    /* Page Wrapper */
+    #wrapper {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        min-height: 100vh;
+        width: 250px;
+        background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        transition: all 0.3s;
+    }
+
+    .sidebar.toggled {
+        width: 80px;
+    }
+
+    .sidebar .sidebar-brand {
+        padding: 1.5rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-brand-text {
+        color: #fff;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .sidebar-divider {
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        margin: 0 1rem;
+    }
+
+    .sidebar-heading {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1rem;
+        padding: 1.25rem 1rem 0.25rem;
+    }
+
+    .nav-item {
+        margin-bottom: 0.25rem;
+    }
+
+    .nav-item .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        border-radius: 0.35rem;
+        margin: 0 0.5rem;
+        transition: all 0.3s;
+    }
+
+    .nav-item .nav-link:hover {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.1);
+        text-decoration: none;
+    }
+
+    .nav-item.active .nav-link {
+        color: #fff;
+        background-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 0.125rem 0.25rem 0 rgba(58, 59, 69, 0.2);
+    }
+
+    .nav-item .nav-link i {
+        font-size: 0.85rem;
+        margin-right: 0.75rem;
+        width: 16px;
+        text-align: center;
+    }
+
+    .sidebar.toggled .nav-item .nav-link span {
+        display: none;
+    }
+
+    .sidebar.toggled .sidebar-heading {
+        display: none;
+    }
+
+    /* Content Wrapper */
+    #content-wrapper {
+        flex: 1;
+        background-color: #f8f9fc;
+    }
+
+    /* Topbar */
+    .topbar {
+        background: #fff;
+        border-bottom: 1px solid #e3e6f0;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        padding: 0 1.5rem;
+    }
+
+    /* Animate buttons */
+    .animate-btn {
+        transition: all 0.3s ease;
+    }
+
+    .animate-btn:hover {
+        transform: translateX(5px);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .sidebar {
+            width: 80px;
+        }
+
+        .sidebar .nav-item .nav-link span {
+            display: none;
+        }
+
+        .sidebar .sidebar-heading {
+            display: none;
+        }
+    }
+}

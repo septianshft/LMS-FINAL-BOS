@@ -1,0 +1,143 @@
+@startuml ER_Diagram_Talent_Focus
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Entity Relationship Diagram - Talent Scouting Focus
+
+entity "users" {
+  * id : bigint <<PK>>
+  --
+  * name : varchar(255)
+  * email : varchar(255) <<UNIQUE>>
+  * password : varchar(255)
+  * email_verified_at : timestamp
+  * available_for_scouting : boolean
+  * talent_setup_completed : boolean
+  * remember_token : varchar(100)
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "talent_profiles" {
+  * id : bigint <<PK>>
+  --
+  * user_id : bigint <<FK>>
+  * bio : text
+  * skills : json
+  * hourly_rate : decimal(10,2)
+  * availability_hours : int
+  * portfolio_url : varchar(255)
+  * experience_years : int
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "projects" {
+  * id : bigint <<PK>>
+  --
+  * recruiter_id : bigint <<FK>>
+  * title : varchar(255)
+  * description : text
+  * budget : decimal(12,2)
+  * start_date : date
+  * end_date : date
+  * required_skills : json
+  * status : enum('planning','active','completed','cancelled')
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "talent_requests" {
+  * id : bigint <<PK>>
+  --
+  * project_id : bigint <<FK>>
+  * talent_id : bigint <<FK>>
+  * recruiter_id : bigint <<FK>>
+  * request_message : text
+  * budget_offer : decimal(10,2)
+  * timeline : varchar(255)
+  * status : enum('pending','admin_approved','admin_rejected','talent_accepted','talent_declined','completed')
+  * admin_decision_at : timestamp
+  * admin_decision_by : bigint <<FK>>
+  * talent_response_at : timestamp
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "project_assignments" {
+  * id : bigint <<PK>>
+  --
+  * project_id : bigint <<FK>>
+  * talent_id : bigint <<FK>>
+  * talent_request_id : bigint <<FK>>
+  * assigned_budget : decimal(10,2)
+  * start_date : date
+  * expected_end_date : date
+  * actual_end_date : date
+  * status : enum('active','completed','cancelled')
+  * performance_notes : text
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "red_flags" {
+  * id : bigint <<PK>>
+  --
+  * project_id : bigint <<FK>>
+  * talent_id : bigint <<FK>>
+  * talent_request_id : bigint <<FK>>
+  * flagged_by : bigint <<FK>>
+  * flag_type : enum('performance','behavior','communication','deadline')
+  * severity : enum('low','medium','high','critical')
+  * description : text
+  * resolution_status : enum('open','resolved','dismissed')
+  * resolved_at : timestamp
+  * resolved_by : bigint <<FK>>
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+entity "model_has_roles" {
+  * model_type : varchar(255) <<PK>>
+  * model_id : bigint <<PK>>
+  * role_id : bigint <<PK,FK>>
+}
+
+entity "roles" {
+  * id : bigint <<PK>>
+  --
+  * name : varchar(255) <<UNIQUE>>
+  * guard_name : varchar(255)
+  * created_at : timestamp
+  * updated_at : timestamp
+}
+
+' Relationships
+users ||--o{ talent_profiles : "user_id"
+users ||--o{ projects : "recruiter_id"
+users ||--o{ talent_requests : "talent_id"
+users ||--o{ talent_requests : "recruiter_id"
+users ||--o{ talent_requests : "admin_decision_by"
+users ||--o{ project_assignments : "talent_id"
+users ||--o{ red_flags : "talent_id"
+users ||--o{ red_flags : "flagged_by"
+users ||--o{ red_flags : "resolved_by"
+users ||--o{ model_has_roles : "model_id"
+
+projects ||--o{ talent_requests : "project_id"
+projects ||--o{ project_assignments : "project_id"
+projects ||--o{ red_flags : "project_id"
+
+talent_requests ||--o| project_assignments : "talent_request_id"
+talent_requests ||--o{ red_flags : "talent_request_id"
+
+roles ||--o{ model_has_roles : "role_id"
+
+note top of users : Core user entity with talent scouting flags
+note top of talent_profiles : Extended talent information and capabilities
+note top of talent_requests : Central workflow entity for talent scouting
+note bottom of red_flags : Risk management and quality control
+note bottom of project_assignments : Actual work assignments from successful requests
+
+@enduml

@@ -1,0 +1,44 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('project_timeline_events', function (Blueprint $table) {
+            $table->dropColumn('event_type');
+        });
+
+        Schema::table('project_timeline_events', function (Blueprint $table) {
+            $table->enum('event_type', [
+                'created', 'approved', 'rejected', 'cancelled', 'talent_assigned', 'talent_accepted', 'talent_rejected',
+                'extension_requested', 'extension_approved', 'extension_rejected', 'extended', 'overdue',
+                'closure_requested', 'completed', 'conflict_detected', 'conflict_resolved', 'notification_sent'
+            ])->after('project_id');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('project_timeline_events', function (Blueprint $table) {
+            $table->dropColumn('event_type');
+        });
+
+        Schema::table('project_timeline_events', function (Blueprint $table) {
+            $table->enum('event_type', [
+                'created', 'approved', 'rejected', 'talent_assigned', 'talent_accepted', 'talent_rejected',
+                'extension_requested', 'extension_approved', 'extension_rejected', 'extended', 'overdue',
+                'closure_requested', 'completed', 'conflict_detected', 'conflict_resolved', 'notification_sent'
+            ])->after('project_id');
+        });
+    }
+};

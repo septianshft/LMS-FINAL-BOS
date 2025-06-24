@@ -1,0 +1,158 @@
+@startuml Talent_Request_Workflow_Part1
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Alur Kerja Permintaan Talenta - Bagian 1
+
+actor Recruiter
+actor "Admin Talenta" as Admin
+actor Talent
+participant "RecruiterController" as RC << Controller >>
+participant "TalentAdminController" as AC << Controller >>
+participant "TalentController" as TC << Controller >>
+participant "TalentRequest Model" as TR << Model >>
+participant "NotificationService" as NS << Service >>
+database "Database" as DB << Database >>
+
+== Fase 1: Penemuan Talenta & Cek Ketersediaan ==
+Recruiter -> RC: 1. Akses penemuan talenta
+activate RC
+RC -> DB: 2. Query talenta tersedia\n(available_for_scouting=true AND\n NOT blocking requests)
+activate DB
+DB --> RC: 3. Daftar talenta tersedia
+deactivate DB
+RC --> Recruiter: 4. Tampilkan talenta dengan\nindikator ketersediaan
+deactivate RC
+
+== Fase 2: Pembuatan Request dengan Time-Blocking ==
+Recruiter -> RC: 5. Submit request talenta
+activate RC
+
+RC -> TR: 6. Cek ketersediaan talenta\nisTalentAvailable(talent_id, start_date, end_date)
+activate TR
+TR -> DB: 7. Cek blocking requests\nWHERE is_blocking_talent=true\nAND project timeline overlaps
+activate DB
+alt Talenta Tidak Tersedia
+    DB --> TR: 8a. Ditemukan request yang konflik
+    deactivate DB
+    TR --> RC: 8b. Konflik ketersediaan
+    deactivate TR
+    RC --> Recruiter: 8c. Tampilkan modal konflik\ndengan tanggal alternatif
+    deactivate RC
+else Talenta Tersedia
+    DB --> TR: 8d. Tidak ada konflik
+    deactivate DB
+    TR -> DB: 9. CREATE talent_request\n(status='pending', is_blocking_talent=true)
+    activate DB
+    DB --> TR: 10. Request berhasil dibuat
+    deactivate DB
+    TR --> RC: 11. TalentRequest object
+    deactivate TR
+
+    RC -> NS: 12. Kirim notifikasi\nke talenta dan admin
+    activate NS
+    NS -> DB: 13. Simpan notifikasi
+    activate DB
+    DB --> NS: 14. Notifikasi tersimpan
+    deactivate DB
+    NS --> RC: 15. Notifikasi terkirim
+    deactivate NS
+
+    RC --> Recruiter: 16. Sukses: "Request dikirim\nuntuk review admin"
+    deactivate RC
+end
+
+== Fase 3: Review Admin & Acceptance ==
+Admin -> AC: 17. Lihat pending requests
+activate AC
+AC -> DB: 18. SELECT talent_requests\nWHERE status IN ('pending', 'approved')\nWITH user details
+activate DB
+DB --> AC: 19. Requests dengan status acceptance
+deactivate DB
+AC --> Admin: 20. Interface manajemen request\ndengan indikator dual acceptance
+deactivate AC
+
+Admin -> AC: 21. Admin menerima request
+activate AC
+AC -> TR: 22. markAdminAccepted()
+activate TR
+TR -> DB: 23. UPDATE talent_requests SET\nadmin_accepted=true, admin_accepted_at=NOW()
+activate DB
+
+alt Talenta Sudah Menerima
+    TR -> DB: 24a. UPDATE talent_requests SET\nboth_parties_accepted=true,\nstatus='meeting_arranged',\nmeeting_arranged_at=NOW()
+    activate DB
+    DB --> TR: 24b. Auto-transition selesai
+    deactivate DB
+    TR -> TR: 25a. startTimeBlocking()
+else Talenta Belum Menerima
+    DB --> TR: 24c. Acceptance admin tercatat
+    deactivate DB
+    TR --> AC: 25b. Menunggu acceptance talenta
+end
+
+TR --> AC: 26. Acceptance admin selesai
+deactivate TR
+
+AC -> NS: 27. Notifikasi perubahan status
+activate NS
+NS -> DB: 28. Kirim notifikasi\nke talenta dan recruiter
+activate DB
+DB --> NS: 29. Semua pihak diberitahu
+deactivate DB
+NS --> AC: 30. Notifikasi terkirim
+deactivate NS
+
+AC --> Admin: 31. Sukses: Acceptance admin\ntercatat + status dual
+deactivate AC
+
+== Fase 4: Review Talenta & Acceptance ==
+Talent -> TC: 32. Lihat request saya
+activate TC
+TC -> DB: 33. SELECT talent_requests\nWHERE talent_user_id=?\nAND status IN ('pending', 'approved')
+activate DB
+DB --> TC: 34. Requests dengan status approval
+deactivate DB
+TC --> Talent: 35. Daftar kesempatan dengan\ninfo dual acceptance
+deactivate TC
+
+Talent -> TC: 36. Terima request
+activate TC
+TC -> TR: 37. markTalentAccepted()
+activate TR
+TR -> DB: 38. UPDATE talent_requests SET\ntalent_accepted=true, talent_accepted_at=NOW()
+activate DB
+
+alt Admin Sudah Menerima
+    TR -> DB: 39a. UPDATE talent_requests SET\nboth_parties_accepted=true,\nstatus='meeting_arranged',\nmeeting_arranged_at=NOW()
+    activate DB
+    DB --> TR: 39b. Kedua pihak menerima
+    deactivate DB
+
+    TR -> TR: 40a. startTimeBlocking()
+
+    TR -> NS: 41a. Notifikasi semua pihak
+    activate NS
+    NS -> DB: 42a. Kirim notifikasi penyelesaian
+    activate DB
+    DB --> NS: 43a. Semua pihak diberitahu
+    deactivate DB
+    NS --> TR: 44a. Notifikasi terkirim
+    deactivate NS
+
+    TR --> TC: 45a. Auto-transition ke meeting_arranged
+    deactivate TR
+    TC --> Talent: 46a. Sukses: "Kedua pihak menerima\nPengaturan meeting sedang berlangsung"
+    deactivate TC
+
+else Admin Belum Menerima
+    DB --> TR: 39c. Acceptance talenta tercatat
+    deactivate DB
+    TR --> TC: 45b. Menunggu persetujuan admin
+    deactivate TR
+    TC --> Talent: 46b. Status: "Menunggu admin"
+    deactivate TC
+end
+
+@enduml

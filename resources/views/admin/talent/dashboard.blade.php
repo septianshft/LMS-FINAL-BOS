@@ -545,42 +545,71 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Initialize modal and set up event listeners
-// Initialize modal and set up event listeners (simplified - no auto-close)
-function initializeModal() {
-    if (modalInitialized && document.getElementById('talentRequestDetailsModal')) {
-        console.log('Modal already initialized and element exists.');
-        return;
-    }
-
-    const modal = document.getElementById('talentRequestDetailsModal');
-    const modalContent = document.getElementById('modalContent');
-
-    console.log('Attempting modal initialization. Found modal:', !!modal, 'Found modalContent:', !!modalContent);
-
-    if (!modal || !modalContent) {
-        console.error('Modal elements not found during initialization.');
-        modalInitialized = false;
-        return;
-    }
-
-    modalInitialized = true;
-    console.log('Modal initialized successfully.');
-
-    // Click outside to close
-    modal.addEventListener('click', function(e) {
-        if (e.target === modal && !processingAction) {
-            closeRequestModal();
+// Enhanced modal initialization with retry mechanism
+function initializeModal(maxAttempts = 3) {
+    console.log('Enhanced modal initialization starting...');
+    
+    // Reset initialization flag
+    modalInitialized = false;
+    
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        console.log(`Modal initialization attempt ${attempt}/${maxAttempts}`);
+        
+        const modal = document.getElementById('talentRequestDetailsModal');
+        const modalContent = document.getElementById('modalContent');
+        
+        if (!modal || !modalContent) {
+            console.warn(`Attempt ${attempt}: Modal elements not found. Modal: ${!!modal}, Content: ${!!modalContent}`);
+            
+            if (attempt === maxAttempts) {
+                console.error('All modal initialization attempts failed.');
+                modalInitialized = false;
+                return false;
+            }
+            
+            // Wait a bit before next attempt
+            continue;
         }
-    });
-
-    // Prevent closing when clicking inside modal content
-    const modalPanel = modal.querySelector('.bg-white.rounded-2xl');
-    if (modalPanel) {
-        modalPanel.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
+        
+        try {
+            // Remove any existing event listeners by cloning elements
+            const newModal = modal.cloneNode(true);
+            modal.parentNode.replaceChild(newModal, modal);
+            
+            // Re-attach event listeners to fresh elements
+            const freshModal = document.getElementById('talentRequestDetailsModal');
+            const modalPanel = freshModal.querySelector('.bg-white.rounded-2xl');
+            
+            // Click outside to close
+            freshModal.addEventListener('click', function(e) {
+                if (e.target === freshModal && !processingAction) {
+                    closeRequestModal();
+                }
+            });
+            
+            // Prevent closing when clicking inside modal content
+            if (modalPanel) {
+                modalPanel.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            }
+            
+            modalInitialized = true;
+            console.log(`Modal initialized successfully on attempt ${attempt}.`);
+            return true;
+            
+        } catch (error) {
+            console.error(`Modal initialization attempt ${attempt} failed:`, error);
+            
+            if (attempt === maxAttempts) {
+                modalInitialized = false;
+                return false;
+            }
+        }
     }
+    
+    modalInitialized = false;
+    return false;
 }
 
 // Handle modal state changes (simplified - no auto-reload)
@@ -735,45 +764,71 @@ function rejectRequest(requestId) {
     });
 }
 
-// Simplified modal opening function (no auto-close timeouts)
-function openModal() {
-    console.log('Attempting to open modal. modalInitialized:', modalInitialized);
-
-    let modal = document.getElementById('talentRequestDetailsModal');
-
-    if (!modal) {
-        console.error('Modal element not found in the DOM.');
-        if (modalInitialized) {
-            console.warn('Modal was marked initialized, but element is missing. Forcing re-init.');
-            modalInitialized = false;
+// Enhanced modal existence checker with retry mechanism
+function ensureModalExists(maxRetries = 3, retryDelay = 100) {
+    return new Promise((resolve, reject) => {
+        let attempts = 0;
+        
+        function checkModal() {
+            const modal = document.getElementById('talentRequestDetailsModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            if (modal && modalContent) {
+                resolve({ modal, modalContent });
+                return;
+            }
+            
+            attempts++;
+            if (attempts >= maxRetries) {
+                reject(new Error('Modal elements not found after ' + maxRetries + ' attempts'));
+                return;
+            }
+            
+            console.log(`Modal not found, retrying... (${attempts}/${maxRetries})`);
+            setTimeout(checkModal, retryDelay);
         }
-    }
+        
+        checkModal();
+    });
+}
 
-    if (!modalInitialized) {
-        console.log('Modal not initialized. Attempting to initialize.');
-        initializeModal();
-
+// Enhanced openModal function with retry mechanism
+async function openModal() {
+    try {
+        console.log('Attempting to open modal with enhanced stability...');
+        
+        // Wait for modal elements to be available
+        const { modal, modalContent } = await ensureModalExists();
+        
+        // Force re-initialization if needed
         if (!modalInitialized) {
-            console.error('Modal initialization failed. Cannot open modal.');
-            showAlert('Error: Sistem modal tidak siap. Silakan refresh halaman dan coba lagi.', 'error');
-            return false;
+            console.log('Initializing modal...');
+            initializeModal();
+            
+            if (!modalInitialized) {
+                throw new Error('Modal initialization failed');
+            }
         }
-
-        modal = document.getElementById('talentRequestDetailsModal');
-        if (!modal) {
-            console.error('Modal initialized, but element still not found.');
-            showAlert('Error: Masalah komponen modal. Silakan refresh.', 'error');
-            return false;
+        
+        // Double-check modal still exists after initialization
+        const finalModal = document.getElementById('talentRequestDetailsModal');
+        if (!finalModal) {
+            throw new Error('Modal disappeared after initialization');
         }
+        
+        processingAction = false;
+        finalModal.classList.remove('hidden');
+        isModalOpen = true;
+        handleModalStateChange(true);
+        
+        console.log('Modal opened successfully with enhanced stability.');
+        return true;
+        
+    } catch (error) {
+        console.error('Enhanced modal opening failed:', error.message);
+        showAlert('Error: Sistem modal tidak stabil. Silakan refresh halaman.', 'error');
+        return false;
     }
-
-    processingAction = false; // Reset processing flag
-    modal.classList.remove('hidden');
-    isModalOpen = true;
-    handleModalStateChange(true);
-
-    console.log('Modal opened successfully.');
-    return true;
 }
 
 // View Job Details Function (for history)
@@ -1054,34 +1109,57 @@ function viewRequestDetails(requestId) {
 }
 
 // Close Request Modal (simplified)
+// Enhanced closeRequestModal function with better state cleanup
 function closeRequestModal() {
-    const modal = document.getElementById('talentRequestDetailsModal');
-    if (modal) {
+    try {
+        console.log('Enhanced modal closing initiated...');
+        
         // Don't close if we're processing an action
         if (processingAction) {
             console.log('Cannot close modal while processing action');
-            return;
+            return false;
         }
-
-        if (modal.classList.contains('hidden')) {
-            console.log('Modal already hidden.');
-            if (isModalOpen) {
-                isModalOpen = false;
-                handleModalStateChange(false);
+        
+        const modal = document.getElementById('talentRequestDetailsModal');
+        
+        if (modal) {
+            // Check if already hidden
+            if (modal.classList.contains('hidden')) {
+                console.log('Modal already hidden, ensuring state consistency.');
+            } else {
+                modal.classList.add('hidden');
+                console.log('Modal hidden successfully.');
             }
-            return;
+        } else {
+            console.warn('Modal element not found during close, but continuing with state cleanup.');
         }
-
-        modal.classList.add('hidden');
-        isModalOpen = false;
-        handleModalStateChange(false);
-        console.log('Modal closed successfully.');
-    } else {
-        console.warn('Modal element not found during close.');
+        
+        // Always ensure state consistency
         if (isModalOpen) {
             isModalOpen = false;
             handleModalStateChange(false);
         }
+        
+        // Reset processing flag as safety measure
+        processingAction = false;
+        
+        console.log('Enhanced modal closing completed successfully.');
+        return true;
+        
+    } catch (error) {
+        console.error('Error during enhanced modal closing:', error);
+        
+        // Force state reset even on error
+        isModalOpen = false;
+        processingAction = false;
+        
+        try {
+            handleModalStateChange(false);
+        } catch (stateError) {
+            console.error('Error during state cleanup:', stateError);
+        }
+        
+        return false;
     }
 }
 

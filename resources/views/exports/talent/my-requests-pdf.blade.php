@@ -175,8 +175,8 @@
         <div><strong>Email:</strong> {{ $user->email }}</div>
         <div><strong>Tanggal Laporan:</strong> {{ now()->locale('id')->translatedFormat('d F Y, H:i') }}</div>
         <div><strong>Total Permintaan:</strong> {{ $requests->count() }}</div>
-        <div><strong>Proyek Aktif:</strong> {{ $requests->whereNotNull('project_end_date')->where('project_end_date', '>=', now())->count() }}</div>
-        <div><strong>Proyek Berakhir:</strong> {{ $requests->whereNotNull('project_end_date')->where('project_end_date', '<', now())->count() }}</div>
+        <div><strong>Proyek Aktif:</strong> {{ $requests->filter(function($request) { return in_array($request->getDisplayStatus(), ['pending', 'accepted']); })->count() }}</div>
+        <div><strong>Proyek Berakhir:</strong> {{ $requests->filter(function($request) { return $request->getDisplayStatus() === 'completed'; })->count() }}</div>
     </div>
 
     <div class="stats-summary">

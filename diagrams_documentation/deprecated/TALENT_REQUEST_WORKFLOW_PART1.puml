@@ -1,0 +1,158 @@
+@startuml Talent_Request_Workflow_Part1
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Alur Kerja Permintaan Talenta - Bagian 1
+
+actor Recruiter
+actor "Admin Talenta" as Admin
+actor Talent
+participant "Sistem Recruiter" as RC
+participant "Sistem Admin" as AC
+participant "Sistem Talenta" as TC
+participant "Data Permintaan" as TR
+participant "Layanan Notifikasi" as NS
+database "Basis Data" as DB
+
+== Fase 1: Pencarian Talenta & Cek Ketersediaan ==
+Recruiter -> RC: 1. Buka halaman pencarian talenta
+activate RC
+RC -> DB: 2. Cari talenta yang tersedia\n(yang bisa dihubungi dan\n tidak sedang sibuk)
+activate DB
+DB --> RC: 3. Daftar talenta tersedia
+deactivate DB
+RC --> Recruiter: 4. Tampilkan daftar talenta\ndengan status ketersediaan
+deactivate RC
+
+== Fase 2: Membuat Permintaan Talenta ==
+Recruiter -> RC: 5. Kirim permintaan talenta
+activate RC
+
+RC -> TR: 6. Periksa ketersediaan talenta\nuntuk periode waktu yang diminta
+activate TR
+TR -> DB: 7. Cek apakah talenta sedang\nsibuk di waktu yang sama
+activate DB
+alt Talenta Sedang Sibuk
+    DB --> TR: 8a. Ada jadwal yang bentrok
+    deactivate DB
+    TR --> RC: 8b. Talenta tidak tersedia
+    deactivate TR
+    RC --> Recruiter: 8c. Tampilkan pesan konflik\ndengan saran waktu lain
+    deactivate RC
+else Talenta Tersedia
+    DB --> TR: 8d. Tidak ada jadwal bentrok
+    deactivate DB
+    TR -> DB: 9. Buat permintaan baru\n(status menunggu persetujuan)
+    activate DB
+    DB --> TR: 10. Permintaan berhasil dibuat
+    deactivate DB
+    TR --> RC: 11. Data permintaan tersimpan
+    deactivate TR
+
+    RC -> NS: 12. Kirim pemberitahuan\nke talenta dan admin
+    activate NS
+    NS -> DB: 13. Simpan pemberitahuan
+    activate DB
+    DB --> NS: 14. Pemberitahuan tersimpan
+    deactivate DB
+    NS --> RC: 15. Pemberitahuan terkirim
+    deactivate NS
+
+    RC --> Recruiter: 16. Berhasil: "Permintaan dikirim\nuntuk ditinjau admin"
+    deactivate RC
+end
+
+== Fase 3: Tinjauan dan Persetujuan Admin ==
+Admin -> AC: 17. Lihat permintaan yang masuk
+activate AC
+AC -> DB: 18. Ambil daftar permintaan\nyang menunggu persetujuan
+activate DB
+DB --> AC: 19. Permintaan dengan status persetujuan
+deactivate DB
+AC --> Admin: 20. Tampilan kelola permintaan\ndengan status persetujuan
+deactivate AC
+
+Admin -> AC: 21. Admin menyetujui permintaan
+activate AC
+AC -> TR: 22. Catat persetujuan admin
+activate TR
+TR -> DB: 23. Simpan persetujuan admin\ndengan waktu persetujuan
+activate DB
+
+alt Talenta Sudah Menyetujui
+    TR -> DB: 24a. Ubah status menjadi\n"siap meeting" karena\nkedua pihak setuju
+    activate DB
+    DB --> TR: 24b. Status berhasil diubah
+    deactivate DB
+    TR -> TR: 25a. Blokir waktu talenta
+else Talenta Belum Menyetujui
+    DB --> TR: 24c. Persetujuan admin tercatat
+    deactivate DB
+    TR --> AC: 25b. Menunggu persetujuan talenta
+end
+
+TR --> AC: 26. Persetujuan admin selesai
+deactivate TR
+
+AC -> NS: 27. Kirim pemberitahuan perubahan
+activate NS
+NS -> DB: 28. Beritahu talenta dan recruiter\ntentang perubahan status
+activate DB
+DB --> NS: 29. Semua pihak sudah diberitahu
+deactivate DB
+NS --> AC: 30. Pemberitahuan terkirim
+deactivate NS
+
+AC --> Admin: 31. Berhasil: Persetujuan admin\ntersimpan dengan status terbaru
+deactivate AC
+
+== Fase 4: Tinjauan dan Persetujuan Talenta ==
+Talent -> TC: 32. Lihat permintaan untuk saya
+activate TC
+TC -> DB: 33. Ambil permintaan yang ditujukan\nuntuk talenta ini
+activate DB
+DB --> TC: 34. Permintaan dengan status persetujuan
+deactivate DB
+TC --> Talent: 35. Daftar kesempatan kerja\ndengan info persetujuan
+deactivate TC
+
+Talent -> TC: 36. Terima permintaan
+activate TC
+TC -> TR: 37. Catat persetujuan talenta
+activate TR
+TR -> DB: 38. Simpan persetujuan talenta\ndengan waktu persetujuan
+activate DB
+
+alt Admin Sudah Menyetujui
+    TR -> DB: 39a. Ubah status menjadi\n"siap meeting" karena\nkedua pihak setuju
+    activate DB
+    DB --> TR: 39b. Kedua pihak sudah menyetujui
+    deactivate DB
+
+    TR -> TR: 40a. Blokir waktu talenta
+
+    TR -> NS: 41a. Beritahu semua pihak
+    activate NS
+    NS -> DB: 42a. Kirim pemberitahuan penyelesaian
+    activate DB
+    DB --> NS: 43a. Semua pihak sudah diberitahu
+    deactivate DB
+    NS --> TR: 44a. Pemberitahuan terkirim
+    deactivate NS
+
+    TR --> TC: 45a. Status berubah ke siap meeting
+    deactivate TR
+    TC --> Talent: 46a. Berhasil: "Kedua pihak menyetujui\nPengaturan meeting sedang berlangsung"
+    deactivate TC
+
+else Admin Belum Menyetujui
+    DB --> TR: 39c. Persetujuan talenta tercatat
+    deactivate DB
+    TR --> TC: 45b. Menunggu persetujuan admin
+    deactivate TR
+    TC --> Talent: 46b. Status: "Menunggu admin"
+    deactivate TC
+end
+
+@enduml

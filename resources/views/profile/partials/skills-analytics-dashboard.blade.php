@@ -147,7 +147,7 @@
             </h3>
             <div class="text-sm text-indigo-800 dark:text-indigo-200">
                 @if($recentSkills > 0)
-                    <p class="mb-2">🎉 You've gained {{ $recentSkills }} new skill{{ $recentSkills > 1 ? 's' : '' }} in the last 30 days!</p>
+                    <p class="mb-2">🎉 You've gained {{ $recentSkills }} new skill{{ $recentSkills > 1 ? 's' : '' }} in the last 30 hari!</p>
                 @endif
 
                 @if($skillLevels['advanced'] > 0)

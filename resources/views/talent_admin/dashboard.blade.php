@@ -31,7 +31,7 @@
             <button onclick="refreshDashboard()" id="refreshBtn"
                     class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-200 font-medium shadow-lg">
                 <i class="fas fa-sync-alt mr-2"></i>
-                Refresh Data
+                Muat Ulang Data
             </button>
             <span class="inline-flex items-center px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
                 <i class="fas fa-shield-alt mr-2"></i>
@@ -121,11 +121,11 @@
                         <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
                             <i class="fas fa-chart-bar text-white text-xl"></i>
                         </div>
-                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Analytics</h4>
+                        <h4 class="text-lg font-semibold text-gray-900 mb-2">Analitik</h4>
                         <p class="text-gray-600 text-sm mb-6">Lihat analitik skill, konversi, dan permintaan pasar talent.</p>
                         <div class="space-y-3">
                             <a href="{{ route('talent_admin.analytics') }}" class="block w-full px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-200 font-medium text-sm">
-                                <i class="fas fa-chart-line mr-2"></i>Lihat Analytics
+                                <i class="fas fa-chart-line mr-2"></i>Lihat Analitik
                             </a>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                                 <i class="fas fa-eye mr-2"></i>Lihat Semua Perekrut
                             </a>
                             <button class="w-full px-4 py-2 bg-white text-indigo-600 border-2 border-indigo-600 rounded-xl hover:bg-indigo-50 transition-all duration-200 font-medium text-sm" onclick="showAddRecruiterModal()">
-                                <i class="fas fa-plus mr-2"></i>Tambah Perekrut Baru
+                                <i class="fas fa-plus mr-2"></i>Tambah Perekrut
                             </button>
                         </div>
                     </div>
@@ -179,7 +179,7 @@
                                 <i class="fas fa-list mr-2"></i>Lihat Semua Permintaan
                             </a>
                             <a href="{{ route('talent_admin.manage_requests', ['status' => 'pending']) }}" class="block w-full px-4 py-2 bg-white text-orange-600 border-2 border-orange-600 rounded-xl hover:bg-orange-50 transition-all duration-200 font-medium text-sm">
-                                <i class="fas fa-clock mr-2"></i>Tertunda ({{ $pendingRequests }})
+                                <i class="fas fa-clock mr-2"></i>Menunggu ({{ $pendingRequests }})
                             </a>
                         </div>
                     </div>
@@ -340,44 +340,44 @@
 
                         <div class="space-y-1 mb-3 text-sm text-gray-600">
                             <div class="flex items-center justify-between">
-                                <span>Budget:</span>
+                                <span>Anggaran:</span>
                                 <span class="font-medium">
                                     @if($project->overall_budget_min && $project->overall_budget_max)
                                         Rp {{ number_format($project->overall_budget_min, 0, ',', '.') }} - Rp {{ number_format($project->overall_budget_max, 0, ',', '.') }}
                                     @elseif($project->overall_budget_min)
-                                        From Rp {{ number_format($project->overall_budget_min, 0, ',', '.') }}
+                                        Dari Rp {{ number_format($project->overall_budget_min, 0, ',', '.') }}
                                     @elseif($project->overall_budget_max)
-                                        Up to Rp {{ number_format($project->overall_budget_max, 0, ',', '.') }}
+                                        Hingga Rp {{ number_format($project->overall_budget_max, 0, ',', '.') }}
                                     @else
-                                        Not specified
+                                        Tidak ditentukan
                                     @endif
                                 </span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span>Duration:</span>
+                                <span>Durasi:</span>
                                 <span class="font-medium">
                                     @if($project->estimated_duration_days)
-                                        {{ $project->estimated_duration_days }} days
+                                        {{ $project->estimated_duration_days }} hari
                                     @else
-                                        TBD
+                                        Belum ditentukan
                                     @endif
                                 </span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <span>Industry:</span>
-                                <span class="font-medium">{{ $project->industry ?: 'Not specified' }}</span>
+                                <span>Industri:</span>
+                                <span class="font-medium">{{ $project->industry ?: 'Tidak ditentukan' }}</span>
                             </div>
                         </div>
 
                         <div class="flex items-center justify-between">
                             <div class="text-xs text-gray-500">
                                 <i class="fas fa-users mr-1"></i>
-                                {{ $project->assignments->count() }} assigned talents
+                                {{ $project->assignments->count() }} talent ditugaskan
                             </div>
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.projects.show', $project) }}"
                                    class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-sm">
-                                    <i class="fas fa-eye mr-1"></i>Details
+                                    <i class="fas fa-eye mr-1"></i>Detail
                                 </a>
                             </div>
                         </div>

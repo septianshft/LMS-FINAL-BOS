@@ -38,16 +38,21 @@
                 </div>
 
                 <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="downloadPDF()"
+                            class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm text-gray-700 rounded-xl hover:bg-white/30 transition-all duration-300 font-medium border border-white/30 shadow-lg">
+                        <i class="fas fa-file-pdf mr-2"></i>
+                        Unduh PDF
+                    </button>
                     <button onclick="window.location.reload()"
                             class="inline-flex items-center px-6 py-3 bg-white/20 backdrop-blur-sm text-gray-700 rounded-xl hover:bg-white/30 transition-all duration-300 font-medium border border-white/30 shadow-lg">
                         <i class="fas fa-sync-alt mr-2"></i>
                         Muat Ulang
                     </button>
-                    <a href="{{ route('talent.dashboard') }}"
-                       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-medium shadow-xl hover:shadow-2xl hover:scale-105">
+                    <button onclick="window.location.href='{{ route('talent.dashboard') }}'"
+                            class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-medium shadow-xl hover:shadow-2xl hover:scale-105">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        Kembali ke Dashboard
-                    </a>
+                        Kembali ke Beranda
+                    </button>
                 </div>
             </div>
         </div>
@@ -237,15 +242,15 @@
                                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                                     <div class="flex items-center text-gray-600">
                                         <i class="fas fa-dollar-sign mr-2 text-green-500"></i>
-                                        <span>{{ $request->budget_range }}</span>
+                                        <span>{{ str_replace('Negotiable', 'Dapat dinegosiasi', $request->budget_range) }}</span>
                                     </div>
                                     <div class="flex items-center text-gray-600">
                                         <i class="fas fa-clock mr-2 text-blue-500"></i>
-                                        <span>{{ $request->project_duration }}</span>
+                                        <span>{{ preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) }}</span>
                                     </div>
                                     <div class="flex items-center text-gray-600">
                                         <i class="fas fa-calendar mr-2 text-purple-500"></i>
-                                        <span>{{ $request->created_at->format('d M Y') }}</span>
+                                        <span>{{ $request->created_at->locale('id')->translatedFormat('d F Y') }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -274,7 +279,7 @@
                     <a href="{{ route('talent.dashboard') }}"
                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 font-medium shadow-xl hover:shadow-2xl hover:scale-105">
                         <i class="fas fa-arrow-left mr-2"></i>
-                        Kembali ke Dashboard
+                        Kembali ke Beranda
                     </a>
                 </div>
             @endif
@@ -628,11 +633,11 @@ function displayRequestDetails(request) {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <h4 class="font-semibold text-gray-700 mb-3">Anggaran</h4>
-                    <p class="text-gray-600 bg-gray-50 p-3 rounded-lg">${request.budget_range}</p>
+                    <p class="text-gray-600 bg-gray-50 p-3 rounded-lg">${request.budget_range.replace('Negotiable', 'Dapat dinegosiasi')}</p>
                 </div>
                 <div>
                     <h4 class="font-semibold text-gray-700 mb-3">Durasi</h4>
-                    <p class="text-gray-600 bg-gray-50 p-3 rounded-lg">${request.project_duration}</p>
+                    <p class="text-gray-600 bg-gray-50 p-3 rounded-lg">${request.project_duration.replace(/\b(\d+)\s+months?\b/g, '$1 bulan').replace(/\b(\d+)\s+weeks?\b/g, '$1 minggu').replace(/\b(\d+)\s+days?\b/g, '$1 hari').replace(/\bmonths?\b/g, 'bulan').replace(/\bweeks?\b/g, 'minggu').replace(/\bdays?\b/g, 'hari')}</p>
                 </div>
             </div>
 
@@ -735,6 +740,14 @@ function rejectRequest(requestId) {
             alert('Terjadi error saat menolak permintaan.');
         });
     }
+}
+
+// PDF Download Function
+function downloadPDF() {
+    // Placeholder function for PDF download
+    // This will be implemented later with actual PDF generation logic
+    alert('Fitur unduh PDF akan segera diimplementasikan!');
+    console.log('PDF download requested for talent requests page');
 }
 </script>
 @endsection

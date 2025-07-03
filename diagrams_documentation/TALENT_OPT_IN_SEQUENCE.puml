@@ -1,0 +1,182 @@
+@startuml
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Alur Kerja Permintaan Talenta
+
+actor "Admin Talenta" as AdminTalenta
+actor "Recruiter" as Recruiter
+actor "Talenta" as Talent
+participant "Dashboard Admin Talenta" as AdminDashboard
+participant "Dashboard Recruiter" as RecruiterDashboard
+participant "Dashboard Talenta" as TalentDashboard
+participant "TalentAdminController" as AdminController
+participant "RecruiterController" as RecruiterController
+participant "TalentController" as TalentController
+participant "TalentRequestNotificationService" as NotificationService
+participant "TalentRequest Model" as TalentRequestModel
+participant "Project Model" as ProjectModel
+participant "User Model" as UserModel
+participant "Talent Model" as TalentModel
+database "MySQL Database" as Database
+
+== Fase Permintaan Talenta ==
+Recruiter -> RecruiterDashboard: 1. Buka halaman permintaan talenta
+activate RecruiterDashboard
+RecruiterDashboard -> RecruiterController: 2. Tampilkan form permintaan
+activate RecruiterController
+RecruiterController -> Database: 3. Ambil data talenta tersedia
+activate Database
+Database --> RecruiterController: 4. Data talenta
+deactivate Database
+RecruiterController --> RecruiterDashboard: 5. Form dengan data talenta
+deactivate RecruiterController
+RecruiterDashboard --> Recruiter: 6. Tampilkan form permintaan
+deactivate RecruiterDashboard
+
+Recruiter -> RecruiterDashboard: 7. Submit permintaan talenta
+activate RecruiterDashboard
+RecruiterDashboard -> RecruiterController: 8. Proses permintaan
+activate RecruiterController
+RecruiterController -> TalentRequestModel: 9. Buat permintaan baru
+activate TalentRequestModel
+TalentRequestModel -> Database: 10. Simpan permintaan
+activate Database
+Database --> TalentRequestModel: 11. Konfirmasi penyimpanan
+deactivate Database
+TalentRequestModel --> RecruiterController: 12. Permintaan tersimpan
+deactivate TalentRequestModel
+
+RecruiterController -> NotificationService: 13. Kirim notifikasi ke admin
+activate NotificationService
+NotificationService -> AdminTalenta: 14. Notifikasi permintaan baru
+deactivate NotificationService
+RecruiterController --> RecruiterDashboard: 15. Konfirmasi submit
+deactivate RecruiterController
+RecruiterDashboard --> Recruiter: 16. Pesan sukses
+deactivate RecruiterDashboard
+
+== Verifikasi dan Persetujuan Admin ==
+AdminTalenta -> AdminDashboard: 17. Buka dashboard admin
+activate AdminDashboard
+AdminDashboard -> AdminController: 18. Tampilkan permintaan pending
+activate AdminController
+AdminController -> TalentRequestModel: 19. Ambil permintaan pending
+activate TalentRequestModel
+TalentRequestModel -> Database: 20. Query permintaan pending
+activate Database
+Database --> TalentRequestModel: 21. Data permintaan
+deactivate Database
+TalentRequestModel --> AdminController: 22. List permintaan
+deactivate TalentRequestModel
+AdminController --> AdminDashboard: 23. Data untuk dashboard
+deactivate AdminController
+AdminDashboard --> AdminTalenta: 24. Tampilkan permintaan
+deactivate AdminDashboard
+
+AdminTalenta -> AdminDashboard: 25. Review dan setujui permintaan
+activate AdminDashboard
+AdminDashboard -> AdminController: 26. Proses persetujuan
+activate AdminController
+AdminController -> TalentRequestModel: 27. Update status permintaan
+activate TalentRequestModel
+TalentRequestModel -> Database: 28. Update status ke 'approved'
+activate Database
+Database --> TalentRequestModel: 29. Konfirmasi update
+deactivate Database
+TalentRequestModel --> AdminController: 30. Status terupdate
+deactivate TalentRequestModel
+
+AdminController -> ProjectModel: 31. Buat project baru
+activate ProjectModel
+ProjectModel -> Database: 32. Simpan project
+activate Database
+Database --> ProjectModel: 33. Project tersimpan
+deactivate Database
+ProjectModel --> AdminController: 34. Project dibuat
+deactivate ProjectModel
+
+AdminController -> NotificationService: 35. Kirim notifikasi ke talenta
+activate NotificationService
+NotificationService -> Talent: 36. Notifikasi permintaan disetujui
+deactivate NotificationService
+AdminController --> AdminDashboard: 37. Konfirmasi persetujuan
+deactivate AdminController
+AdminDashboard --> AdminTalenta: 38. Pesan sukses
+deactivate AdminDashboard
+
+== Respon Talenta ==
+Talent -> TalentDashboard: 39. Buka dashboard talenta
+activate TalentDashboard
+TalentDashboard -> TalentController: 40. Tampilkan permintaan masuk
+activate TalentController
+TalentController -> TalentRequestModel: 41. Ambil permintaan untuk talenta
+activate TalentRequestModel
+TalentRequestModel -> Database: 42. Query permintaan talenta
+activate Database
+Database --> TalentRequestModel: 43. Data permintaan
+deactivate Database
+TalentRequestModel --> TalentController: 44. Permintaan talenta
+deactivate TalentRequestModel
+TalentController --> TalentDashboard: 45. Data permintaan
+deactivate TalentController
+TalentDashboard --> Talent: 46. Tampilkan permintaan
+deactivate TalentDashboard
+
+Talent -> TalentDashboard: 47. Terima atau tolak permintaan
+activate TalentDashboard
+TalentDashboard -> TalentController: 48. Proses respon talenta
+activate TalentController
+TalentController -> TalentRequestModel: 49. Update respon talenta
+activate TalentRequestModel
+TalentRequestModel -> Database: 50. Update status respon
+activate Database
+Database --> TalentRequestModel: 51. Konfirmasi update
+deactivate Database
+TalentRequestModel --> TalentController: 52. Respon tersimpan
+deactivate TalentRequestModel
+
+TalentController -> NotificationService: 53. Kirim notifikasi ke recruiter
+activate NotificationService
+NotificationService -> Recruiter: 54. Notifikasi respon talenta
+deactivate NotificationService
+TalentController --> TalentDashboard: 55. Konfirmasi respon
+deactivate TalentController
+TalentDashboard --> Talent: 56. Pesan sukses
+deactivate TalentDashboard
+
+== Finalisasi dan Onboarding ==
+alt Jika talenta menerima
+    AdminTalenta -> AdminDashboard: 57. Mulai proses onboarding
+    activate AdminDashboard
+    AdminDashboard -> AdminController: 58. Proses onboarding
+    activate AdminController
+    AdminController -> TalentRequestModel: 59. Update ke status 'onboarded'
+    activate TalentRequestModel
+    TalentRequestModel -> Database: 60. Update status final
+    activate Database
+    Database --> TalentRequestModel: 61. Status terupdate
+    deactivate Database
+    TalentRequestModel --> AdminController: 62. Onboarding selesai
+    deactivate TalentRequestModel
+    AdminController -> NotificationService: 63. Notifikasi onboarding selesai
+    activate NotificationService
+    NotificationService -> Recruiter: 64. Notifikasi talenta siap
+    NotificationService -> Talent: 65. Notifikasi onboarding selesai
+    deactivate NotificationService
+    AdminController --> AdminDashboard: 66. Konfirmasi onboarding
+    deactivate AdminController
+    AdminDashboard --> AdminTalenta: 67. Proses selesai
+    deactivate AdminDashboard
+else Jika talenta menolak
+    TalentController -> TalentRequestModel: 68. Update ke status 'rejected'
+    activate TalentRequestModel
+    TalentRequestModel -> Database: 69. Update status penolakan
+    activate Database
+    Database --> TalentRequestModel: 70. Status terupdate
+    deactivate Database
+    deactivate TalentRequestModel
+end
+
+@enduml

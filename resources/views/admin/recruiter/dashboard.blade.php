@@ -34,7 +34,7 @@
                     <i class="fas fa-users text-xl text-white"></i>
                 </div>
                 <div>
-                    <p class="text-sm font-semibold text-blue-600 uppercase">Kandidat terseida</p>
+                    <p class="text-sm font-semibold text-blue-600 uppercase">Kandidat Tersedia</p>
                     <p class="text-gray-500 text-sm">Siap untuk berkolaborasi</p>
                 </div>
             </div>
@@ -220,7 +220,7 @@
                 <div class="flex gap-3">
                     <button onclick="toggleScoutingFilters()"
                             class="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors">
-                        <i class="fas fa-filter mr-2"></i>Filter
+                        <i class="fas fa-filter mr-2"></i>Saring
                     </button>
                     <button onclick="toggleCompareMode()"
                             class="px-4 py-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors" id="compareModeBtn">
@@ -228,7 +228,7 @@
                     </button>
                     <button onclick="refreshTalents()"
                             class="px-4 py-2 bg-white text-emerald-600 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-                        <i class="fas fa-sync-alt mr-2"></i>Refresh
+                        <i class="fas fa-sync-alt mr-2"></i>Muat Ulang
                     </button>
                 </div>
             </div>
@@ -244,7 +244,7 @@
                     <input type="text" 
                            id="talentSearchInput" 
                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500" 
-                           placeholder="Search by talent name or skills/certificates..." 
+                           placeholder="Cari berdasarkan nama talenta atau keahlian/sertifikat..." 
                            onkeyup="searchTalents()">
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                         <button type="button" 
@@ -265,12 +265,12 @@
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-lg font-semibold text-gray-800 flex items-center">
                         <i class="fas fa-filter mr-2 text-emerald-600"></i>
-                        Advanced Filters
+                        Filter Lanjutan
                     </h3>
                     <div class="flex items-center gap-3">
                         <span id="activeFiltersCount" class="hidden px-2 py-1 bg-emerald-100 text-emerald-800 text-xs rounded-full font-medium"></span>
                         <button onclick="resetAllFilters()" class="text-sm text-gray-600 hover:text-gray-800 underline">
-                            Clear All
+                            Hapus Semua
                         </button>
                     </div>
                 </div>
@@ -281,15 +281,15 @@
                     <div class="filter-group">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-certificate mr-1 text-yellow-500"></i>
-                            Certificates Count
+                            Jumlah Sertifikat
                         </label>
                         <select id="certificatesFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                            <option value="">Any number of certificates</option>
-                            <option value="0">No certificates</option>
-                            <option value="1-2">1-2 certificates</option>
-                            <option value="3-5">3-5 certificates</option>
-                            <option value="6-10">6-10 certificates</option>
-                            <option value="10+">10+ certificates</option>
+                            <option value="">Jumlah sertifikat apa saja</option>
+                            <option value="0">Tidak ada sertifikat</option>
+                            <option value="1-2">1-2 sertifikat</option>
+                            <option value="3-5">3-5 sertifikat</option>
+                            <option value="6-10">6-10 sertifikat</option>
+                            <option value="10+">10+ sertifikat</option>
                         </select>
                     </div>
 
@@ -297,15 +297,15 @@
                     <div class="filter-group">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-brain mr-1 text-indigo-500"></i>
-                            Quiz Average Score
+                            Rata-rata Skor Kuis
                         </label>
                         <select id="quizFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                            <option value="">Any quiz performance</option>
-                            <option value="90-100">Excellent (90-100%)</option>
-                            <option value="80-89">Very Good (80-89%)</option>
-                            <option value="70-79">Good (70-79%)</option>
-                            <option value="60-69">Average (60-69%)</option>
-                            <option value="0-59">Below Average (0-59%)</option>
+                            <option value="">Performa kuis apa saja</option>
+                            <option value="90-100">Sangat Baik (90-100%)</option>
+                            <option value="80-89">Baik Sekali (80-89%)</option>
+                            <option value="70-79">Baik (70-79%)</option>
+                            <option value="60-69">Cukup (60-69%)</option>
+                            <option value="0-59">Kurang (0-59%)</option>
                         </select>
                     </div>
 
@@ -313,13 +313,13 @@
                     <div class="filter-group">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-clock mr-1 text-blue-500"></i>
-                            Availability Status
+                            Status Ketersediaan
                         </label>
                         <select id="availabilityFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                            <option value="">All talents</option>
-                            <option value="available">Available</option>
-                            <option value="busy">Currently busy</option>
-                            <option value="partially-available">Partially available</option>
+                            <option value="">Semua talenta</option>
+                            <option value="available">Tersedia</option>
+                            <option value="busy">Sedang sibuk</option>
+                            <option value="partially-available">Sebagian tersedia</option>
                         </select>
                     </div>
 
@@ -327,12 +327,12 @@
                     <div class="filter-group">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             <i class="fas fa-flag mr-1 text-red-500"></i>
-                            Red Flags Status
+                            Status Bendera Merah
                         </label>
                         <select id="redflagsFilter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
-                            <option value="">All talents</option>
-                            <option value="no-redflags">No red flags</option>
-                            <option value="has-redflags">Has red flags</option>
+                            <option value="">Semua talenta</option>
+                            <option value="no-redflags">Tidak ada bendera merah</option>
+                            <option value="has-redflags">Ada bendera merah</option>
                         </select>
                     </div>
                 </div>
@@ -343,12 +343,12 @@
                         <button onclick="resetAllFilters()" 
                                 class="px-4 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             <i class="fas fa-undo mr-1"></i>
-                            Reset All
+                            Atur Ulang Semua
                         </button>
                         <button onclick="saveFilterPreset()" 
                                 class="px-4 py-2 text-emerald-600 hover:text-emerald-800 border border-emerald-300 rounded-lg hover:bg-emerald-50 transition-colors">
                             <i class="fas fa-save mr-1"></i>
-                            Save Preset
+                            Simpan Preset
                         </button>
                     </div>
                     <div class="flex items-center gap-3">
@@ -356,7 +356,7 @@
                         <button onclick="applyAdvancedFilters()" 
                                 class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium">
                             <i class="fas fa-search mr-1"></i>
-                            Apply Filters
+                            Terapkan Filter
                         </button>
                     </div>
                 </div>
@@ -371,7 +371,7 @@
                     <span id="filterSummaryText"></span>
                 </div>
                 <button onclick="clearFilterResults()" class="text-blue-600 hover:text-blue-800 text-sm underline">
-                    Clear filters
+                    Hapus filter
                 </button>
             </div>
                         Terapkan
@@ -531,7 +531,7 @@
                             <div class="mb-4 text-center">
                                 <span class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
                                     <i class="fas fa-check-circle mr-1"></i>
-                                    Completed Projects: <span class="font-bold ml-1">{{ $redflagSummary['total_completed'] ?? 0 }}</span>
+                                    Proyek Selesai: <span class="font-bold ml-1">{{ $redflagSummary['total_completed'] ?? 0 }}</span>
                                 </span>
                             </div>
 
@@ -550,7 +550,7 @@
                                         </div>
                                         @if(isset($talent->availability_status['next_available_date']))
                                             <div class="text-xs text-gray-500 mt-1">
-                                                Available: {{ \Carbon\Carbon::parse($talent->availability_status['next_available_date'])->format('M d, Y') }}
+                                                Tersedia: {{ \Carbon\Carbon::parse($talent->availability_status['next_available_date'])->format('d M Y') }}
                                             </div>
                                         @endif
                                     @endif
@@ -580,18 +580,23 @@
                                                         $skillName = $skill;
                                                         $skillProficiency = 'intermediate'; // Default
                                                     } else {
-                                                        $skillName = $skill['skill_name'] ?? $skill['name'] ?? (is_string($skill) ? $skill : 'Unknown Skill');
+                                                        $skillName = $skill['skill_name'] ?? $skill['name'] ?? (is_string($skill) ? $skill : 'Keahlian Tidak Diketahui');
                                                         $skillProficiency = $skill['proficiency'] ?? $skill['level'] ?? 'intermediate';
                                                     }
                                                 @endphp
                                                 <div class="flex justify-between items-center text-xs">
                                                     <span class="text-gray-700 font-medium">{{ $skillName }}</span>
-                                                    <span class="px-2 py-1 rounded-full text-xs font-medium
-                                                        @if(strtolower($skillProficiency) == 'advanced' || strtolower($skillProficiency) == 'expert') bg-green-100 text-green-800
-                                                        @elseif(strtolower($skillProficiency) == 'intermediate') bg-blue-100 text-blue-800
-                                                        @elseif(strtolower($skillProficiency) == 'beginner') bg-yellow-100 text-yellow-800
+                                                                    <span class="px-2 py-1 rounded-full text-xs font-medium
+                                                        @if(strtolower($skillProficiency) == 'advanced' || strtolower($skillProficiency) == 'expert' || strtolower($skillProficiency) == 'mahir' || strtolower($skillProficiency) == 'ahli') bg-green-100 text-green-800
+                                                        @elseif(strtolower($skillProficiency) == 'intermediate' || strtolower($skillProficiency) == 'menengah') bg-blue-100 text-blue-800
+                                                        @elseif(strtolower($skillProficiency) == 'beginner' || strtolower($skillProficiency) == 'pemula') bg-yellow-100 text-yellow-800
                                                         @else bg-gray-100 text-gray-800 @endif">
-                                                        {{ ucfirst($skillProficiency) }}
+                                                        @if(strtolower($skillProficiency) == 'advanced') Mahir
+                                                        @elseif(strtolower($skillProficiency) == 'expert') Ahli
+                                                        @elseif(strtolower($skillProficiency) == 'intermediate') Menengah
+                                                        @elseif(strtolower($skillProficiency) == 'beginner') Pemula
+                                                        @else {{ ucfirst($skillProficiency) }}
+                                                        @endif
                                                     </span>
                                                 </div>
                                             @endforeach
@@ -609,7 +614,7 @@
                                     <div class="bg-gray-50 rounded-lg p-3">
                                         <div class="text-center text-gray-500 text-sm">
                                             <i class="fas fa-graduation-cap text-gray-400 mb-1"></i>
-                                            <div>Belum ada keahlian yang diperoleh</div>
+                                            <div>Belum ada keahlian yang tercatat</div>
                                         </div>
                                     </div>
                                 @endif
@@ -636,14 +641,14 @@
                                     @if(isset($talent->availability_status) && $talent->availability_status['available'])
                                         <button onclick="openRequestModal('{{ $talent->id }}', '{{ $talent->user->name }}', {{ $redflagSummary['has_redflags'] ? 'true' : 'false' }}, '{{ $redflagSummary['count'] }}')"
                                                 class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
-                                            <i class="fas fa-handshake mr-2"></i>Request Talent
+                                            <i class="fas fa-handshake mr-2"></i>Minta Talenta
                                         </button>
                                     @endif
                                 @endif
                                 <div class="grid grid-cols-2 gap-2">
                                     <button onclick="viewScoutingReport('{{ $talent->id }}', '{{ $talent->user->name }}', {{ json_encode($metrics) }}, {{ $redflagSummary['has_redflags'] ? 'true' : 'false' }}, '{{ $redflagSummary['count'] }}', {{ json_encode($talent->completed_projects ?? []) }})"
                                             class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
-                                        <i class="fas fa-chart-line mr-1"></i>Report
+                                        <i class="fas fa-chart-line mr-1"></i>Laporan
                                     </button>
                                     <a href="mailto:{{ $talent->user->email }}"
                                        class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-center text-sm">
@@ -666,8 +671,8 @@
                     <div class="w-16 h-16 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
                         <i class="fas fa-user-tie text-2xl text-gray-400"></i>
                     </div>
-                    <h5 class="text-lg font-medium text-gray-700 mb-2">No Talents Available</h5>
-                    <p class="text-gray-500">Check back later or contact your administrator.</p>
+                    <h5 class="text-lg font-medium text-gray-700 mb-2">Tidak Ada Talenta Tersedia</h5>
+                    <p class="text-gray-500">Periksa kembali nanti atau hubungi administrator Anda.</p>
                 </div>
             @endif
         </div>
@@ -683,7 +688,7 @@
                     <div class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-user-tie text-white"></i>
                     </div>
-                    Talent Profile Details
+                    Detail Profil Talenta
                 </h5>
                 <button type="button" class="text-white hover:text-gray-200 transition-colors duration-200" data-dismiss="modal" aria-label="Close">
                     <i class="fas fa-times text-xl"></i>
@@ -693,25 +698,25 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-4">
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
                             <p id="modalTalentName" class="text-gray-900 font-medium"></p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Alamat Email</label>
                             <p id="modalTalentEmail" class="text-gray-900 font-medium"></p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nomor Telepon</label>
                             <p id="modalTalentPhone" class="text-gray-900 font-medium"></p>
                         </div>
                     </div>
                     <div class="space-y-4">
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Profession</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Profesi</label>
                             <p id="modalTalentProfession" class="text-gray-900 font-medium"></p>
                         </div>
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Alamat</label>
                             <p id="modalTalentAddress" class="text-gray-900 font-medium"></p>
                         </div>
                     </div>
@@ -719,10 +724,10 @@
             </div>
             <div class="modal-footer bg-gray-50 rounded-b-2xl border-0 p-6">
                 <button type="button" class="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium mr-3" data-dismiss="modal">
-                    <i class="fas fa-times mr-2"></i>Close
+                    <i class="fas fa-times mr-2"></i>Tutup
                 </button>
                 <button type="button" class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-medium" onclick="contactTalent()">
-                    <i class="fas fa-envelope mr-2"></i>Send Email
+                    <i class="fas fa-envelope mr-2"></i>Kirim Email
                 </button>
             </div>
         </div>
@@ -738,7 +743,7 @@
                     <div class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-handshake text-white"></i>
                     </div>
-                    Request Talent Collaboration
+                    Permintaan Kolaborasi Talent
                 </h5>
                 <button type="button" class="text-white hover:text-gray-200 transition-colors duration-200" data-dismiss="modal" aria-label="Close">
                     <i class="fas fa-times text-xl"></i>
@@ -753,8 +758,8 @@
                                 <i class="fas fa-info-circle text-blue-600"></i>
                             </div>
                             <div>
-                                <h6 class="font-semibold text-blue-800 mb-1">Important Information</h6>
-                                <p class="text-blue-700 text-sm">Your request will be reviewed by the Talent Admin who will coordinate a meeting between you and the talent. Please provide detailed project information to expedite the process.</p>
+                                <h6 class="font-semibold text-blue-800 mb-1">Informasi Penting</h6>
+                                <p class="text-blue-700 text-sm">Permintaan Anda akan ditinjau oleh Admin Talent yang akan mengkoordinasikan pertemuan antara Anda dan talent. Mohon berikan informasi proyek yang detail untuk mempercepat prosesnya.</p>
                             </div>
                         </div>
                     </div>
@@ -765,7 +770,7 @@
                         <div class="space-y-6">
                             <div>
                                 <label for="projectTitle" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Project Title <span class="text-red-500">*</span>
+                                    Judul Proyek <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                        id="projectTitle" name="project_title" required
@@ -774,55 +779,55 @@
 
                             <div>
                                 <label for="budgetRange" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Project Budget Range
-                                    <span class="text-xs text-gray-500 block font-normal">Total budget for the entire project/freelance work</span>
+                                    Rentang Anggaran Proyek
+                                    <span class="text-xs text-gray-500 block font-normal">Total anggaran untuk seluruh proyek/pekerjaan freelance</span>
                                 </label>
                                 <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                         id="budgetRange" name="budget_range">
-                                    <option value="">Select project budget range</option>
-                                    <option value="Under Rp 10.000.000">Under Rp 10.000.000</option>
+                                    <option value="">Pilih rentang anggaran proyek</option>
+                                    <option value="Under Rp 10.000.000">Di bawah Rp 10.000.000</option>
                                     <option value="Rp 10.000.000 - Rp 50.000.000">Rp 10.000.000 - Rp 50.000.000</option>
                                     <option value="Rp 50.000.000 - Rp 100.000.000">Rp 50.000.000 - Rp 100.000.000</option>
                                     <option value="Rp 100.000.000 - Rp 250.000.000">Rp 100.000.000 - Rp 250.000.000</option>
                                     <option value="Rp 250.000.000+">Rp 250.000.000+</option>
-                                    <option value="Negotiable">Negotiable</option>
+                                    <option value="Negotiable">Dapat dinegosiasi</option>
                                 </select>
-                                <p class="text-xs text-gray-500 mt-1">💡 This is for freelance projects, not monthly employment salaries</p>
+                                <p class="text-xs text-gray-500 mt-1">💡 Ini untuk proyek freelance, bukan gaji bulanan karyawan</p>
                             </div>
 
                             <div>
                                 <label for="projectDuration" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Project Duration <span class="text-red-500">*</span>
+                                    Durasi Proyek <span class="text-red-500">*</span>
                                 </label>
                                 <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                         id="projectDuration" name="project_duration" required>
-                                    <option value="">Select duration</option>
-                                    <option value="1-2 weeks">1-2 weeks</option>
-                                    <option value="1 month">1 month</option>
-                                    <option value="2-3 months">2-3 months</option>
-                                    <option value="3-6 months">3-6 months</option>
-                                    <option value="6+ months">6+ months</option>
+                                    <option value="">Pilih durasi</option>
+                                    <option value="1-2 minggu">1-2 minggu</option>
+                                    <option value="1 bulan">1 bulan</option>
+                                    <option value="2-3 bulan">2-3 bulan</option>
+                                    <option value="3-6 bulan">3-6 bulan</option>
+                                    <option value="6+ bulan">6+ bulan</option>
                                     <option value="Ongoing">Ongoing</option>
                                 </select>
-                                <p class="text-xs text-gray-500 mt-1">Required for time-blocking to prevent overlapping projects</p>
+                                <p class="text-xs text-gray-500 mt-1">Diperlukan untuk pemblokiran waktu guna mencegah proyek yang tumpang tindih</p>
                             </div>
                         </div>
 
                         <div class="space-y-6">
                             <div>
                                 <label for="projectDescription" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Project Description <span class="text-red-500">*</span>
+                                    Deskripsi Proyek <span class="text-red-500">*</span>
                                 </label>
                                 <textarea class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
                                           id="projectDescription" name="project_description" rows="5" required
-                                          placeholder="Describe your project, goals, and what you're looking for..."></textarea>
+                                          placeholder="Jelaskan proyek, tujuan, dan apa yang Anda cari..."></textarea>
                             </div>
 
                             <div>
-                                <label for="requirements" class="block text-sm font-semibold text-gray-700 mb-2">Specific Requirements</label>
+                                <label for="requirements" class="block text-sm font-semibold text-gray-700 mb-2">Persyaratan Khusus</label>
                                 <textarea class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
                                           id="requirements" name="requirements" rows="3"
-                                          placeholder="List any specific skills, technologies, or qualifications needed..."></textarea>
+                                          placeholder="Sebutkan keahlian, teknologi, atau kualifikasi khusus yang dibutuhkan..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -830,10 +835,10 @@
                 <div class="modal-footer bg-gray-50 rounded-b-2xl border-0 p-6">
                     <button type="button" class="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium mr-3"
                             data-dismiss="modal" onclick="$('#talentRequestModal').modal('hide')">
-                        <i class="fas fa-times mr-2"></i>Cancel
+                        <i class="fas fa-times mr-2"></i>Batal
                     </button>
                     <button type="submit" class="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-200 font-medium">
-                        <i class="fas fa-paper-plane mr-2"></i>Submit Request
+                        <i class="fas fa-paper-plane mr-2"></i>Kirim Permintaan
                     </button>
                 </div>
             </form>
@@ -850,7 +855,7 @@
                     <div class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-star text-white"></i>
                     </div>
-                    All Skills
+                    Semua Keahlian
                 </h5>
                 <button type="button" class="text-white hover:text-gray-200 transition-colors duration-200" data-dismiss="modal" aria-label="Close">
                     <i class="fas fa-times text-xl"></i>
@@ -863,8 +868,8 @@
                             <i class="fas fa-user-graduate text-yellow-600 text-xl"></i>
                         </div>
                         <div>
-                            <h6 class="font-bold text-gray-900" id="skillsModalTalentName">Talent Name</h6>
-                            <p class="text-gray-600 text-sm">Complete Skills Overview</p>
+                            <h6 class="font-bold text-gray-900" id="skillsModalTalentName">Nama Talent</h6>
+                            <p class="text-gray-600 text-sm">Ringkasan Lengkap Keahlian</p>
                         </div>
                     </div>
                 </div>
@@ -876,29 +881,29 @@
 
                 <!-- Skills Summary -->
                 <div class="mt-6 bg-gray-50 rounded-xl p-4">
-                    <h6 class="font-semibold text-gray-900 mb-3">Skills Summary</h6>
+                    <h6 class="font-semibold text-gray-900 mb-3">Ringkasan Keahlian</h6>
                     <div class="grid grid-cols-3 gap-4 text-center">
                         <div class="bg-white rounded-lg p-3">
                             <div class="text-2xl font-bold text-gray-900" id="totalSkillsCount">0</div>
-                            <div class="text-xs text-gray-600">Total Skills</div>
+                            <div class="text-xs text-gray-600">Total Keahlian</div>
                         </div>
                         <div class="bg-white rounded-lg p-3">
                             <div class="text-2xl font-bold text-green-600" id="advancedSkillsCount">0</div>
-                            <div class="text-xs text-gray-600">Advanced</div>
+                            <div class="text-xs text-gray-600">Mahir</div>
                         </div>
                         <div class="bg-white rounded-lg p-3">
                             <div class="text-2xl font-bold text-blue-600" id="intermediateSkillsCount">0</div>
-                            <div class="text-xs text-gray-600">Intermediate</div>
+                            <div class="text-xs text-gray-600">Menengah</div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer bg-gray-50 rounded-b-2xl border-0 p-6">
                 <button type="button" class="px-6 py-3 bg-gray-500 text-white rounded-xl hover:bg-gray-600 transition-all duration-200 font-medium mr-3" data-dismiss="modal">
-                    <i class="fas fa-times mr-2"></i>Close
+                    <i class="fas fa-times mr-2"></i>Tutup
                 </button>
                 <button type="button" class="px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 font-medium" onclick="requestTalentFromSkillsModal()">
-                    <i class="fas fa-handshake mr-2"></i>Request This Talent
+                    <i class="fas fa-handshake mr-2"></i>Minta Talent Ini
                 </button>
             </div>
         </div>
@@ -939,30 +944,30 @@ function showAllSkills(talentId, talentName, skills, isRedflagged, redflagReason
 
     skills.forEach(skill => {
         const proficiency = skill.proficiency ? skill.proficiency.toLowerCase() : 'unknown';
-        if (proficiency === 'advanced') advancedCount++;
-        else if (proficiency === 'intermediate') intermediateCount++;
-        else if (proficiency === 'beginner') beginnerCount++;
+        if (proficiency === 'advanced' || proficiency === 'mahir') advancedCount++;
+        else if (proficiency === 'intermediate' || proficiency === 'menengah') intermediateCount++;
+        else if (proficiency === 'beginner' || proficiency === 'pemula') beginnerCount++;
 
         // Create skill card
         const skillCard = document.createElement('div');
         skillCard.className = 'bg-white border rounded-lg p-4 hover:shadow-md transition-shadow';
 
         let proficiencyColorClass = 'bg-gray-100 text-gray-800';
-        if (proficiency === 'advanced') proficiencyColorClass = 'bg-green-100 text-green-800';
-        else if (proficiency === 'intermediate') proficiencyColorClass = 'bg-blue-100 text-blue-800';
-        else if (proficiency === 'beginner') proficiencyColorClass = 'bg-yellow-100 text-yellow-800';
+        if (proficiency === 'advanced' || proficiency === 'mahir') proficiencyColorClass = 'bg-green-100 text-green-800';
+        else if (proficiency === 'intermediate' || proficiency === 'menengah') proficiencyColorClass = 'bg-blue-100 text-blue-800';
+        else if (proficiency === 'beginner' || proficiency === 'pemula') proficiencyColorClass = 'bg-yellow-100 text-yellow-800';
 
         skillCard.innerHTML = `
             <div class="flex justify-between items-start mb-2">
-                <h6 class="font-semibold text-gray-900 text-sm">${skill.skill_name || 'Unknown Skill'}</h6>
+                <h6 class="font-semibold text-gray-900 text-sm">${skill.skill_name || 'Keahlian Tidak Diketahui'}</h6>
                 <span class="px-2 py-1 rounded-full text-xs font-medium ${proficiencyColorClass}">
-                    ${skill.proficiency ? skill.proficiency.charAt(0).toUpperCase() + skill.proficiency.slice(1) : 'Unknown'}
+                    ${skill.proficiency ? skill.proficiency.charAt(0).toUpperCase() + skill.proficiency.slice(1) : 'Tidak Diketahui'}
                 </span>
             </div>
             ${skill.completed_date ? `
                 <div class="text-xs text-gray-500 flex items-center">
                     <i class="fas fa-calendar-check mr-1"></i>
-                    Completed: ${new Date(skill.completed_date).toLocaleDateString('en-US', {
+                    Selesai: ${new Date(skill.completed_date).toLocaleDateString('id-ID', {
                         year: 'numeric',
                         month: 'short',
                         day: 'numeric'
@@ -984,10 +989,10 @@ function showAllSkills(talentId, talentName, skills, isRedflagged, redflagReason
 }
 
 function requestTalentFromSkillsModal() {
-    // Close skills modal and open request modal
+    // Tutup modal keahlian dan buka modal permintaan
     $('#talentSkillsModal').modal('hide');
 
-    // Wait for modal to close then open request modal
+    // Tunggu modal tertutup lalu buka modal permintaan
     setTimeout(() => {
         openRequestModal(
             currentSkillsModalTalentId,
@@ -1010,7 +1015,7 @@ function viewTalentDetails(name, email, profession, address, phone) {
 }
 
 function proceedWithRequest(talentId, talentName) {
-    // Close any existing warning modals
+    // Tutup modal peringatan yang ada
     const warningModal = document.querySelector('.fixed.z-50[data-modal-type="redflag-warning"]');
     if (warningModal) {
         warningModal.remove();
@@ -1072,7 +1077,7 @@ function openRequestModal(talentId, talentName, hasRedflags, redflagCount) {
                     <div class="mt-6 flex gap-4">
                         <button onclick="this.closest('.fixed').remove()"
                                 class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                            Cancel
+                            Batal
                         </button>
                         <button onclick="proceedWithRequest('${talentId}', '${talentName.replace(/'/g, "\\'")}')"
                                 class="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
@@ -1091,7 +1096,7 @@ function openRequestModal(talentId, talentName, hasRedflags, redflagCount) {
 }
 
 function showTimeBlockingConflict(errorData) {
-    // Close the request modal first
+    // Tutup modal permintaan terlebih dahulu
     $('#talentRequestModal').modal('hide');
 
     let blockingProjectsHtml = '';
@@ -1139,11 +1144,11 @@ function showTimeBlockingConflict(errorData) {
                     <div class="mt-6 space-y-3">
                         <button onclick="proceedWithRequest('${currentRequestTalentId}', '${currentRequestTalentName.replace(/'/g, "\\'")}')"
                                 class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                            <i class="fas fa-calendar-plus mr-2"></i>Try Different Duration
+                            <i class="fas fa-calendar-plus mr-2"></i>Coba Durasi Berbeda
                         </button>
                         <button onclick="this.closest('.fixed').remove()"
                                 class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                            Close
+                            Tutup
                         </button>
                     </div>
                 </div>
@@ -1155,7 +1160,7 @@ function showTimeBlockingConflict(errorData) {
 }
 
 function showTalentAlreadyOnboardedModal(errorData) {
-    // Close the request modal first
+    // Tutup modal permintaan terlebih dahulu
     $('#talentRequestModal').modal('hide');
 
     const onboardedDate = errorData.existing_project?.onboarded_date || 'Unknown';
@@ -1174,7 +1179,7 @@ function showTalentAlreadyOnboardedModal(errorData) {
                     </div>
 
                     <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                        <h6 class="font-semibold text-blue-900 mb-2">Current Project Details:</h6>
+                        <h6 class="font-semibold text-blue-900 mb-2">Detail Proyek Saat Ini:</h6>
                         <div class="space-y-2 text-sm">
                             <div class="flex justify-between">
                                 <span class="text-blue-700">Project:</span>
@@ -1216,7 +1221,7 @@ function showTalentAlreadyOnboardedModal(errorData) {
 }
 
 function showActiveRequestExistsModal(errorData) {
-    // Close the request modal first
+    // Tutup modal permintaan terlebih dahulu
     $('#talentRequestModal').modal('hide');
 
     const submittedDate = errorData.existing_request?.submitted_date || 'Unknown';
@@ -1270,7 +1275,7 @@ function showActiveRequestExistsModal(errorData) {
                         </button>
                         <button onclick="this.closest('.fixed').remove()"
                                 class="w-full px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                            Close
+                            Tutup
                         </button>
                     </div>
                 </div>
@@ -1337,7 +1342,7 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
                 <div class="flex items-center justify-between">
                     <h2 class="text-2xl font-bold text-gray-900 flex items-center">
                         <i class="fas fa-chart-line mr-3 text-blue-600"></i>
-                        Scouting Report: ${talentName}
+                        Laporan Scouting: ${talentName}
                     </h2>
                     <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-xl"></i>
@@ -1347,7 +1352,7 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
             <div class="p-6">
                 <div class="text-center py-8">
                     <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
-                    <p class="text-gray-600">Loading detailed scouting report...</p>
+                    <p class="text-gray-600">Memuat laporan scouting detail...</p>
                 </div>
             </div>
         </div>
@@ -1369,10 +1374,10 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
 
         // Helper function to get performance level and color
         const getPerformanceLevel = (score) => {
-            if (score >= 80) return { level: 'Excellent', color: 'text-green-600' };
-            if (score >= 60) return { level: 'Good', color: 'text-blue-600' };
-            if (score >= 40) return { level: 'Average', color: 'text-orange-600' };
-            return { level: 'Needs Improvement', color: 'text-red-600' };
+            if (score >= 80) return { level: 'Sangat Baik', color: 'text-green-600' };
+            if (score >= 60) return { level: 'Baik', color: 'text-blue-600' };
+            if (score >= 40) return { level: 'Rata-rata', color: 'text-orange-600' };
+            return { level: 'Perlu Perbaikan', color: 'text-red-600' };
         };
 
         const velocityLevel = getPerformanceLevel(learningVelocity);
@@ -1384,19 +1389,19 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
         if (Array.isArray(completedItems) && completedItems.length > 0) {
             completedHtml = `
                 <div class="bg-purple-50 p-4 rounded-xl">
-                    <h3 class="font-semibold text-purple-900 mb-3">Completed Projects / Requests</h3>
+                    <h3 class="font-semibold text-purple-900 mb-3">Proyek / Permintaan Selesai</h3>
                     <ul class="space-y-3">
                         ${completedItems.map(item => `
                             <li class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
                                 <div class="flex flex-col space-y-2">
                                     <div class="flex items-center justify-between">
                                         <span class="font-medium text-gray-800">${item.title || item.name || 'Untitled'}</span>
-                                        ${item.is_redflagged ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fas fa-flag mr-1"></i>Red Flagged</span>' : ''}
+                                        ${item.is_redflagged ? '<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"><i class="fas fa-flag mr-1"></i>Bermasalah</span>' : ''}
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs text-gray-600">
-                                        <div><span class="font-medium">Duration:</span> ${item.duration || 'Not specified'}</div>
-                                        <div><span class="font-medium">Industry:</span> ${item.industry || 'Not specified'}</div>
-                                        <div><span class="font-medium">Completed:</span> ${item.date || 'Unknown'}</div>
+                                        <div><span class="font-medium">Durasi:</span> ${item.duration || 'Tidak ditentukan'}</div>
+                                        <div><span class="font-medium">Industri:</span> ${item.industry || 'Tidak ditentukan'}</div>
+                                        <div><span class="font-medium">Selesai:</span> ${item.date || 'Tidak Diketahui'}</div>
                                     </div>
                                 </div>
                             </li>
@@ -1407,8 +1412,8 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
         } else {
             completedHtml = `
                 <div class="bg-purple-50 p-4 rounded-xl">
-                    <h3 class="font-semibold text-purple-900 mb-3">Completed Projects / Requests</h3>
-                    <p class="text-gray-500">No completed projects or requests found for this talent.</p>
+                    <h3 class="font-semibold text-purple-900 mb-3">Proyek / Permintaan Selesai</h3>
+                    <p class="text-gray-500">Tidak ada proyek atau permintaan yang selesai untuk talent ini.</p>
                 </div>
             `;
         }
@@ -1417,20 +1422,20 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
             <div class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-blue-50 p-4 rounded-xl">
-                        <h3 class="font-semibold text-blue-900 mb-3">Learning Performance</h3>
+                        <h3 class="font-semibold text-blue-900 mb-3">Performa Pembelajaran</h3>
                         <div class="space-y-2">
-                            <div class="flex justify-between"><span>Learning Velocity:</span><span class="font-semibold ${velocityLevel.color}">${velocityLevel.level} (${Math.round(learningVelocity)}%)</span></div>
-                            <div class="flex justify-between"><span>Performance Consistency:</span><span class="font-semibold ${consistencyLevel.color}">${consistencyLevel.level} (${Math.round(consistency)}%)</span></div>
-                            <div class="flex justify-between"><span>Skill Adaptability:</span><span class="font-semibold ${adaptabilityLevel.color}">${adaptabilityLevel.level} (${Math.round(adaptability)}%)</span></div>
+                            <div class="flex justify-between"><span>Kecepatan Belajar:</span><span class="font-semibold ${velocityLevel.color}">${velocityLevel.level} (${Math.round(learningVelocity)}%)</span></div>
+                            <div class="flex justify-between"><span>Konsistensi Performa:</span><span class="font-semibold ${consistencyLevel.color}">${consistencyLevel.level} (${Math.round(consistency)}%)</span></div>
+                            <div class="flex justify-between"><span>Adaptabilitas Skill:</span><span class="font-semibold ${adaptabilityLevel.color}">${adaptabilityLevel.level} (${Math.round(adaptability)}%)</span></div>
                         </div>
                     </div>
                     <div class="bg-green-50 p-4 rounded-xl">
-                        <h3 class="font-semibold text-green-900 mb-3">Achievement Metrics</h3>
+                        <h3 class="font-semibold text-green-900 mb-3">Metrik Pencapaian</h3>
                         <div class="space-y-2">
-                            <div class="flex justify-between"><span>Courses Completed:</span><span class="font-semibold">${completedCourses} completed</span></div>
-                            <div class="flex justify-between"><span>Certifications:</span><span class="font-semibold">${totalCertificates} earned</span></div>
-                            <div class="flex justify-between"><span>Quiz Performance:</span><span class="font-semibold">${Math.round(quizAverage)}% avg</span></div>
-                            <div class="flex justify-between"><span>Completion Rate:</span><span class="font-semibold">${Math.round(completionRate)}%</span></div>
+                            <div class="flex justify-between"><span>Kursus Selesai:</span><span class="font-semibold">${completedCourses} selesai</span></div>
+                            <div class="flex justify-between"><span>Sertifikat:</span><span class="font-semibold">${totalCertificates} diperoleh</span></div>
+                            <div class="flex justify-between"><span>Performa Kuis:</span><span class="font-semibold">${Math.round(quizAverage)}% rata-rata</span></div>
+                            <div class="flex justify-between"><span>Tingkat Penyelesaian:</span><span class="font-semibold">${Math.round(completionRate)}%</span></div>
                         </div>
                     </div>
                 </div>
@@ -1438,25 +1443,25 @@ function viewScoutingReport(talentId, talentName, metrics, isRedflagged, redflag
                 ${completedHtml}
 
                 <div class="bg-gray-50 p-4 rounded-xl">
-                    <h3 class="font-semibold text-gray-900 mb-3">Recommendation</h3>
+                    <h3 class="font-semibold text-gray-900 mb-3">Rekomendasi</h3>
                     <p class="text-gray-700">
                         ${completedCourses > 0 || totalCertificates > 0 ?
-                            `This talent has completed ${completedCourses} courses and earned ${totalCertificates} certificates with an average quiz performance of ${Math.round(quizAverage)}%. ${
-                                consistency >= 70 ? 'Shows excellent learning consistency and' : 'Has potential for growth with'
+                            `Talent ini telah menyelesaikan ${completedCourses} kursus dan meraih ${totalCertificates} sertifikat dengan performa kuis rata-rata ${Math.round(quizAverage)}%. ${
+                                consistency >= 70 ? 'Menunjukkan konsistensi pembelajaran yang sangat baik dan' : 'Memiliki potensi untuk berkembang dengan'
                             } ${
-                                learningVelocity >= 70 ? 'strong learning velocity.' : 'room for improvement in learning pace.'
+                                learningVelocity >= 70 ? 'kecepatan belajar yang kuat.' : 'ruang untuk perbaikan dalam kecepatan belajar.'
                             }` :
-                            'This talent is new to the platform. Consider their background and potential for growth.'
+                            'Talent ini baru bergabung di platform. Pertimbangkan latar belakang dan potensi pertumbuhannya.'
                         }
                     </p>
                 </div>
 
                 <div class="flex gap-4 pt-4">
                     <button onclick="openRequestModal('${talentId}', '${talentName.replace(/'/g, "\\'")}', ${isRedflagged}, '${(redflagReason || '').replace(/'/g, "\\'")})" class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold">
-                        <i class="fas fa-handshake mr-2"></i>Request This Talent
+                        <i class="fas fa-handshake mr-2"></i>Minta Talent Ini
                     </button>
                     <button onclick="this.closest('.fixed').remove()" class="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors font-semibold">
-                        Close Report
+                        Tutup Laporan
                     </button>
                 </div>
             </div>
@@ -1474,7 +1479,7 @@ function viewRequestDetails(requestId) {
                 <div class="flex items-center justify-between">
                     <h2 class="text-2xl font-bold text-gray-900 flex items-center">
                         <i class="fas fa-clipboard-list mr-3 text-blue-600"></i>
-                        Request Details
+                        Detail Permintaan
                     </h2>
                     <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
                         <i class="fas fa-times text-xl"></i>
@@ -1484,7 +1489,7 @@ function viewRequestDetails(requestId) {
             <div class="p-6">
                 <div class="text-center py-8">
                     <i class="fas fa-spinner fa-spin text-4xl text-blue-600 mb-4"></i>
-                    <p class="text-gray-600">Loading request details...</p>
+                    <p class="text-gray-600">Memuat detail permintaan...</p>
                 </div>
             </div>
         </div>
@@ -1507,11 +1512,11 @@ function viewRequestDetails(requestId) {
                 <div class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="bg-blue-50 p-4 rounded-xl">
-                            <h3 class="font-semibold text-blue-900 mb-3">Talent Information</h3>
+                            <h3 class="font-semibold text-blue-900 mb-3">Informasi Talent</h3>
                             <div class="space-y-2">
-                                <div class="flex justify-between"><span>Name:</span><span class="font-semibold">${request.talent_name}</span></div>
+                                <div class="flex justify-between"><span>Nama:</span><span class="font-semibold">${request.talent_name}</span></div>
                                 <div class="flex justify-between"><span>Email:</span><span class="font-semibold">${request.talent_email}</span></div>
-                                <div class="flex justify-between"><span>Position:</span><span class="font-semibold">${request.talent_position || 'Not specified'}</span></div>
+                                <div class="flex justify-between"><span>Posisi:</span><span class="font-semibold">${request.talent_position || 'Tidak ditentukan'}</span></div>
                             </div>
                         </div>
                         <div class="bg-green-50 p-4 rounded-xl">
@@ -1525,12 +1530,12 @@ function viewRequestDetails(requestId) {
                     </div>
 
                     <div class="bg-gray-50 p-4 rounded-xl">
-                        <h3 class="font-semibold text-gray-900 mb-3">Project Details</h3>
+                        <h3 class="font-semibold text-gray-900 mb-3">Detail Proyek</h3>
                         <div class="space-y-2">
-                            <div><span class="font-medium">Title:</span> ${request.project_title}</div>
-                            <div><span class="font-medium">Description:</span> ${request.project_description || 'No description provided'}</div>
-                            <div><span class="font-medium">Budget:</span> ${request.budget || 'Not specified'}</div>
-                            <div><span class="font-medium">Duration:</span> ${request.project_duration || 'Not specified'}</div>
+                            <div><span class="font-medium">Judul:</span> ${request.project_title}</div>
+                            <div><span class="font-medium">Deskripsi:</span> ${request.project_description || 'Tidak ada deskripsi'}</div>
+                            <div><span class="font-medium">Anggaran:</span> ${request.budget || 'Tidak ditentukan'}</div>
+                            <div><span class="font-medium">Durasi:</span> ${request.project_duration || 'Tidak ditentukan'}</div>
                         </div>
                     </div>
 
@@ -1539,7 +1544,7 @@ function viewRequestDetails(requestId) {
                             <i class="fas fa-envelope mr-2"></i>Contact Talent
                         </a>
                         <button onclick="this.closest('.fixed').remove()" class="px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors font-semibold">
-                            Close
+                            Tutup
                         </button>
                     </div>
                 </div>
@@ -1549,9 +1554,9 @@ function viewRequestDetails(requestId) {
             content.innerHTML = `
                 <div class="text-center py-8">
                     <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-                    <p class="text-gray-600">Error loading request details: ${data.message || 'Unknown error'}</p>
+                    <p class="text-gray-600">Gagal memuat detail permintaan: ${data.message || 'Kesalahan tidak diketahui'}</p>
                     <button onclick="this.closest('.fixed').remove()" class="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                        Close
+                        Tutup
                     </button>
                 </div>
             `;
@@ -1563,9 +1568,9 @@ function viewRequestDetails(requestId) {
         content.innerHTML = `
             <div class="text-center py-8">
                 <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
-                <p class="text-gray-600">Failed to load request details. Please try again.</p>
+                <p class="text-gray-600">Gagal memuat detail permintaan. Silakan coba lagi.</p>
                 <button onclick="this.closest('.fixed').remove()" class="mt-4 px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                    Close
+                    Tutup
                 </button>
             </div>
         `;
@@ -2203,13 +2208,13 @@ function generateComparisonTable() {
                                     ${talent.skills && talent.skills.length > 0 ?
                                         talent.skills.slice(0, 4).map(skill => `
                                             <div class="flex justify-between items-center text-xs">
-                                                <span class="font-medium text-gray-700">${skill.skill_name || 'Unknown'}</span>
+                                                <span class="font-medium text-gray-700">${skill.skill_name || 'Tidak Diketahui'}</span>
                                                 <span class="px-2 py-1 rounded-full text-xs font-medium
-                                                    ${skill.proficiency && skill.proficiency.toLowerCase() === 'advanced' ? 'bg-green-100 text-green-800' :
-                                                      skill.proficiency && skill.proficiency.toLowerCase() === 'intermediate' ? 'bg-blue-100 text-blue-800' :
-                                                      skill.proficiency && skill.proficiency.toLowerCase() === 'beginner' ? 'bg-yellow-100 text-yellow-800' :
+                                                    ${(skill.proficiency && (skill.proficiency.toLowerCase() === 'advanced' || skill.proficiency.toLowerCase() === 'mahir')) ? 'bg-green-100 text-green-800' :
+            (skill.proficiency && (skill.proficiency.toLowerCase() === 'intermediate' || skill.proficiency.toLowerCase() === 'menengah')) ? 'bg-blue-100 text-blue-800' :
+                                                      (skill.proficiency && (skill.proficiency.toLowerCase() === 'beginner' || skill.proficiency.toLowerCase() === 'pemula')) ? 'bg-yellow-100 text-yellow-800' :
                                                       'bg-gray-100 text-gray-800'}">
-                                                    ${skill.proficiency ? skill.proficiency.charAt(0).toUpperCase() + skill.proficiency.slice(1) : 'Unknown'}
+                                                    ${skill.proficiency ? skill.proficiency.charAt(0).toUpperCase() + skill.proficiency.slice(1) : 'Tidak Diketahui'}
                                                 </span>
                                             </div>
                                         `).join('') +
@@ -2270,7 +2275,7 @@ function generateComparisonTable() {
                     <p class="text-green-700">${getBestTalent('courses')}</p>
                 </div>
                 <div class="bg-purple-50 p-4 rounded-lg">
-                    <h4 class="font-semibold text-purple-900 mb-2">Best Quiz Performance</h4>
+                    <h4 class="font-semibold text-purple-900 mb-2">Performa Kuis Terbaik</h4>
                     <p class="text-purple-700">${getBestTalent('quizAvg')}</p>
                 </div>
             </div>
@@ -2507,7 +2512,7 @@ function displayRedflagHistoryModal(talentName, summary, redflaggedProjects) {
                 <div class="bg-gray-50 px-6 py-4 border-t flex justify-end">
                     <button onclick="closeRedflagHistoryModal()"
                             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                        Close
+                        Tutup
                     </button>
                 </div>
             </div>
@@ -3419,10 +3424,10 @@ document.addEventListener('keydown', function(e) {
 
                     <!-- Flag Status -->
                     <div class="border-l-4 border-red-500 pl-4">
-                        <div class="text-sm text-gray-600 mb-1">Account Status</div>
+                        <div class="text-sm text-gray-600 mb-1">Status Akun</div>
                         <div class="flex items-center space-x-2">
                             <span class="inline-flex items-center px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full shadow-sm">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>Red Flagged
+                                <i class="fas fa-exclamation-triangle mr-1"></i>Bermasalah
                             </span>
                             <span class="text-xs text-gray-500" id="redFlagDate">-</span>
                         </div>
@@ -3456,7 +3461,7 @@ document.addEventListener('keydown', function(e) {
                         <i class="fas fa-envelope mr-1"></i>Contact Talent Admin
                     </button>
                     <button type="button" onclick="closeRedFlagModal()" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
-                        Close
+                        Tutup
                     </button>
                 </div>
             </div>

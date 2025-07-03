@@ -1,0 +1,184 @@
+@startuml Talent_Request_Phase5_Finalization
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Fase 5: Finalisasi dan Onboarding
+
+actor "Perekrut" as Recruiter
+actor "Admin" as Admin
+actor "Talenta" as Talent
+
+participant "Halaman Sistem" as SystemView << View >>
+participant "Pengendali Sistem" as SystemController << Controller >>
+participant "Data Permintaan" as RequestModel << Model >>
+participant "Layanan Notifikasi" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+== Finalisasi Proses ==
+
+alt Jika Talenta Menerima Permintaan
+    Admin -> SystemView: 1. Update status ke "meeting_arranged"
+    activate SystemView
+    note right of SystemView
+      Admin mengatur pertemuan
+      antara perekrut dan talenta
+    end note
+    
+    SystemView -> SystemController: 2. Proses update status
+    activate SystemController
+    
+    SystemController -> RequestModel: 3. Update ke meeting_arranged
+    activate RequestModel
+    
+    RequestModel -> Database: 4. Simpan status baru
+    activate Database
+    Database --> RequestModel: 5. Konfirmasi update
+    deactivate Database
+    
+    RequestModel --> SystemController: 6. Status berhasil diupdate
+    deactivate RequestModel
+    
+    SystemController -> NotificationService: 7. Kirim notifikasi meeting
+    activate NotificationService
+    note right of NotificationService
+      Memberitahu semua pihak
+      tentang jadwal pertemuan
+    end note
+    
+    NotificationService --> SystemController: 8. Notifikasi terkirim
+    deactivate NotificationService
+    
+    SystemController --> SystemView: 9. Konfirmasi ke halaman
+    deactivate SystemController
+    
+    SystemView --> Admin: 10. Tampilkan konfirmasi
+    deactivate SystemView
+    
+    note over Admin, Database
+      **Tahap Pertemuan:**
+      Pertemuan dijadwalkan dan
+      semua pihak diberitahu
+    end note
+    
+    Admin -> SystemView: 11. Update ke "agreement_reached"
+    activate SystemView
+    note right of SystemView
+      Setelah pertemuan berhasil
+      dan kesepakatan tercapai
+    end note
+    
+    SystemView -> SystemController: 12. Proses kesepakatan
+    activate SystemController
+    
+    SystemController -> RequestModel: 13. Update ke agreement_reached
+    activate RequestModel
+    
+    RequestModel -> Database: 14. Simpan kesepakatan
+    activate Database
+    Database --> RequestModel: 15. Konfirmasi update
+    deactivate Database
+    
+    RequestModel --> SystemController: 16. Kesepakatan tersimpan
+    deactivate RequestModel
+    
+    SystemController -> NotificationService: 17. Kirim notifikasi kesepakatan
+    activate NotificationService
+    
+    NotificationService --> SystemController: 18. Notifikasi terkirim
+    deactivate NotificationService
+    
+    SystemController --> SystemView: 19. Konfirmasi ke halaman
+    deactivate SystemController
+    
+    SystemView --> Admin: 20. Tampilkan konfirmasi
+    deactivate SystemView
+    
+    note over Admin, Database
+      **Tahap Onboarding:**
+      Kesepakatan tercapai dan
+      proses onboarding dimulai
+    end note
+    
+    Admin -> SystemView: 21. Update ke "onboarded"
+    activate SystemView
+    note right of SystemView
+      Talenta berhasil bergabung
+      dengan proyek
+    end note
+    
+    SystemView -> SystemController: 22. Proses onboarding
+    activate SystemController
+    
+    SystemController -> RequestModel: 23. Update ke onboarded
+    activate RequestModel
+    
+    RequestModel -> Database: 24. Simpan status onboarded
+    activate Database
+    Database --> RequestModel: 25. Konfirmasi update
+    deactivate Database
+    
+    RequestModel --> SystemController: 26. Onboarding tersimpan
+    deactivate RequestModel
+    
+    SystemController -> NotificationService: 27. Kirim notifikasi onboarding
+    activate NotificationService
+    
+    NotificationService --> SystemController: 28. Notifikasi terkirim
+    deactivate NotificationService
+    
+    SystemController --> SystemView: 29. Konfirmasi ke halaman
+    deactivate SystemController
+    
+    SystemView --> Admin: 30. Tampilkan konfirmasi
+    deactivate SystemView
+    
+    note over Admin, Database
+      **Proses Selesai:**
+      Talenta berhasil bergabung
+      dan siap bekerja
+    end note
+
+else Jika Talenta Menolak Permintaan
+    SystemController -> RequestModel: 31. Update ke "declined"
+    activate RequestModel
+    note right of RequestModel
+      Permintaan ditandai sebagai
+      ditolak oleh talenta
+    end note
+    
+    RequestModel -> Database: 32. Simpan status declined
+    activate Database
+    Database --> RequestModel: 33. Konfirmasi update
+    deactivate Database
+    
+    RequestModel --> SystemController: 34. Status declined tersimpan
+    deactivate RequestModel
+    
+    SystemController -> NotificationService: 35. Kirim notifikasi penolakan
+    activate NotificationService
+    note right of NotificationService
+      Memberitahu perekrut dan admin
+      bahwa talenta menolak
+    end note
+    
+    NotificationService --> SystemController: 36. Notifikasi terkirim
+    deactivate NotificationService
+    
+    note over Recruiter, Database
+      **Proses Berakhir:**
+      Permintaan ditolak dan
+      proses dihentikan
+    end note
+end
+
+note over Recruiter, Database
+  **Hasil Fase 5:**
+  Proses permintaan talenta selesai
+  dengan hasil akhir yang jelas:
+  - Talenta bergabung (onboarded), atau
+  - Permintaan ditolak (declined)
+end note
+
+@enduml

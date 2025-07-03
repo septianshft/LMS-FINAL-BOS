@@ -18,7 +18,7 @@
                         id="exportMenuButton"
                         onclick="toggleExportDropdown()">
                     <i class="fas fa-download mr-2"></i>
-                    Export Reports
+                    Ekspor Laporan
                     <i class="fas fa-chevron-down ml-2"></i>
                 </button>
 
@@ -26,16 +26,16 @@
                      class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
                     <div class="py-2">
                         <div class="px-4 py-2 border-b border-gray-100">
-                            <p class="text-sm font-semibold text-gray-900">Download Reports</p>
-                            <p class="text-xs text-gray-500">Export current filtered data</p>
+                            <p class="text-sm font-semibold text-gray-900">Unduh Laporan</p>
+                            <p class="text-xs text-gray-500">Ekspor data yang difilter saat ini</p>
                         </div>
                         <a href="#"
                            onclick="exportReport('summary')"
                            class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-800 transition-colors">
                             <i class="fas fa-chart-pie mr-3 text-green-600"></i>
                             <div>
-                                <div class="font-medium">Summary Report</div>
-                                <div class="text-xs text-gray-500">Overview with statistics</div>
+                                <div class="font-medium">Laporan Ringkasan</div>
+                                <div class="text-xs text-gray-500">Ikhtisar dengan statistik</div>
                             </div>
                         </a>
                         <a href="#"
@@ -43,8 +43,8 @@
                            class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-800 transition-colors">
                             <i class="fas fa-table mr-3 text-blue-600"></i>
                             <div>
-                                <div class="font-medium">Detailed Report</div>
-                                <div class="text-xs text-gray-500">Complete data analysis</div>
+                                <div class="font-medium">Laporan Detail</div>
+                                <div class="text-xs text-gray-500">Analisis data lengkap</div>
                             </div>
                         </a>
                     </div>
@@ -140,7 +140,7 @@
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Perekrut</th>
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Talent</th>
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Status</th>
-                                <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Project End Date</th>
+                                <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Tanggal Berakhir Proyek</th>
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Tanggal Diminta</th>
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Terakhir Diperbarui</th>
                                 <th class="text-left py-4 px-4 font-semibold text-gray-700 text-sm">Aksi</th>
@@ -195,7 +195,7 @@
                                             @if($request->status === 'completed' && $request->workflow_completed_at && $request->project_id)
                                                 <div class="flex items-center text-xs text-blue-600">
                                                     <i class="fas fa-info-circle mr-1"></i>
-                                                    <span class="font-medium">Auto-completed via project closure</span>
+                                                    <span class="font-medium">Diselesaikan otomatis melalui penutupan proyek</span>
                                                 </div>
                                             @endif
                                         </div>
@@ -218,7 +218,7 @@
                                         @if($endDate)
                                             <div class="space-y-1">
                                                 <div class="text-gray-900 font-medium text-sm">
-                                                    {{ $endDate->format('d M Y') }}
+                                                    {{ $endDate->format('d M Y H:i') }}
                                                     @if($source === 'project')
                                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800 ml-1">
                                                             <i class="fas fa-project-diagram mr-1"></i>Project
@@ -232,10 +232,10 @@
                                                 <div class="text-xs flex items-center">
                                                     @if($endDate->isPast())
                                                         <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>
-                                                        <span class="text-red-600 font-medium">{{ $endDate->diffForHumans() }} (Overdue)</span>
+                                                        <span class="text-red-600 font-medium">{{ $endDate->diffForHumans() }} (Terlambat)</span>
                                                     @elseif($endDate->diffInDays() <= 7)
                                                         <i class="fas fa-clock text-orange-500 mr-1"></i>
-                                                        <span class="text-orange-600 font-medium">{{ $endDate->diffForHumans() }} (Due Soon)</span>
+                                                        <span class="text-orange-600 font-medium">{{ $endDate->diffForHumans() }} (Segera Berakhir)</span>
                                                     @else
                                                         <i class="fas fa-calendar-check text-green-500 mr-1"></i>
                                                         <span class="text-green-600">{{ $endDate->diffForHumans() }}</span>
@@ -258,7 +258,7 @@
                                         @else
                                             <div class="text-gray-400 text-sm">
                                                 <i class="fas fa-minus-circle mr-1"></i>
-                                                Not specified
+                                                Tidak ditentukan
                                             </div>
                                         @endif
                                     </td>
@@ -353,7 +353,7 @@
                                     @if($request->status === 'completed' && $request->workflow_completed_at && $request->project_id)
                                         <div class="flex items-center justify-end text-xs text-blue-600 mt-1">
                                             <i class="fas fa-info-circle mr-1"></i>
-                                            <span class="font-medium">Auto-completed</span>
+                                            <span class="font-medium">Diselesaikan otomatis</span>
                                         </div>
                                     @endif
                                 </div>
@@ -413,17 +413,17 @@
                                     <div class="text-gray-500 text-xs">{{ $request->updated_at->format('H:i') }}</div>
                                 </div>
                                 <div class="bg-gray-50 p-3 rounded-xl">
-                                    <div class="text-gray-500 text-xs font-medium uppercase tracking-wide">End Date</div>
+                                    <div class="text-gray-500 text-xs font-medium uppercase tracking-wide">Tanggal Berakhir</div>
                                     @if($request->project_end_date)
                                         <div class="text-gray-900 font-semibold mt-1">{{ $request->project_end_date->format('d M Y') }}</div>
                                         <div class="text-xs mt-1">
                                             @if($request->project_end_date->isPast())
                                                 <span class="text-red-600 font-medium">
-                                                    <i class="fas fa-exclamation-triangle mr-1"></i>Overdue
+                                                    <i class="fas fa-exclamation-triangle mr-1"></i>Terlambat
                                                 </span>
                                             @elseif($request->project_end_date->diffInDays() <= 7)
                                                 <span class="text-orange-600 font-medium">
-                                                    <i class="fas fa-clock mr-1"></i>Due Soon
+                                                    <i class="fas fa-clock mr-1"></i>Segera Berakhir
                                                 </span>
                                             @else
                                                 <span class="text-green-600">
@@ -433,7 +433,7 @@
                                         </div>
                                     @else
                                         <div class="text-gray-400 font-medium mt-1">
-                                            <i class="fas fa-minus-circle mr-1"></i>Not set
+                                            <i class="fas fa-minus-circle mr-1"></i>Tidak diatur
                                         </div>
                                     @endif
                                 </div>
@@ -663,12 +663,12 @@ document.getElementById('statusForm').addEventListener('submit', function(e) {
             closeStatusModal();
             location.reload(); // Refresh page to show updated status
         } else {
-            alert('Error memperbarui status. Silakan coba lagi.');
+            alert('Kesalahan memperbarui status. Silakan coba lagi.');
         }
     })
     .catch(error => {
-        console.error('Error:', error);
-        alert('Error memperbarui status. Silakan coba lagi.');
+        console.error('Kesalahan:', error);
+        alert('Kesalahan memperbarui status. Silakan coba lagi.');
     })
     .finally(() => {
         // Re-enable submit button
@@ -705,7 +705,7 @@ function exportReport(type) {
     // Show loading state
     const button = document.getElementById('exportMenuButton');
     const originalText = button.innerHTML;
-    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating...';
+    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menghasilkan...';
     button.disabled = true;
 
     // Build export URL based on type

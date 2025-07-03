@@ -1,13 +1,13 @@
 @extends('layout.template.mainTemplate')
 
-@section('title', 'Request Details')
+@section('title', 'Detail Permintaan')
 @section('container')
 <div class="container-fluid">
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Request Details</h1>
+        <h1 class="h3 mb-0 text-gray-800">Detail Permintaan</h1>
         <a href="{{ route('talent_admin.manage_requests') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Requests
+            <i class="fas fa-arrow-left"></i> Kembali ke Permintaan
         </a>
     </div>
 
@@ -23,13 +23,13 @@
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Request Information</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Informasi Permintaan</h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Request ID:</label>
+                                <label class="font-weight-bold">ID Permintaan:</label>
                                 <p class="text-muted">#{{ $talentRequest->id }}</p>
                             </div>
                         </div>
@@ -50,14 +50,14 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Project Title:</label>
-                                <p class="text-muted">{{ $talentRequest->project_title ?? 'Not specified' }}</p>
+                                <label class="font-weight-bold">Judul Proyek:</label>
+                                <p class="text-muted">{{ $talentRequest->project_title ?? 'Tidak ditentukan' }}</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Collaboration Type:</label>
-                                <p class="text-muted">{{ $talentRequest->collaboration_type ?? 'Not specified' }}</p>
+                                <label class="font-weight-bold">Jenis Kolaborasi:</label>
+                                <p class="text-muted">{{ $talentRequest->collaboration_type ?? 'Tidak ditentukan' }}</p>
                             </div>
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                         @if($talentRequest->budget_range)
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Budget Range:</label>
+                                <label class="font-weight-bold">Rentang Anggaran:</label>
                                 <p class="text-muted">{{ $talentRequest->budget_range }}</p>
                             </div>
                         </div>
@@ -75,8 +75,8 @@
                         @if($talentRequest->project_duration)
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Project Duration:</label>
-                                <p class="text-muted">{{ $talentRequest->project_duration }}</p>
+                                <label class="font-weight-bold">Durasi Proyek:</label>
+                                <p class="text-muted">{{ preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $talentRequest->project_duration) }}</p>
                             </div>
                         </div>
                         @endif
@@ -88,9 +88,9 @@
                         @if($talentRequest->project_start_date)
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Project Start Date:</label>
+                                <label class="font-weight-bold">Tanggal Mulai Proyek:</label>
                                 <p class="text-muted">
-                                    {{ optional($talentRequest->project_start_date)->format('F d, Y') ?? 'Not specified' }}
+                                    {{ optional($talentRequest->project_start_date)->format('F d, Y') ?? 'Tidak ditentukan' }}
                                 </p>
                             </div>
                         </div>
@@ -98,9 +98,9 @@
                         @if($talentRequest->project_end_date)
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Project End Date:</label>
+                                <label class="font-weight-bold">Tanggal Berakhir Proyek:</label>
                                 <p class="text-muted">
-                                    {{ optional($talentRequest->project_end_date)->format('F d, Y') ?? 'Not specified' }}
+                                    {{ optional($talentRequest->project_end_date)->format('F d, Y') ?? 'Tidak ditentukan' }}
                                 </p>
                             </div>
                         </div>
@@ -111,24 +111,24 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Request Date:</label>
+                                <label class="font-weight-bold">Tanggal Permintaan:</label>
                                 <p class="text-muted">
-                                    {{ optional($talentRequest->created_at)->format('F d, Y \a\t H:i') ?? 'Not available' }}
+                                    {{ optional($talentRequest->created_at)->format('F d, Y \a\t H:i') ?? 'Tidak tersedia' }}
                                 </p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Last Updated:</label>
+                                <label class="font-weight-bold">Terakhir Diperbarui:</label>
                                 <p class="text-muted">
-                                    {{ optional($talentRequest->updated_at)->format('F d, Y \a\t H:i') ?? 'Not available' }}
+                                    {{ optional($talentRequest->updated_at)->format('F d, Y \a\t H:i') ?? 'Tidak tersedia' }}
                                 </p>
                             </div>
                         </div>
                     </div>
                     @if($talentRequest->project_description)
                     <div class="form-group">
-                        <label class="font-weight-bold">Project Description:</label>
+                        <label class="font-weight-bold">Deskripsi Proyek:</label>
                         <div class="card bg-light">
                             <div class="card-body">
                                 <p class="mb-0">{{ $talentRequest->project_description }}</p>
@@ -139,7 +139,7 @@
 
                     @if($talentRequest->requirements)
                     <div class="form-group">
-                        <label class="font-weight-bold">Requirements:</label>
+                        <label class="font-weight-bold">Persyaratan:</label>
                         <div class="card bg-light">
                             <div class="card-body">
                                 <p class="mb-0">{{ $talentRequest->requirements }}</p>
@@ -154,18 +154,18 @@
                     <div class="alert alert-info" role="alert">
                         <h6 class="alert-heading mb-3">
                             <i class="fas fa-project-diagram me-2"></i>
-                            Linked Project Information
+                            Informasi Proyek Terkait
                         </h6>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="font-weight-bold">Project Name:</label>
+                                    <label class="font-weight-bold">Nama Proyek:</label>
                                     <p class="mb-1 text-dark">{{ $talentRequest->project->title }}</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="font-weight-bold">Project Status:</label>
+                                    <label class="font-weight-bold">Status Proyek:</label>
                                     <p class="mb-1">
                                         <span class="badge
                                             @if($talentRequest->project->status === 'active') badge-success
@@ -185,10 +185,10 @@
                                 <div class="form-group mb-3">
                                     <label class="font-weight-bold">
                                         <i class="fas fa-calendar-alt me-1 text-success"></i>
-                                        Project Start Date:
+                                        Tanggal Mulai Proyek:
                                     </label>
                                     <p class="mb-1 text-dark">
-                                        {{ optional($talentRequest->project->expected_start_date)->format('F d, Y') ?? 'Not set' }}
+                                        {{ optional($talentRequest->project->expected_start_date)->format('F d, Y') ?? 'Tidak diatur' }}
                                     </p>
                                 </div>
                             </div>
@@ -196,10 +196,10 @@
                                 <div class="form-group mb-3">
                                     <label class="font-weight-bold">
                                         <i class="fas fa-calendar-times me-1 text-danger"></i>
-                                        Project End Date:
+                                        Tanggal Berakhir Proyek:
                                     </label>
                                     <p class="mb-1 text-dark">
-                                        <strong>{{ optional($talentRequest->project->expected_end_date)->format('F d, Y') ?? 'Not set' }}</strong>
+                                        <strong>{{ optional($talentRequest->project->expected_end_date)->format('F d, Y') ?? 'Tidak diatur' }}</strong>
                                         @if($talentRequest->project->expected_end_date)
                                             <br>
                                             <small class="text-muted">
@@ -207,11 +207,11 @@
                                                     $daysLeft = now()->diffInDays($talentRequest->project->expected_end_date, false);
                                                 @endphp
                                                 @if($daysLeft > 0)
-                                                    <i class="fas fa-clock text-info"></i> {{ $daysLeft }} days remaining
+                                                    <i class="fas fa-clock text-info"></i> {{ $daysLeft }} hari tersisa
                                                 @elseif($daysLeft == 0)
-                                                    <i class="fas fa-exclamation-triangle text-warning"></i> Due today
+                                                    <i class="fas fa-exclamation-triangle text-warning"></i> Jatuh tempo hari ini
                                                 @else
-                                                    <i class="fas fa-exclamation-circle text-danger"></i> {{ abs($daysLeft) }} days overdue
+                                                    <i class="fas fa-exclamation-circle text-danger"></i> {{ abs($daysLeft) }} hari terlambat
                                                 @endif
                                             </small>
                                         @endif
@@ -225,26 +225,26 @@
                                 <div class="form-group mb-3">
                                     <label class="font-weight-bold">
                                         <i class="fas fa-hourglass-half me-1 text-primary"></i>
-                                        Estimated Duration:
+                                        Estimasi Durasi:
                                     </label>
-                                    <p class="mb-1 text-dark">{{ $talentRequest->project->estimated_duration_days }} days</p>
+                                    <p class="mb-1 text-dark">{{ $talentRequest->project->estimated_duration_days }} hari</p>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="font-weight-bold">
                                         <i class="fas fa-dollar-sign me-1 text-success"></i>
-                                        Budget Range:
+                                        Rentang Anggaran:
                                     </label>
                                     <p class="mb-1 text-dark">
                                         @if($talentRequest->project->overall_budget_min && $talentRequest->project->overall_budget_max)
                                             ${{ number_format($talentRequest->project->overall_budget_min) }} - ${{ number_format($talentRequest->project->overall_budget_max) }}
                                         @elseif($talentRequest->project->overall_budget_min)
-                                            From ${{ number_format($talentRequest->project->overall_budget_min) }}
+                                            Dari ${{ number_format($talentRequest->project->overall_budget_min) }}
                                         @elseif($talentRequest->project->overall_budget_max)
-                                            Up to ${{ number_format($talentRequest->project->overall_budget_max) }}
+                                            Hingga ${{ number_format($talentRequest->project->overall_budget_max) }}
                                         @else
-                                            Not specified
+                                            Tidak ditentukan
                                         @endif
                                     </p>
                                 </div>
@@ -255,7 +255,7 @@
                         <div class="form-group mb-0">
                             <label class="font-weight-bold">
                                 <i class="fas fa-info-circle me-1 text-info"></i>
-                                Project Description:
+                                Deskripsi Proyek:
                             </label>
                             <div class="bg-light p-3 rounded border">
                                 <p class="mb-0 text-dark">{{ $talentRequest->project->description }}</p>
@@ -271,13 +271,13 @@
                     <div class="alert alert-warning" role="alert">
                         <h6 class="alert-heading mb-3">
                             <i class="fas fa-info-circle me-2"></i>
-                            Request Timeline Information (Legacy)
+                            Informasi Timeline Permintaan (Legacy)
                         </h6>
                         <div class="row">
                             @if($talentRequest->project_start_date)
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="font-weight-bold">Requested Start Date:</label>
+                                    <label class="font-weight-bold">Tanggal Mulai yang Diminta:</label>
                                     <p class="mb-1 text-dark">
                                         {{ optional($talentRequest->project_start_date)->format('F d, Y') }}
                                     </p>
@@ -287,7 +287,7 @@
                             @if($talentRequest->project_end_date)
                             <div class="col-md-6">
                                 <div class="form-group mb-3">
-                                    <label class="font-weight-bold">Requested End Date:</label>
+                                    <label class="font-weight-bold">Tanggal Berakhir yang Diminta:</label>
                                     <p class="mb-1 text-dark">
                                         <strong>{{ optional($talentRequest->project_end_date)->format('F d, Y') }}</strong>
                                     </p>
@@ -297,7 +297,7 @@
                         </div>
                         <small class="text-muted">
                             <i class="fas fa-exclamation-triangle"></i>
-                            This request is not linked to the new project system. Timeline information is based on the original request data.
+                            Permintaan ini tidak terkait dengan sistem proyek baru. Informasi timeline berdasarkan data permintaan asli.
                         </small>
                     </div>
                     @endif
@@ -309,17 +309,17 @@
         <div class="col-lg-4">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-warning">Quick Actions</h6>
+                    <h6 class="m-0 font-weight-bold text-black">Tindakan Cepat</h6>
                 </div>
                 <div class="card-body">
                     @if($talentRequest->status !== 'rejected' && $talentRequest->status !== 'completed')
                         <div class="d-grid gap-2 mb-3">
                             @if($talentRequest->status == 'pending')
                             <button type="button" class="btn btn-success btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'approved')">
-                                <i class="fas fa-check me-1"></i>Approve Request
+                                <i class="fas fa-check me-1"></i>Setujui Permintaan
                             </button>
                             <button type="button" class="btn btn-danger btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'rejected')">
-                                <i class="fas fa-times me-1"></i>Reject Request
+                                <i class="fas fa-times me-1"></i>Tolak Permintaan
                             </button>
                             @elseif($talentRequest->status == 'approved' && !$talentRequest->both_parties_accepted)
                                 {{-- Admin approved but waiting for dual acceptance --}}
@@ -327,15 +327,15 @@
                                     <div class="d-flex align-items-center">
                                         <i class="fas fa-info-circle me-2"></i>
                                         <div>
-                                            <strong>Dual Acceptance Required:</strong><br>
+                                            <strong>Persetujuan Ganda Diperlukan:</strong><br>
                                             @if($talentRequest->talent_accepted && $talentRequest->admin_accepted)
-                                                <span class="text-primary">✓ Both parties accepted - Processing...</span>
+                                                <span class="text-primary">✓ Kedua pihak telah menerima - Memproses...</span>
                                             @elseif($talentRequest->talent_accepted)
-                                                <span class="text-warning">✓ Talent accepted - Waiting for admin acceptance</span>
+                                                <span class="text-warning">✓ Talent menerima - Menunggu persetujuan admin</span>
                                             @elseif($talentRequest->admin_accepted)
-                                                <span class="text-warning">✓ Admin approved - Waiting for talent acceptance</span>
+                                                <span class="text-info">✓ Admin menyetujui - Menunggu penerimaan talent</span>
                                             @else
-                                                <span class="text-muted">Waiting for both talent and admin acceptance</span>
+                                                <span class="text-muted">⏳ Menunggu penerimaan talent dan admin</span>
                                             @endif
                                         </div>
                                     </div>
@@ -347,10 +347,10 @@
                                         <div class="d-flex align-items-center">
                                             @if($talentRequest->talent_accepted)
                                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                                <span class="text-success">Talent Accepted</span>
+                                                <span class="text-success">Talent Menerima</span>
                                             @else
                                                 <i class="fas fa-clock text-warning me-2"></i>
-                                                <span class="text-warning">Talent Pending</span>
+                                                <span class="text-warning">Talent Menunggu</span>
                                             @endif
                                         </div>
                                     </div>
@@ -358,10 +358,10 @@
                                         <div class="d-flex align-items-center">
                                             @if($talentRequest->admin_accepted)
                                                 <i class="fas fa-check-circle text-success me-2"></i>
-                                                <span class="text-success">Admin Accepted</span>
+                                                <span class="text-success">Admin Menerima</span>
                                             @else
                                                 <i class="fas fa-clock text-warning me-2"></i>
-                                                <span class="text-warning">Admin Pending</span>
+                                                <span class="text-warning">Admin Menunggu</span>
                                             @endif
                                         </div>
                                     </div>
@@ -369,35 +369,35 @@
 
                                 {{-- Admin acceptance button if not yet accepted --}}
                                 @if(!$talentRequest->admin_accepted)
-                                    <button type="button" class="btn btn-primary btn-sm mb-2" onclick="acceptAsAdmin({{ $talentRequest->id }})">
-                                        <i class="fas fa-thumbs-up me-1"></i>Accept as Admin
+                                    <button type="button" class="btn btn-primary btn-sm mb-2" onclick="console.log('Button clicked!'); acceptAsAdmin({{ $talentRequest->id }});">
+                                        <i class="fas fa-thumbs-up me-1"></i>Terima sebagai Admin
                                     </button>
                                 @endif
 
                                 {{-- Disabled meeting button with explanation --}}
                                 <button type="button" class="btn btn-secondary btn-sm" disabled title="Both parties must accept before arranging meeting">
-                                    <i class="fas fa-calendar me-1"></i>Arrange Meeting (Waiting for Acceptance)
+                                    <i class="fas fa-calendar me-1"></i>Atur Pertemuan (Menunggu Penerimaan)
                                 </button>
                             @elseif($talentRequest->status == 'approved' && $talentRequest->canAdminArrangeMeeting())
                                 {{-- Both parties accepted, can proceed to meeting --}}
                                 <div class="alert alert-success mb-3">
                                     <i class="fas fa-check-circle me-2"></i>
-                                    <strong>Both parties have accepted!</strong> Ready to arrange meeting.
+                                    <strong>Kedua pihak telah menerima!</strong> Siap untuk mengatur pertemuan.
                                 </div>
                                 <button type="button" class="btn btn-primary btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'meeting_arranged')">
-                                    <i class="fas fa-calendar me-1"></i>Arrange Meeting
+                                    <i class="fas fa-calendar me-1"></i>Atur Pertemuan
                                 </button>
                             @elseif($talentRequest->status == 'meeting_arranged')
                             <button type="button" class="btn btn-warning btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'agreement_reached')">
-                                <i class="fas fa-handshake me-1"></i>Mark Agreement Reached
+                                <i class="fas fa-handshake me-1"></i>Tandai Kesepakatan Tercapai
                             </button>
                             @elseif($talentRequest->status == 'agreement_reached')
                             <button type="button" class="btn btn-success btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'onboarded')">
-                                <i class="fas fa-user-plus me-1"></i>Mark Onboarded
+                                <i class="fas fa-user-plus me-1"></i>Tandai Onboarded
                             </button>
                             @elseif($talentRequest->status == 'onboarded')
                             <button type="button" class="btn btn-info btn-sm" onclick="updateStatus({{ $talentRequest->id }}, 'completed')">
-                                <i class="fas fa-flag-checkered me-1"></i>Mark Completed
+                                <i class="fas fa-flag-checkered me-1"></i>Tandai Selesai
                             </button>
                             @endif
                         </div>
@@ -405,7 +405,7 @@
 
                     <hr>
                     <a href="{{ route('talent_admin.manage_requests') }}" class="btn btn-secondary w-100">
-                        <i class="fas fa-list me-1"></i> View All Requests
+                        <i class="fas fa-list me-1"></i> Lihat Semua Permintaan
                     </a>
                 </div>
             </div>
@@ -417,7 +417,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-info">Recruiter Information</h6>
+                    <h6 class="m-0 font-weight-bold text-info">Informasi Recruiter</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
@@ -431,7 +431,7 @@
                         @endif
                         <div>
                             <h5 class="mb-1">{{ $talentRequest->recruiter->user->name ?? 'N/A' }}</h5>
-                            <p class="text-muted mb-0">{{ $talentRequest->recruiter->user->pekerjaan ?? 'Not specified' }}</p>
+                            <p class="text-muted mb-0">{{ $talentRequest->recruiter->user->pekerjaan ?? 'Tidak ditentukan' }}</p>
                         </div>
                     </div>
 
@@ -448,22 +448,22 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3"><strong>Phone:</strong></div>
-                        <div class="col-sm-9">{{ $talentRequest->recruiter->phone ?? $talentRequest->recruiter->user->phone ?? 'Not provided' }}</div>
+                        <div class="col-sm-3"><strong>Telepon:</strong></div>
+                        <div class="col-sm-9">{{ $talentRequest->recruiter->phone ?? $talentRequest->recruiter->user->phone ?? 'Tidak disediakan' }}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3"><strong>Company:</strong></div>
-                        <div class="col-sm-9">{{ $talentRequest->recruiter->company_name ?? 'Not specified' }}</div>
+                        <div class="col-sm-3"><strong>Perusahaan:</strong></div>
+                        <div class="col-sm-9">{{ $talentRequest->recruiter->company_name ?? 'Tidak ditentukan' }}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3"><strong>Industry:</strong></div>
-                        <div class="col-sm-9">{{ $talentRequest->recruiter->industry ?? 'Not specified' }}</div>
+                        <div class="col-sm-3"><strong>Industri:</strong></div>
+                        <div class="col-sm-9">{{ $talentRequest->recruiter->industry ?? 'Tidak ditentukan' }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-3"><strong>Status:</strong></div>
                         <div class="col-sm-9">
                             <span class="badge bg-{{ optional($talentRequest->recruiter)->is_active ? 'success' : 'secondary' }}">
-                                {{ optional($talentRequest->recruiter)->is_active ? 'Active' : 'Inactive' }}
+                                {{ optional($talentRequest->recruiter)->is_active ? 'Aktif' : 'Tidak Aktif' }}
                             </span>
                         </div>
                     </div>
@@ -475,7 +475,7 @@
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-success">Talent Information</h6>
+                    <h6 class="m-0 font-weight-bold text-success">Informasi Talent</h6>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center mb-3">
@@ -489,7 +489,7 @@
                         @endif
                         <div>
                             <h5 class="mb-1">{{ $talentRequest->talent->user->name ?? 'N/A' }}</h5>
-                            <p class="text-muted mb-0">{{ $talentRequest->talent->user->pekerjaan ?? 'Not specified' }}</p>
+                            <p class="text-muted mb-0">{{ $talentRequest->talent->user->pekerjaan ?? 'Tidak ditentukan' }}</p>
                         </div>
                     </div>
 
@@ -506,11 +506,11 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3"><strong>Phone:</strong></div>
-                        <div class="col-sm-9">{{ $talentRequest->talent->user->phone ?? 'Not provided' }}</div>
+                        <div class="col-sm-3"><strong>Telepon:</strong></div>
+                        <div class="col-sm-9">{{ $talentRequest->talent->user->phone ?? 'Tidak disediakan' }}</div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3"><strong>Skills:</strong></div>
+                        <div class="col-sm-3"><strong>Keahlian:</strong></div>
                         <div class="col-sm-9">
                             @php
                                 $talent = $talentRequest->talent ?? null;
@@ -519,7 +519,7 @@
                                 $skillCount = count($skills);
                             @endphp
                             @if($skillCount > 0)
-                                <span class="badge bg-success">{{ $skillCount }} Verified Skills</span>
+                                <span class="badge bg-success">{{ $skillCount }} Keahlian Terverifikasi</span>
                                 <div class="mt-2">
                                     @foreach(array_slice($skills, 0, 5) as $skill)
                                         @if(is_array($skill) && isset($skill['skill_name']))
@@ -527,11 +527,11 @@
                                         @endif
                                     @endforeach
                                     @if($skillCount > 5)
-                                        <span class="text-muted">+{{ $skillCount - 5 }} more</span>
+                                        <span class="text-muted">+{{ $skillCount - 5 }} lainnya</span>
                                     @endif
                                 </div>
                             @else
-                                <span class="text-muted">No skills verified yet</span>
+                                <span class="text-muted">Belum ada keahlian yang terverifikasi</span>
                             @endif
                         </div>
                     </div>
@@ -539,7 +539,7 @@
                         <div class="col-sm-3"><strong>Status:</strong></div>
                         <div class="col-sm-9">
                             <span class="badge bg-{{ optional($talentRequest->talent)->is_active ? 'success' : 'secondary' }}">
-                                {{ optional($talentRequest->talent)->is_active ? 'Active' : 'Inactive' }}
+                                {{ optional($talentRequest->talent)->is_active ? 'Aktif' : 'Tidak Aktif' }}
                             </span>
                         </div>
                     </div>
@@ -556,27 +556,27 @@
                 <div class="card-header py-3 bg-success text-white">
                     <h6 class="m-0 font-weight-bold">
                         <i class="fas fa-check-circle me-2"></i>
-                        Completion Details
+                        Detail Penyelesaian
                     </h6>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Completed At:</label>
+                                <label class="font-weight-bold">Diselesaikan Pada:</label>
                                 <p class="text-muted">
-                                    {{ optional($talentRequest->workflow_completed_at)->format('d M Y, H:i') ?? 'Not available' }}
+                                    {{ optional($talentRequest->workflow_completed_at)->format('d M Y, H:i') ?? 'Tidak tersedia' }}
                                 </p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label class="font-weight-bold">Duration:</label>
+                                <label class="font-weight-bold">Durasi:</label>
                                 <p class="text-muted">
                                     @if($talentRequest->created_at && $talentRequest->workflow_completed_at)
                                         {{ $talentRequest->created_at->diffForHumans($talentRequest->workflow_completed_at, true) }}
                                     @else
-                                        Not available
+                                        Tidak tersedia
                                     @endif
                                 </p>
                             </div>
@@ -590,8 +590,8 @@
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-info-circle me-3"></i>
                                     <div>
-                                        <strong>Automatic Completion</strong><br>
-                                        This talent request was automatically marked as completed due to project closure approval.
+                                        <strong>Penyelesaian Otomatis</strong><br>
+                                        Permintaan talent ini secara otomatis ditandai sebagai selesai karena persetujuan penutupan proyek.
                                         @if($talentRequest->project)
                                             <br><strong>Project:</strong> {{ $talentRequest->project->name }}
                                         @endif
@@ -608,8 +608,8 @@
                                 <div class="d-flex align-items-center">
                                     <i class="fas fa-user-check me-3"></i>
                                     <div>
-                                        <strong>Talent Availability</strong><br>
-                                        This talent is now available for new recruitment requests.
+                                        <strong>Ketersediaan Talent</strong><br>
+                                        Talent ini sekarang tersedia untuk permintaan rekrutmen baru.
                                     </div>
                                 </div>
                             </div>
@@ -630,7 +630,7 @@ function updateStatus(requestId, status) {
     if (status === 'meeting_arranged') {
         const csrfToken = document.querySelector('meta[name="csrf-token"]');
         if (!csrfToken) {
-            showAlert('CSRF token not found. Please refresh the page.', 'danger');
+            showAlert('Token CSRF tidak ditemukan. Silakan refresh halaman.', 'danger');
             return;
         }
 
@@ -644,15 +644,15 @@ function updateStatus(requestId, status) {
         .then(response => response.json())
         .then(data => {
             if (!data.canArrangeMeeting) {
-                showAlert('Cannot arrange meeting: ' + data.reason, 'warning');
+                showAlert('Tidak dapat mengatur pertemuan: ' + data.reason, 'warning');
                 return;
             }
             // Proceed with meeting arrangement
             performStatusUpdate(requestId, status);
         })
         .catch(error => {
-            console.error('Error checking meeting eligibility:', error);
-            showAlert('Error validating meeting arrangement eligibility.', 'danger');
+            console.error('Kesalahan memeriksa kelayakan pertemuan:', error);
+            showAlert('Kesalahan memvalidasi kelayakan pengaturan pertemuan.', 'danger');
         });
     } else {
         // For other status updates, proceed normally
@@ -671,12 +671,12 @@ function performStatusUpdate(requestId, status) {
             innerHTML: btn.innerHTML
         };
         btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Updating...';
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Memperbarui...';
     });
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]');
     if (!csrfToken) {
-        showAlert('CSRF token not found. Please refresh the page.', 'danger');
+        showAlert('Token CSRF tidak ditemukan. Silakan refresh halaman.', 'danger');
         return;
     }
 
@@ -690,8 +690,8 @@ function performStatusUpdate(requestId, status) {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
+            throw new Error(`Kesalahan HTTP! status: ${response.status}`);
+            }
         return response.json();
     })
     .then(data => {
@@ -704,9 +704,9 @@ function performStatusUpdate(requestId, status) {
             }
 
             // Show success message with additional info
-            let message = 'Status updated successfully!';
+            let message = 'Status berhasil diperbarui!';
             if (data.acceptance_status) {
-                message += `\nAcceptance Status: ${data.acceptance_status}`;
+                message += `\nStatus Penerimaan: ${data.acceptance_status}`;
             }
             showAlert(message, 'success');
 
@@ -715,12 +715,12 @@ function performStatusUpdate(requestId, status) {
                 window.location.reload();
             }, 1500);
         } else {
-            throw new Error(data.message || 'Unknown error occurred');
+            throw new Error(data.message || 'Terjadi kesalahan yang tidak diketahui');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showAlert('Error updating status: ' + error.message, 'danger');
+        showAlert('Kesalahan memperbarui status: ' + error.message, 'danger');
 
         // Restore button states
         actionButtons.forEach((btn, index) => {
@@ -733,16 +733,23 @@ function performStatusUpdate(requestId, status) {
 }
 
 function acceptAsAdmin(requestId) {
-    if (!confirm('Are you sure you want to accept this request as an admin?')) {
+    console.log('acceptAsAdmin called with requestId:', requestId);
+    
+    if (!confirm('Apakah Anda yakin ingin menerima permintaan ini sebagai admin?')) {
+        console.log('User cancelled the action');
         return;
     }
 
     const csrfToken = document.querySelector('meta[name="csrf-token"]');
+    console.log('CSRF token found:', csrfToken);
+    
     if (!csrfToken) {
-        showAlert('CSRF token not found. Please refresh the page.', 'danger');
+        showAlert('Token CSRF tidak ditemukan. Silakan refresh halaman.', 'danger');
         return;
     }
 
+    console.log('User confirmed, making fetch request');
+    
     fetch(`/talent-admin/request/${requestId}/admin-accept`, {
         method: 'POST',
         headers: {
@@ -750,26 +757,30 @@ function acceptAsAdmin(requestId) {
             'X-CSRF-TOKEN': csrfToken.getAttribute('content')
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response received:', response);
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
         if (data.success) {
-            showAlert('Admin acceptance recorded successfully!', 'success');
+            showAlert('Penerimaan admin berhasil dicatat!', 'success');
 
             // Show updated acceptance status
             if (data.both_parties_accepted) {
-                showAlert('Both parties have now accepted! Meeting can be arranged.', 'info');
+                showAlert('Kedua pihak sekarang telah menerima! Pertemuan dapat diatur.', 'info');
             }
 
             setTimeout(() => {
                 window.location.reload();
             }, 2000);
         } else {
-            showAlert('Error: ' + (data.message || 'Failed to record admin acceptance'), 'danger');
+            showAlert('Kesalahan: ' + (data.message || 'Gagal mencatat penerimaan admin'), 'danger');
         }
     })
     .catch(error => {
-        console.error('Error accepting as admin:', error);
-        showAlert('Network error occurred. Please try again.', 'danger');
+        console.error('Kesalahan menerima sebagai admin:', error);
+        showAlert('Terjadi kesalahan jaringan. Silakan coba lagi.', 'danger');
     });
 }
 
@@ -790,13 +801,13 @@ function getStatusClass(status) {
 function getStatusText(status) {
     // Use backend status configuration mapping
     const statusTexts = {
-        'pending': 'Pending Review',
-        'approved': 'Approved by Admin',
-        'meeting_arranged': 'Meeting Arranged',
-        'agreement_reached': 'Agreement Reached',
+        'pending': 'Menunggu Tinjauan',
+        'approved': 'Disetujui oleh Admin',
+        'meeting_arranged': 'Pertemuan Diatur',
+        'agreement_reached': 'Kesepakatan Tercapai',
         'onboarded': 'Talent Onboarded',
-        'rejected': 'Request Rejected',
-        'completed': 'Project Completed'
+        'rejected': 'Permintaan Ditolak',
+        'completed': 'Proyek Selesai'
     };
     return statusTexts[status] || status.charAt(0).toUpperCase() + status.slice(1);
 }

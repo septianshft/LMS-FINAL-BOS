@@ -196,6 +196,7 @@ class TalentController extends Controller
 
         // Add recent course completions
         $recentCourses = $user->courseProgress()
+            ->with('course')
             ->where('progress', 100)
             ->where('updated_at', '>=', Carbon::now()->subDays(30))
             ->latest('updated_at')
@@ -205,7 +206,7 @@ class TalentController extends Controller
         foreach ($recentCourses as $course) {
             $activities[] = [
                 'type' => 'course_completed',
-                'title' => 'Course completed: ' . ($course->course->title ?? 'Unknown Course'),
+                'title' => 'Course completed: ' . ($course->course->name ?? 'Unknown Course'),
                 'time' => $course->updated_at->diffForHumans(),
                 'icon' => 'fas fa-graduation-cap',
                 'color' => 'green'
@@ -293,8 +294,8 @@ class TalentController extends Controller
                     'talent_accepted_at' => $request->talent_accepted_at,
                     'workflow_completed_at' => $request->workflow_completed_at,
                     'created_at' => $request->created_at,
-                    'is_completed' => $request->both_parties_accepted,
-                    'is_in_progress' => $request->talent_accepted && !$request->both_parties_accepted,
+                    'is_completed' => $request->status === 'completed' || $request->both_parties_accepted,
+                    'is_in_progress' => $request->talent_accepted && !($request->status === 'completed' || $request->both_parties_accepted),
                     'formatted_status' => $request->getTalentFriendlyAcceptanceStatus(),
                     'status_color' => $this->getStatusColor($request),
                     'duration_worked' => $request->talent_accepted_at
@@ -308,7 +309,9 @@ class TalentController extends Controller
 
     private function getStatusColor($request)
     {
-        if ($request->both_parties_accepted) {
+        if ($request->status === 'completed') {
+            return 'green'; // Completed
+        } elseif ($request->both_parties_accepted) {
             return 'green'; // Completed
         } elseif ($request->talent_accepted && $request->admin_accepted) {
             return 'blue'; // In progress
@@ -469,8 +472,8 @@ class TalentController extends Controller
                 'can_accept' => !$talentRequest->talent_accepted && in_array($talentRequest->status, ['pending', 'approved']),
                 'can_reject' => in_array($talentRequest->status, ['pending', 'approved']),
                 'workflow_progress' => $talentRequest->getWorkflowProgress() ?? [],
-                'submitted_at' => $talentRequest->created_at ? $talentRequest->created_at->format('M d, Y \a\t h:i A') : 'Unknown',
-                'updated_at' => $talentRequest->updated_at ? $talentRequest->updated_at->format('M d, Y \a\t h:i A') : 'Unknown',
+                'submitted_at' => $talentRequest->created_at ? $talentRequest->created_at->locale('id')->translatedFormat('d F Y \p\a\d\a H:i') : 'Unknown',
+                'updated_at' => $talentRequest->updated_at ? $talentRequest->updated_at->locale('id')->translatedFormat('d F Y \p\a\d\a H:i') : 'Unknown',
                 'recruiter' => [
                     'name' => $talentRequest->recruiter?->user?->name ?? 'Unknown',
                     'email' => $talentRequest->recruiter?->user?->email ?? 'No email',

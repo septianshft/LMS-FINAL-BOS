@@ -1,0 +1,151 @@
+@startuml Talent_Request_Phase4_Talent_Response
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Fase 4: Respon Talenta
+
+actor "Talenta" as Talent
+
+participant "Halaman Talenta" as TalentView << View >>
+participant "Pengendali Talenta" as TalentController << Controller >>
+participant "Data Permintaan" as RequestModel << Model >>
+participant "Layanan Notifikasi" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+== Respon Talenta terhadap Permintaan ==
+Talent -> TalentView: 1. Buka halaman permintaan
+activate TalentView
+note right of TalentView
+  Talenta mengakses halaman
+  untuk melihat permintaan
+end note
+
+TalentView -> TalentController: 2. Minta detail permintaan
+activate TalentController
+note right of TalentController
+  Memproses permintaan untuk
+  menampilkan detail
+end note
+
+TalentController -> RequestModel: 3. Ambil detail permintaan
+activate RequestModel
+note right of RequestModel
+  Model mengambil data
+  permintaan yang disetujui admin
+end note
+
+RequestModel -> Database: 4. Cari permintaan untuk talenta
+activate Database
+note right of Database
+  Query untuk permintaan
+  yang ditujukan ke talenta ini
+end note
+
+Database --> RequestModel: 5. Detail permintaan
+deactivate Database
+note left of Database
+  Mengembalikan detail
+  permintaan yang relevan
+end note
+
+RequestModel --> TalentController: 6. Data permintaan
+deactivate RequestModel
+note left of RequestModel
+  Data permintaan dikirim
+  ke controller
+end note
+
+TalentController --> TalentView: 7. Kirim data ke halaman
+deactivate TalentController
+note left of TalentController
+  Controller mengirim data
+  untuk ditampilkan
+end note
+
+TalentView --> Talent: 8. Tampilkan detail permintaan
+deactivate TalentView
+note left of TalentView
+  Halaman menampilkan
+  detail permintaan
+end note
+
+Talent -> TalentView: 9. Terima/Tolak permintaan
+activate TalentView
+note right of TalentView
+  Talenta membuat keputusan
+  untuk menerima atau menolak
+end note
+
+TalentView -> TalentController: 10. Kirim respon
+activate TalentController
+note right of TalentController
+  Respon talenta dikirim
+  untuk diproses
+end note
+
+TalentController -> RequestModel: 11. Update respon talenta
+activate RequestModel
+note right of RequestModel
+  Model memperbarui status
+  sesuai respon talenta
+end note
+
+RequestModel -> Database: 12. Simpan respon
+activate Database
+note right of Database
+  Menyimpan respon talenta
+  (accepted/declined)
+end note
+
+Database --> RequestModel: 13. Konfirmasi penyimpanan
+deactivate Database
+note left of Database
+  Konfirmasi bahwa respon
+  berhasil disimpan
+end note
+
+RequestModel --> TalentController: 14. Respon berhasil disimpan
+deactivate RequestModel
+note left of RequestModel
+  Konfirmasi penyimpanan respon
+  ke controller
+end note
+
+TalentController -> NotificationService: 15. Kirim notifikasi hasil
+activate NotificationService
+note right of NotificationService
+  Mengirim pemberitahuan hasil
+  respon ke perekrut dan admin
+end note
+
+NotificationService --> TalentController: 16. Notifikasi terkirim
+deactivate NotificationService
+note left of NotificationService
+  Konfirmasi pengiriman
+  notifikasi berhasil
+end note
+
+TalentController --> TalentView: 17. Konfirmasi ke halaman
+deactivate TalentController
+note left of TalentController
+  Mengirim konfirmasi
+  ke halaman talenta
+end note
+
+TalentView --> Talent: 18. Tampilkan konfirmasi
+deactivate TalentView
+note left of TalentView
+  Menampilkan pesan
+  respon berhasil dikirim
+end note
+
+note over Talent, Database
+  **Hasil Fase 4:**
+  Talenta telah memberikan respon
+  dan semua pihak terkait telah
+  diberitahu tentang keputusan talenta
+end note
+
+@enduml

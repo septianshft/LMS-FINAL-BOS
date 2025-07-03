@@ -19,7 +19,7 @@ use Faker\Factory as Faker;
 class TraineeSeeder extends Seeder
 {
     /**
-     * Seed 20 trainee users with completed LMS courses and talent roles for testing.
+     * Seed 21 trainee users with completed LMS courses and talent roles for testing.
      */
     public function run(): void
     {
@@ -33,7 +33,7 @@ class TraineeSeeder extends Seeder
         $this->createSampleCourses();
 
         // ===============================================
-        // TRAINEE PROFILES (20 TOTAL FOR TESTING)
+        // TRAINEE PROFILES (21 TOTAL FOR TESTING)
         // ===============================================
         $traineeProfiles = [
             // Original 3 trainees
@@ -44,6 +44,14 @@ class TraineeSeeder extends Seeder
                 'courses' => ['Complete Web Development Bootcamp', 'Advanced JavaScript Programming'],
                 'available_for_scouting' => true,
                 'assign_talent_role' => true,
+            ],
+            [
+                'name' => 'testingnoready',
+                'email' => 'testing@test.com',
+                'pekerjaan' => 'Computer Science Student',
+                'courses' => ['Complete Web Development Bootcamp', 'Advanced JavaScript Programming'],
+                'available_for_scouting' => true,
+                'assign_talent_role' => false,
             ],
             [
                 'name' => 'Brenda Learner',
@@ -198,6 +206,15 @@ class TraineeSeeder extends Seeder
                 'courses' => ['Advanced JavaScript Programming', 'React.js Frontend Development'],
                 'available_for_scouting' => true,
                 'assign_talent_role' => true,
+            ],
+            // New trainee with completed courses and ready for talent conversion
+            [
+                'name' => 'Umar Utama',
+                'email' => 'talent18@test.com',
+                'pekerjaan' => 'DevOps Engineer',
+                'courses' => ['Complete Web Development Bootcamp', 'Laravel Framework Mastery', 'Advanced JavaScript Programming'],
+                'available_for_scouting' => true,
+                'assign_talent_role' => true,
             ]
         ];
 
@@ -299,10 +316,10 @@ class TraineeSeeder extends Seeder
             $this->command->info("      ✓ Generated skills: " . implode(', ', array_slice($skillNames, 0, 4)) . (count($skillNames) > 4 ? '...' : ''));
         }
 
-        $this->command->info('✅ Created all 20 trainees with LMS completion data successfully!');
+        $this->command->info('✅ Created all 21 trainees with LMS completion data successfully!');
         $this->command->info('');
         $this->command->info('🧪 TEST SCENARIOS:');
-        $this->command->info('   - Login with any of the 20 trainee/talent accounts (password: password123)');
+        $this->command->info('   - Login with any of the 21 trainee/talent accounts (password: password123)');
         $this->command->info('   - Most are available for scouting with talent roles assigned');
         $this->command->info('   - All have completed courses and generated skills');
         $this->command->info('   - Perfect for testing recruiter talent request functionality');

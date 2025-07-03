@@ -9,6 +9,11 @@
             <p class="text-gray-600 mt-2">Kelola penugasan proyek Anda dan lacak progress</p>
         </div>
         <div class="flex space-x-3">
+            <button onclick="downloadPDF()"
+                    class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl">
+                <i class="fas fa-file-pdf mr-2"></i>
+                Unduh PDF
+            </button>
             <span class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium">
                 {{ $pendingCount }} Menunggu Respons
             </span>
@@ -22,7 +27,7 @@
     <div class="mb-6">
         <nav class="flex space-x-8" aria-label="Tabs">
             <a href="{{ route('talent.assignments.index') }}"
-               class="@if(request('status') == '' || !request('status')) text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="@if(request('status') == '' || !request('status')) text-gray-500 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Semua Penugasan
             </a>
             <a href="{{ route('talent.assignments.index', ['status' => 'pending']) }}"
@@ -406,6 +411,14 @@ window.onclick = function(event) {
     if (event.target === extensionModal) {
         closeExtensionModal();
     }
+}
+
+// PDF Download Function
+function downloadPDF() {
+    // Placeholder function for PDF download
+    // This will be implemented later with actual PDF generation logic
+    alert('Fitur unduh PDF akan segera diimplementasikan!');
+    console.log('PDF download requested for talent assignments page');
 }
 </script>
 @endsection

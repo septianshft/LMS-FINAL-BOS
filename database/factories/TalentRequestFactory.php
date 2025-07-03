@@ -21,7 +21,7 @@ class TalentRequestFactory extends Factory
             'project_description' => $this->faker->paragraph(3),
             'required_skills' => json_encode($this->faker->randomElements(['PHP', 'JavaScript', 'Python', 'React', 'Laravel', 'Node.js'], 3)),
             'budget_range' => $this->faker->randomElement(['$500-$1000', '$1000-$2000', '$2000-$5000', '$5000+', 'Negotiable']),
-            'project_duration' => $this->faker->randomElement(['1 week', '2 weeks', '1 month', '2-3 months', '6+ months', 'Ongoing']),
+            'project_duration' => $this->faker->randomElement(['1 minggu', '2 minggu', '1 bulan', '2-3 bulan', '6+ bulan', 'Ongoing']),
             'urgency_level' => $this->faker->randomElement(['low', 'medium', 'high']),
             'status' => $this->faker->randomElement(['pending', 'accepted', 'rejected', 'completed']),
             'talent_accepted' => false,

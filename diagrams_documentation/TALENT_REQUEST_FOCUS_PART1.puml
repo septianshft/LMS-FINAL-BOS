@@ -1,0 +1,115 @@
+@startuml Talent_Request_Focus_Part1
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Sistem Pencarian Talenta - Bagian 1: Pencarian hingga Persetujuan Admin
+
+actor "Perekrut" as Recruiter
+actor "Admin Talenta" as Admin
+actor "Talenta" as Talent
+
+participant "RecruiterView" as RecruiterView << View >>
+participant "AdminView" as AdminView << View >>
+
+participant "RecruiterController" as RecruiterController << Controller >>
+participant "AdminController" as AdminController << Controller >>
+
+participant "RequestModel" as RequestModel << Model >>
+participant "UserModel" as UserModel << Model >>
+participant "NotificationService" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+== Fase 1: Pencarian dan Pemilihan Talenta ==
+Recruiter -> RecruiterView: 1. Buka halaman cari talenta
+activate RecruiterView
+RecruiterView -> RecruiterController: 2. Tampilkan daftar talenta
+activate RecruiterController
+RecruiterController -> UserModel: 3. Ambil talenta yang tersedia
+activate UserModel
+UserModel -> Database: 4. Cari talenta aktif
+activate Database
+Database --> UserModel: 5. Daftar talenta
+deactivate Database
+UserModel --> RecruiterController: 6. Data talenta
+deactivate UserModel
+RecruiterController --> RecruiterView: 7. Kirim data ke halaman
+deactivate RecruiterController
+RecruiterView --> Recruiter: 8. Tampilkan daftar talenta
+deactivate RecruiterView
+
+== Fase 2: Membuat Permintaan Talenta ==
+Recruiter -> RecruiterView: 9. Pilih talenta dan buat permintaan
+activate RecruiterView
+RecruiterView -> RecruiterController: 10. Kirim form permintaan
+activate RecruiterController
+RecruiterController -> RequestModel: 11. Buat permintaan baru
+activate RequestModel
+RequestModel -> Database: 12. Simpan permintaan
+activate Database
+Database --> RequestModel: 13. Permintaan tersimpan
+deactivate Database
+RequestModel --> RecruiterController: 14. Konfirmasi penyimpanan
+deactivate RequestModel
+
+RecruiterController -> NotificationService: 15. Kirim notifikasi
+activate NotificationService
+NotificationService -> Admin: 16. Beritahu admin ada permintaan baru
+NotificationService -> Talent: 17. Beritahu talenta ada permintaan
+deactivate NotificationService
+
+RecruiterController --> RecruiterView: 18. Berhasil kirim permintaan
+deactivate RecruiterController
+RecruiterView --> Recruiter: 19. Tampilkan pesan sukses
+deactivate RecruiterView
+
+== Fase 3: Review dan Persetujuan Admin ==
+Admin -> AdminView: 20. Buka halaman kelola permintaan
+activate AdminView
+AdminView -> AdminController: 21. Tampilkan permintaan pending
+activate AdminController
+AdminController -> RequestModel: 22. Ambil permintaan yang menunggu
+activate RequestModel
+RequestModel -> Database: 23. Cari permintaan pending
+activate Database
+Database --> RequestModel: 24. Data permintaan
+deactivate Database
+RequestModel --> AdminController: 25. Daftar permintaan
+deactivate RequestModel
+AdminController --> AdminView: 26. Kirim data ke halaman
+deactivate AdminController
+AdminView --> Admin: 27. Tampilkan daftar permintaan
+deactivate AdminView
+
+Admin -> AdminView: 28. Setujui permintaan
+activate AdminView
+AdminView -> AdminController: 29. Proses persetujuan
+activate AdminController
+AdminController -> RequestModel: 30. Update status jadi disetujui
+activate RequestModel
+RequestModel -> Database: 31. Simpan persetujuan admin
+activate Database
+Database --> RequestModel: 32. Status terupdate
+deactivate Database
+RequestModel --> AdminController: 33. Persetujuan tersimpan
+deactivate RequestModel
+
+AdminController -> NotificationService: 34. Kirim notifikasi persetujuan
+activate NotificationService
+NotificationService -> Talent: 35. Beritahu talenta permintaan disetujui
+NotificationService -> Recruiter: 36. Beritahu perekrut status terbaru
+deactivate NotificationService
+
+AdminController --> AdminView: 37. Konfirmasi persetujuan
+deactivate AdminController
+AdminView --> Admin: 38. Tampilkan pesan berhasil
+deactivate AdminView
+
+note over Admin, Database
+  **Lanjutan ke Bagian 2:**
+  - Respon Talenta
+  - Finalisasi dan Onboarding
+end note
+
+@enduml

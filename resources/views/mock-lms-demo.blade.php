@@ -187,7 +187,7 @@
                     <div><strong>Total Hours:</strong> ${progress.total_hours}</div>
                     <div><strong>Certificates:</strong> ${progress.certificates}</div>
                     <div><strong>Avg Score:</strong> ${progress.avg_score}%</div>
-                    <div><strong>Learning Velocity:</strong> ${progress.learning_velocity} courses/month</div>
+                    <div><strong>Learning Velocity:</strong> ${progress.learning_velocity} kursus/bulan</div>
                 </div>
             `;
             document.getElementById('score-progress').innerHTML = html;

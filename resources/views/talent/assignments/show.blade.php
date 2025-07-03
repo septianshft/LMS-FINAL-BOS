@@ -66,7 +66,7 @@
                         <div class="space-y-2">
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Duration:</span>
-                                <span class="font-medium">{{ $assignment->project->duration_weeks }} weeks</span>
+                                <span class="font-medium">{{ $assignment->project->duration_weeks }} minggu</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-600">Start Date:</span>
@@ -334,7 +334,7 @@
                 @csrf
 
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Additional Weeks</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Minggu Tambahan</label>
                     <input type="number" name="additional_weeks" min="1" max="12" required
                            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>

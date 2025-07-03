@@ -1,0 +1,95 @@
+@startuml Talent_Request_Phase2_Create
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Fase 2: Membuat Permintaan Talenta
+
+actor "Perekrut" as Recruiter
+
+participant "Halaman Perekrut" as RecruiterView << View >>
+participant "Pengendali Perekrut" as RecruiterController << Controller >>
+participant "Data Permintaan" as RequestModel << Model >>
+participant "Layanan Notifikasi" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+== Membuat Permintaan Talenta ==
+Recruiter -> RecruiterView: 1. Pilih talenta dan buat permintaan
+activate RecruiterView
+note right of RecruiterView
+  Perekrut memilih talenta
+  dan mengisi form permintaan
+end note
+
+RecruiterView -> RecruiterController: 2. Kirim data permintaan
+activate RecruiterController
+note right of RecruiterController
+  Data permintaan dikirim
+  untuk diproses
+end note
+
+RecruiterController -> RequestModel: 3. Buat permintaan baru
+activate RequestModel
+note right of RequestModel
+  Model memproses data
+  permintaan talenta
+end note
+
+RequestModel -> Database: 4. Simpan permintaan
+activate Database
+note right of Database
+  Menyimpan data permintaan
+  dengan status 'pending'
+end note
+
+Database --> RequestModel: 5. Konfirmasi penyimpanan
+deactivate Database
+note left of Database
+  Konfirmasi bahwa data
+  berhasil disimpan
+end note
+
+RequestModel --> RecruiterController: 6. Permintaan berhasil dibuat
+deactivate RequestModel
+note left of RequestModel
+  Konfirmasi pembuatan
+  permintaan ke controller
+end note
+
+RecruiterController -> NotificationService: 7. Kirim notifikasi ke admin
+activate NotificationService
+note right of NotificationService
+  Mengirim pemberitahuan
+  ke admin untuk review
+end note
+
+NotificationService --> RecruiterController: 8. Notifikasi terkirim
+deactivate NotificationService
+note left of NotificationService
+  Konfirmasi pengiriman
+  notifikasi berhasil
+end note
+
+RecruiterController --> RecruiterView: 9. Konfirmasi ke halaman
+deactivate RecruiterController
+note left of RecruiterController
+  Mengirim konfirmasi
+  ke halaman perekrut
+end note
+
+RecruiterView --> Recruiter: 10. Tampilkan konfirmasi
+deactivate RecruiterView
+note left of RecruiterView
+  Menampilkan pesan
+  permintaan berhasil dibuat
+end note
+
+note over Recruiter, Database
+  **Hasil Fase 2:**
+  Permintaan talenta berhasil dibuat
+  dan admin telah diberitahu untuk
+  melakukan review dan persetujuan
+end note
+
+@enduml

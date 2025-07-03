@@ -124,7 +124,7 @@
                                         </div>
                                     </td>
                                     <td class="py-6 px-4">
-                                        <div class="text-gray-900 font-medium text-sm">{{ $talent->created_at->format('M d, Y') }}</div>
+                                        <div class="text-gray-900 font-medium text-sm">{{ $talent->created_at->locale('id')->translatedFormat('d F Y') }}</div>
                                         <div class="text-gray-500 text-xs">{{ $talent->created_at->format('H:i') }}</div>
                                     </td>
                                     <td class="py-6 px-4">
@@ -313,8 +313,8 @@ function viewTalentDetails(talentId) {
             document.getElementById('talentDetailsContent').innerHTML = `
                 <div class="text-center py-8">
                     <i class="fas fa-exclamation-triangle text-3xl text-red-600 mb-4"></i>
-                    <p class="text-red-600">Error loading talent details</p>
-                    <p class="text-gray-600 text-sm mt-2">Error: ${error.message}</p>
+                    <p class="text-red-600">Kesalahan memuat detail talent</p>
+                    <p class="text-gray-600 text-sm mt-2">Kesalahan: ${error.message}</p>
                 </div>
             `;
         });
@@ -333,10 +333,10 @@ function displayTalentDetails(talent) {
                         </div>`
                     }
                     <h4 class="text-xl font-bold text-gray-900 mb-2">${talent.name}</h4>
-                    <p class="text-gray-600 mb-4">${talent.job || 'No job specified'}</p>
+                    <p class="text-gray-600 mb-4">${talent.job || 'Pekerjaan tidak ditentukan'}</p>
                     <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${talent.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
                         <i class="fas fa-${talent.is_active ? 'check-circle' : 'pause-circle'} mr-1"></i>
-                        ${talent.is_active ? 'Active' : 'Inactive'}
+                        ${talent.is_active ? 'Aktif' : 'Tidak Aktif'}
                     </div>
                 </div>
             </div>
@@ -347,7 +347,7 @@ function displayTalentDetails(talent) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-address-card text-blue-600 mr-2"></i>
-                        Contact Information
+                        Informasi Kontak
                     </h5>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -355,15 +355,15 @@ function displayTalentDetails(talent) {
                             <p class="text-gray-900 font-medium">${talent.email}</p>
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
-                            <p class="text-gray-900 font-medium">${talent.phone || 'Not provided'}</p>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Telepon</label>
+                            <p class="text-gray-900 font-medium">${talent.phone || 'Tidak disediakan'}</p>
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Location</label>
-                            <p class="text-gray-900 font-medium">${talent.location || 'Not provided'}</p>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Lokasi</label>
+                            <p class="text-gray-900 font-medium">${talent.location || 'Tidak disediakan'}</p>
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined Date</label>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanggal Bergabung</label>
                             <p class="text-gray-900 font-medium">${talent.joined_date}</p>
                         </div>
                     </div>
@@ -374,7 +374,7 @@ function displayTalentDetails(talent) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-cogs text-purple-600 mr-2"></i>
-                        Skills & Expertise
+                        Keahlian
                     </h5>
                     <div class="flex flex-wrap gap-2">
                         ${talent.skills.map(skill => `
@@ -391,7 +391,7 @@ function displayTalentDetails(talent) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-briefcase text-green-600 mr-2"></i>
-                        Portfolio & Projects
+                        Portofolio
                     </h5>
                     <div class="space-y-3">
                         ${talent.portfolio.map(project => `
@@ -400,7 +400,7 @@ function displayTalentDetails(talent) {
                                 <p class="text-gray-600 text-sm mt-1">${project.description}</p>
                                 ${project.url ? `<a href="${project.url}" target="_blank" class="text-blue-600 hover:text-blue-700 text-sm mt-2 inline-flex items-center">
                                     <i class="fas fa-external-link-alt mr-1"></i>
-                                    View Project
+                                    Lihat Proyek
                                 </a>` : ''}
                             </div>
                         `).join('')}
@@ -412,24 +412,24 @@ function displayTalentDetails(talent) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-chart-bar text-yellow-600 mr-2"></i>
-                        Statistics
+                        Statistik
                     </h5>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div class="text-center">
                             <div class="text-2xl font-bold text-blue-600">${talent.stats?.completed_courses || 0}</div>
-                            <div class="text-xs text-gray-500">Courses</div>
+                            <div class="text-xs text-gray-500">Kursus</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-green-600">${talent.stats?.certificates || 0}</div>
-                            <div class="text-xs text-gray-500">Certificates</div>
+                            <div class="text-xs text-gray-500">Sertifikat</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-purple-600">${talent.stats?.skill_level || 'N/A'}</div>
-                            <div class="text-xs text-gray-500">Avg Skill Level</div>
+                            <div class="text-xs text-gray-500">Rata-rata Level Keahlian</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-orange-600">${talent.stats?.experience_years || 0}</div>
-                            <div class="text-xs text-gray-500">Years Exp</div>
+                            <div class="text-xs text-gray-500">Tahun Pengalaman</div>
                         </div>
                     </div>
                 </div>
@@ -439,10 +439,10 @@ function displayTalentDetails(talent) {
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
             <button onclick="closeTalentModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                Close
+                Tutup
             </button>
             <button onclick="toggleTalentStatus(${talent.id}, ${talent.is_active})" class="px-6 py-2 ${talent.is_active ? 'bg-orange-600 hover:bg-orange-700' : 'bg-green-600 hover:bg-green-700'} text-white rounded-lg transition-colors">
-                ${talent.is_active ? 'Deactivate' : 'Activate'} Talent
+                ${talent.is_active ? 'Nonaktifkan' : 'Aktifkan'} Talent
             </button>
         </div>
     `;
@@ -455,7 +455,7 @@ function closeTalentModal() {
 }
 
 function toggleTalentStatus(talentId, isActive) {
-    if (confirm(`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this talent?`)) {
+    if (confirm(`Apakah Anda yakin ingin ${isActive ? 'menonaktifkan' : 'mengaktifkan'} talent ini?`)) {
         // Submit the form or make an AJAX request
         const form = document.createElement('form');
         form.method = 'POST';
@@ -493,12 +493,12 @@ function openProjectRedflagModal(talentId, talentName) {
             if (data.success) {
                 showProjectRedflagModal(talentId, talentName, data.completed_projects);
             } else {
-                alert('Failed to load completed projects');
+                alert('Gagal memuat proyek yang diselesaikan');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Error loading completed projects');
+            alert('Kesalahan memuat proyek yang diselesaikan');
         });
 }
 
@@ -509,7 +509,7 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
             <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
                 <div class="bg-gradient-to-r from-orange-500 to-red-500 px-6 py-4 text-white">
                     <h3 class="text-xl font-bold flex items-center">
-                        <i class="fas fa-flag mr-2"></i>Flag Project for ${talentName}
+                        <i class="fas fa-flag mr-2"></i>Tandai Proyek untuk ${talentName}
                     </h3>
                     <button onclick="closeProjectRedflagModal()"
                             class="absolute top-4 right-4 text-white hover:text-gray-200 text-xl">
@@ -518,7 +518,7 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
                 </div>
 
                 <div class="p-6">
-                    <p class="text-gray-600 mb-4">Select a completed project to flag:</p>
+                    <p class="text-gray-600 mb-4">Pilih proyek yang diselesaikan untuk ditandai:</p>
 
                     ${completedProjects.length > 0 ? `
                         <div class="space-y-3 max-h-60 overflow-y-auto">
@@ -530,13 +530,13 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
                                             <h4 class="font-medium text-gray-900">${project.project_title}</h4>
                                             <p class="text-sm text-gray-600 mt-1">${project.project_description.substring(0, 100)}${project.project_description.length > 100 ? '...' : ''}</p>
                                             <div class="text-xs text-gray-500 mt-2">
-                                                Completed: ${project.completed_at} | Recruiter: ${project.recruiter_name}
+                                                Diselesaikan: ${project.completed_at} | Perekrut: ${project.recruiter_name}
                                             </div>
                                         </div>
                                         <div class="ml-4">
                                             ${project.is_redflagged ?
-                                                '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Already Flagged</span>' :
-                                                '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Not Flagged</span>'
+                                                '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Sudah Ditandai</span>' :
+                                                '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Belum Ditandai</span>'
                                             }
                                         </div>
                                     </div>
@@ -550,18 +550,18 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
                                 <form id="projectRedflagForm">
                                     <input type="hidden" id="selectedProjectId" name="project_id">
                                     <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Reason for flagging:</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Alasan penandaan:</label>
                                         <textarea name="redflag_reason" id="redflag_reason" rows="3"
                                                   class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-                                                  placeholder="Please provide a detailed reason for flagging this project..."
+                                                  placeholder="Harap berikan alasan detail untuk menandai proyek ini..."
                                                   required></textarea>
                                     </div>
                                     <div class="flex gap-3">
                                         <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                                            <i class="fas fa-flag mr-1"></i>Flag Project
+                                            <i class="fas fa-flag mr-1"></i>Tandai Proyek
                                         </button>
                                         <button type="button" onclick="hideRedflagForm()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors">
-                                            Cancel
+                                            Batal
                                         </button>
                                     </div>
                                 </form>
@@ -570,7 +570,7 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
                     ` : `
                         <div class="text-center py-8">
                             <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-                            <p class="text-gray-500">No completed projects found for this talent.</p>
+                            <p class="text-gray-500">Tidak ada proyek yang diselesaikan ditemukan untuk talent ini.</p>
                         </div>
                     `}
                 </div>
@@ -578,7 +578,7 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
                 <div class="bg-gray-50 px-6 py-4 border-t flex justify-end">
                     <button onclick="closeProjectRedflagModal()"
                             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                        Close
+                        Tutup
                     </button>
                 </div>
             </div>
@@ -598,7 +598,7 @@ function showProjectRedflagModal(talentId, talentName, completedProjects) {
 
 function selectProject(projectId, projectTitle, isRedflagged) {
     if (isRedflagged) {
-        alert('This project is already flagged. You can remove the flag by contacting the system administrator.');
+        alert('Proyek ini sudah ditandai. Anda dapat menghapus tanda dengan menghubungi administrator sistem.');
         return;
     }
 
@@ -636,16 +636,16 @@ function submitProjectRedflag() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Project flagged successfully!');
+            alert('Proyek berhasil ditandai!');
             closeProjectRedflagModal();
             location.reload(); // Refresh to show updated redflag status
         } else {
-            alert('Failed to flag project: ' + (data.message || 'Unknown error'));
+            alert('Gagal menandai proyek: ' + (data.message || 'Kesalahan tidak diketahui'));
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error flagging project');
+        alert('Kesalahan menandai proyek');
     });
 }
 
@@ -668,8 +668,8 @@ function viewProjectRedflags(talentId, talentName) {
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('Error loading redflag history');
+            console.error('Gagal memuat riwayat redflag:', error);
+        alert('Kesalahan memuat riwayat red-flag');
         });
 }
 
@@ -680,7 +680,7 @@ function showRedflagHistoryModal(talentName, summary, redflaggedProjects) {
             <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
                 <div class="bg-gradient-to-r from-red-500 to-pink-500 px-6 py-4 text-white">
                     <h3 class="text-xl font-bold flex items-center">
-                        <i class="fas fa-history mr-2"></i>Redflag History for ${talentName}
+                        <i class="fas fa-history mr-2"></i>Riwayat Red-flag untuk ${talentName}
                     </h3>
                     <button onclick="closeRedflagHistoryModal()"
                             class="absolute top-4 right-4 text-white hover:text-gray-200 text-xl">
@@ -691,25 +691,25 @@ function showRedflagHistoryModal(talentName, summary, redflaggedProjects) {
                 <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
                     <!-- Summary -->
                     <div class="mb-6 p-4 bg-gray-50 rounded-lg">
-                        <h4 class="font-semibold text-gray-900 mb-2">Summary</h4>
+                        <h4 class="font-semibold text-gray-900 mb-2">Ringkasan</h4>
                         <div class="grid grid-cols-3 gap-4 text-center">
                             <div>
                                 <div class="text-2xl font-bold text-blue-600">${summary.total_completed}</div>
-                                <div class="text-sm text-gray-600">Total Projects</div>
+                                <div class="text-sm text-gray-600">Total Proyek</div>
                             </div>
                             <div>
                                 <div class="text-2xl font-bold text-red-600">${summary.count}</div>
-                                <div class="text-sm text-gray-600">Red-flagged</div>
+                                <div class="text-sm text-gray-600">Ditandai Red-flag</div>
                             </div>
                             <div>
                                 <div class="text-2xl font-bold text-orange-600">${summary.rate}%</div>
-                                <div class="text-sm text-gray-600">Flag Rate</div>
+                                <div class="text-sm text-gray-600">Tingkat Penandaan</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Red-flagged Projects List -->
-                    <h4 class="font-semibold text-gray-900 mb-4">Red-flagged Projects</h4>
+                    <h4 class="font-semibold text-gray-900 mb-4">Proyek yang Ditandai Red-flag</h4>
                     ${redflaggedProjects.length > 0 ? `
                         <div class="space-y-4">
                             ${redflaggedProjects.map(project => `
@@ -722,10 +722,10 @@ function showRedflagHistoryModal(talentName, summary, redflaggedProjects) {
                                     </div>
                                     <p class="text-sm text-gray-700 mb-2">${project.project_description.substring(0, 100)}${project.project_description.length > 100 ? '...' : ''}</p>
                                     <div class="text-sm text-red-700">
-                                        <strong>Flag reason:</strong> ${project.redflag_reason || 'No specific reason provided'}
+                                        <strong>Alasan penandaan:</strong> ${project.redflag_reason || 'Tidak ada alasan spesifik yang diberikan'}
                                     </div>
                                     <div class="text-xs text-gray-500 mt-2">
-                                        Flagged by: ${project.redflagged_by_name} | Recruiter: ${project.recruiter_name}
+                                        Ditandai oleh: ${project.redflagged_by_name} | Recruiter: ${project.recruiter_name}
                                     </div>
                                 </div>
                             `).join('')}
@@ -733,7 +733,7 @@ function showRedflagHistoryModal(talentName, summary, redflaggedProjects) {
                     ` : `
                         <div class="text-center py-8 text-gray-500">
                             <i class="fas fa-check-circle text-4xl text-green-500 mb-4"></i>
-                            <p>No red-flagged projects found.</p>
+                            <p>Tidak ada proyek yang ditandai red-flag ditemukan.</p>
                         </div>
                     `}
                 </div>
@@ -741,7 +741,7 @@ function showRedflagHistoryModal(talentName, summary, redflaggedProjects) {
                 <div class="bg-gray-50 px-6 py-4 border-t flex justify-end">
                     <button onclick="closeRedflagHistoryModal()"
                             class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors">
-                        Close
+                        Tutup
                     </button>
                 </div>
             </div>

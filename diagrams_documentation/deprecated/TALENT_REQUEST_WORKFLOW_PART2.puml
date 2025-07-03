@@ -1,0 +1,70 @@
+@startuml Talent_Request_Workflow_Part2
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Alur Kerja Permintaan Talenta - Bagian 2
+
+actor Recruiter
+actor "Admin Talenta" as Admin
+actor Talent
+participant "Sistem Recruiter" as RC
+participant "Sistem Admin" as AC
+participant "Sistem Talenta" as TC
+participant "Data Permintaan" as TR
+participant "Layanan Notifikasi" as NS
+database "Basis Data" as DB
+
+== Fase 5: Pembaruan Status Manual ==
+Admin -> AC: 1. Perbarui status permintaan
+activate AC
+
+alt Status: Siap Meeting → Kesepakatan Tercapai
+    AC -> TR: 2a. Ubah ke kesepakatan tercapai
+    activate TR
+    TR -> DB: 3a. Simpan status kesepakatan\ndengan waktu pencapaian
+    activate DB
+    DB --> TR: 4a. Status kesepakatan tercatat
+    deactivate DB
+    TR --> AC: 5a. Status berhasil diperbarui
+    deactivate TR
+
+else Status: Kesepakatan Tercapai → Bergabung
+    AC -> TR: 2b. Ubah ke status bergabung
+    activate TR
+    TR -> DB: 3b. Simpan status bergabung\ndengan waktu bergabung
+    activate DB
+    DB --> TR: 4b. Status bergabung tercatat
+    deactivate DB
+    TR --> AC: 5b. Proses bergabung selesai
+    deactivate TR
+
+else Status: Bergabung → Selesai
+    AC -> TR: 2c. Ubah ke status selesai
+    activate TR
+    TR -> DB: 3c. Simpan status selesai\ndengan waktu penyelesaian
+    activate DB
+    DB --> TR: 4c. Penyelesaian tercatat
+    deactivate DB
+
+    TR -> TR: 5c. Hentikan pemblokiran waktu
+
+    TR -> TR: 6c. Bersihkan data ketersediaan
+
+    TR --> AC: 7c. Penyelesaian manual selesai
+    deactivate TR
+end
+
+AC -> NS: 8. Kirim pemberitahuan perubahan
+activate NS
+NS -> DB: 9. Beritahu semua pihak tentang\nperubahan status
+activate DB
+DB --> NS: 10. Semua pihak sudah diberitahu
+deactivate DB
+NS --> AC: 11. Pemberitahuan terkirim
+deactivate NS
+
+AC --> Admin: 12. Pembaruan status dikonfirmasi
+deactivate AC
+
+@enduml

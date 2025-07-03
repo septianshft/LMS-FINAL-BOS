@@ -184,7 +184,7 @@
                         @forelse($jobOpportunities->take(3) as $opportunity)
                             <div class="border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-md transition-all
                                 @if(isset($opportunity['is_pre_approved']) && $opportunity['is_pre_approved'])
-                                    ring-2 ring-emerald-200 bg-gradient-to-br from-emerald-50 to-white border-emerald-300
+                                    ring-2 ring-emerald-200 bg-gradient-to-br from-emerald-50 to-white 
                                 @endif">
                                 <div class="flex items-start justify-between">
                                     <div class="flex-1">
@@ -323,7 +323,7 @@
                                             <span class="flex items-center"><i class="fas fa-dollar-sign mr-1"></i> {{ $job['budget_range'] }}</span>
                                             <span class="flex items-center"><i class="fas fa-clock mr-1"></i> {{ $job['duration_worked'] }}</span>
                                             @if($job['talent_accepted_at'])
-                                                <span class="flex items-center"><i class="fas fa-calendar-check mr-1"></i> Started {{ \Carbon\Carbon::parse($job['talent_accepted_at'])->format('M d, Y') }}</span>
+                                                <span class="flex items-center"><i class="fas fa-calendar-check mr-1"></i> <span>Dimulai {{ \Carbon\Carbon::parse($job['talent_accepted_at'])->format('d M Y') }}</span>
                                             @endif
                                         </div>
                                         @if($job['project_description'])
@@ -334,7 +334,7 @@
                                         @if($job['is_completed'])
                                             <div class="flex items-center text-green-600 text-sm">
                                                 <i class="fas fa-check-circle mr-1"></i>
-                                                <span>Completed</span>
+                                                <span>Selesai</span>
                                             </div>
                                         @elseif($job['is_in_progress'])
                                             <div class="flex items-center text-blue-600 text-sm">
@@ -376,8 +376,8 @@
                                         <i class="fas fa-exclamation-triangle text-red-600"></i>
                                     </div>
                                     <div class="ml-3 flex-1">
-                                        <div class="text-sm font-medium text-red-800">Account Flagged</div>
-                                        <div class="text-xs text-red-600">Resolve to continue</div>
+                                        <div class="text-sm font-medium text-red-800">Akun Ditandai</div>
+                                        <div class="text-xs text-red-600">Selesaikan untuk melanjutkan</div>
                                     </div>
                                     <button onclick="showContactModal()" class="text-red-600 hover:text-red-700 text-xs underline">
                                         Hubungi
@@ -395,13 +395,13 @@
                                 <div class="text-xs text-gray-500">Perbarui informasi Anda</div>
                             </div>
                         </a>
-                        <a href="#" onclick="document.getElementById('resumeUpload').click()" class="flex items-center p-3 rounded-lg hover:bg-green-50 transition-colors group">
+                        {{-- <a href="#" onclick="document.getElementById('resumeUpload').click()" class="flex items-center p-3 rounded-lg hover:bg-green-50 transition-colors group">
                             <div class="bg-green-100 p-2 rounded-lg group-hover:bg-green-200 transition-colors">
                                 <i class="fas fa-upload text-green-600"></i>
                             </div>
                             <div class="ml-3">
-                                <div class="text-sm font-medium text-gray-800">Upload Resume</div>
-                                <div class="text-xs text-gray-500">Tetap perbarui</div>
+                                <div class="text-sm font-medium text-gray-800">Unggah Resume</div>
+                                <div class="text-xs text-gray-500">Tetap terbaru</div>
                             </div>
                         </a>
                         <a href="#" onclick="showAlert('Fitur Penilaian Keahlian akan segera hadir!', 'info')" class="flex items-center p-3 rounded-lg hover:bg-purple-50 transition-colors group">
@@ -412,7 +412,7 @@
                                 <div class="text-sm font-medium text-gray-800">Penilaian Keahlian</div>
                                 <div class="text-xs text-gray-500">Uji kemampuan Anda</div>
                             </div>
-                        </a>
+                        </a> --}}
                         <!-- Hidden file input for resume upload -->
                         <input type="file" id="resumeUpload" accept=".pdf,.doc,.docx" style="display: none;" onchange="handleResumeUpload(this)">
                     </div>
@@ -800,22 +800,22 @@ function viewJobDetails(jobId) {
                 modalContent.innerHTML = `
                     <div class="space-y-6">
                         <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl border border-blue-200">
-                            <h4 class="font-bold text-lg text-gray-900 mb-3">📋 ${job.project_title || 'Project Details'}</h4>
-                            <p class="text-gray-700">${job.project_description || 'No description available'}</p>
+                            <h4 class="font-bold text-lg text-gray-900 mb-3">📋 ${job.project_title || 'Detail Proyek'}</h4>
+                            <p class="text-gray-700">${job.project_description || 'Tidak ada deskripsi tersedia'}</p>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-green-50 p-4 rounded-xl">
-                                <h4 class="font-semibold text-green-900 mb-3">🏢 Collaboration Details</h4>
+                                <h4 class="font-semibold text-green-900 mb-3">🏢 Detail Kolaborasi</h4>
                                 <div class="space-y-2">
-                                    <div><span class="font-medium">Company:</span> ${job.recruiter_name || 'Unknown'}</div>
-                                    <div><span class="font-medium">Role:</span> ${job.recruiter_company || 'Not specified'}</div>
-                                    <div><span class="font-medium">Budget:</span> ${job.budget_range || 'Budget TBD'}</div>
-                                    <div><span class="font-medium">Duration:</span> ${job.project_duration || 'Duration TBD'}</div>
+                                    <div><span class="font-medium">Perusahaan:</span> ${job.recruiter_name || 'Tidak diketahui'}</div>
+                                    <div><span class="font-medium">Peran:</span> ${job.recruiter_company || 'Tidak ditentukan'}</div>
+                                    <div><span class="font-medium">Anggaran:</span> ${job.budget_range || 'Anggaran belum ditentukan'}</div>
+                                    <div><span class="font-medium">Durasi:</span> ${job.project_duration || 'Durasi belum ditentukan'}</div>
                                 </div>
                             </div>
                             <div class="bg-blue-50 p-4 rounded-xl">
-                                <h4 class="font-semibold text-blue-900 mb-3">📊 Progress & Timeline</h4>
+                                <h4 class="font-semibold text-blue-900 mb-3">📊 Progres & Jadwal</h4>
                                 <div class="space-y-2">
                                     <div><span class="font-medium">Status:</span>
                                         <span class="px-2 py-1 text-xs rounded-full ${getStatusBadgeClasses(job.status_badge_color)}">
@@ -823,9 +823,9 @@ function viewJobDetails(jobId) {
                                             ${job.formatted_status}
                                         </span>
                                     </div>
-                                    <div><span class="font-medium">Progress:</span> ${job.workflow_progress || 0}%</div>
-                                    <div><span class="font-medium">Started:</span> ${job.created_at}</div>
-                                    ${job.both_parties_accepted ? '<div><span class="font-medium">Completed:</span> <span class="text-green-600">✓ Finished</span></div>' : ''}
+                                    <div><span class="font-medium">Progres:</span> ${job.workflow_progress || 0}%</div>
+                                    <div><span class="font-medium">Dimulai:</span> ${job.created_at}</div>
+                                    ${job.both_parties_accepted ? '<div><span class="font-medium">Selesai:</span> <span class="text-green-600">✓ Selesai</span></div>' : ''}
                                 </div>
                                 <div class="mt-3">
                                     <div class="w-full bg-gray-200 rounded-full h-2">
@@ -840,8 +840,8 @@ function viewJobDetails(jobId) {
                                 <div class="flex items-center justify-center space-x-2 text-green-700">
                                     <i class="fas fa-trophy text-2xl"></i>
                                     <div>
-                                        <h4 class="font-bold text-lg">Collaboration Completed Successfully!</h4>
-                                        <p class="text-sm">This project has been successfully completed and both parties are satisfied.</p>
+                                        <h4 class="font-bold text-lg">Kolaborasi Berhasil Diselesaikan!</h4>
+                                        <p class="text-sm">Proyek ini telah berhasil diselesaikan dan kedua belah pihak puas.</p>
                                     </div>
                                 </div>
                             </div>
@@ -850,8 +850,8 @@ function viewJobDetails(jobId) {
                                 <div class="flex items-center justify-center space-x-2 text-blue-700">
                                     <i class="fas fa-clock text-xl"></i>
                                     <div>
-                                        <h4 class="font-semibold">Collaboration In Progress</h4>
-                                        <p class="text-sm">This project is currently active. Keep up the great work!</p>
+                                        <h4 class="font-semibold">Kolaborasi Sedang Berlangsung</h4>
+                                        <p class="text-sm">Proyek ini sedang aktif. Terus pertahankan kerja yang bagus!</p>
                                     </div>
                                 </div>
                             </div>
@@ -862,7 +862,7 @@ function viewJobDetails(jobId) {
                 modalContent.innerHTML = `
                     <div class="text-center py-8">
                         <i class="fas fa-exclamation-triangle text-4xl text-red-600 mb-4"></i>
-                        <p class="text-gray-600">Collaboration details not found.</p>
+                        <p class="text-gray-600">Detail kolaborasi tidak ditemukan.</p>
                     </div>
                 `;
             }
@@ -881,7 +881,7 @@ function viewJobDetails(jobId) {
             <div class="text-center py-8">
                 <i class="fas fa-wifi text-4xl text-red-600 mb-4"></i>
                 <p class="text-gray-600">Terjadi error jaringan.</p>
-                <button onclick="viewJobDetails(${jobId})" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <button onclick="viewJobDetails(` + jobId + `)" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
                     <i class="fas fa-refresh mr-2"></i>Coba Lagi
                 </button>
             </div>
@@ -939,29 +939,29 @@ function viewRequestDetails(requestId) {
                     <div class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="bg-blue-50 p-4 rounded-xl">
-                                <h4 class="font-semibold text-blue-900 mb-3">📋 Project Information</h4>
+                                <h4 class="font-semibold text-blue-900 mb-3">📋 Informasi Proyek</h4>
                                 <div class="space-y-2">
-                                    <div><span class="font-medium">Title:</span> ${request.project_title || 'Not specified'}</div>
-                                    <div><span class="font-medium">Description:</span> <div class="text-sm text-gray-700 mt-1 max-h-20 overflow-y-auto">${request.project_description || 'No description provided'}</div></div>
-                                    <div><span class="font-medium">Budget:</span> ${request.budget_range || 'Budget TBD'}</div>
-                                    <div><span class="font-medium">Duration:</span> ${request.project_duration || 'Duration TBD'}</div>
+                                    <div><span class="font-medium">Judul:</span> ${request.project_title || 'Tidak ditentukan'}</div>
+                                    <div><span class="font-medium">Deskripsi:</span> <div class="text-sm text-gray-700 mt-1 max-h-20 overflow-y-auto">${request.project_description || 'Tidak ada deskripsi'}</div></div>
+                                    <div><span class="font-medium">Anggaran:</span> ${request.budget_range || 'Anggaran belum ditentukan'}</div>
+                                    <div><span class="font-medium">Durasi:</span> ${request.project_duration || 'Durasi belum ditentukan'}</div>
                                 </div>
                             </div>
                             <div class="bg-green-50 p-4 rounded-xl">
-                                <h4 class="font-semibold text-green-900 mb-3">🏢 Recruiter Information</h4>
+                                <h4 class="font-semibold text-green-900 mb-3">🏢 Informasi Perekrut</h4>
                                 <div class="space-y-2">
-                                    <div><span class="font-medium">Name:</span> ${request.recruiter_name || 'Unknown'}</div>
-                                    <div><span class="font-medium">Company:</span> ${request.recruiter_company || 'Not specified'}</div>
+                                    <div><span class="font-medium">Nama:</span> ${request.recruiter_name || 'Tidak diketahui'}</div>
+                                    <div><span class="font-medium">Perusahaan:</span> ${request.recruiter_company || 'Tidak ditentukan'}</div>
                                     <div><span class="font-medium">Status:</span> <span class="capitalize">${request.formatted_status || request.status}</span></div>
-                                    <div><span class="font-medium">Submitted:</span> ${request.created_at}</div>
+                                    <div><span class="font-medium">Dikirim:</span> ${request.created_at}</div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="bg-gray-50 p-4 rounded-xl">
-                            <h4 class="font-semibold text-gray-900 mb-3">📊 Status & Progress</h4>
+                            <h4 class="font-semibold text-gray-900 mb-3">📊 Status & Progres</h4>
                             <div class="space-y-3">
-                                <div><span class="font-medium">Current Status:</span>
+                                <div><span class="font-medium">Status Saat Ini:</span>
                                     <span class="px-2 py-1 text-xs rounded-full ${getStatusBadgeClasses(request.status_badge_color)}">
                                         <i class="${request.status_icon || 'fas fa-clock'} mr-1"></i>
                                         ${request.formatted_status}
@@ -969,7 +969,7 @@ function viewRequestDetails(requestId) {
                                 </div>
                                 <div>
                                     <div class="flex justify-between items-center mb-1">
-                                        <span class="font-medium">Progress:</span>
+                                        <span class="font-medium">Progres:</span>
                                         <span class="text-sm text-gray-600">${request.workflow_progress || 0}%</span>
                                     </div>
                                     <div class="w-full bg-gray-200 rounded-full h-3">
@@ -977,7 +977,7 @@ function viewRequestDetails(requestId) {
                                     </div>
                                 </div>
                                 ${request.acceptance_status ? `
-                                    <div><span class="font-medium">Acceptance Status:</span>
+                                    <div><span class="font-medium">Status Penerimaan:</span>
                                         <span class="text-sm text-gray-700">${request.acceptance_status}</span>
                                     </div>
                                 ` : ''}
@@ -988,20 +988,20 @@ function viewRequestDetails(requestId) {
                             ${request.can_accept ? `
                                 <button onclick="acceptRequest(${request.id})"
                                         class="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors font-semibold">
-                                    <i class="fas fa-check mr-2"></i>Accept Request
+                                    <i class="fas fa-check mr-2"></i>Terima Permintaan
                                 </button>
                             ` : ''}
                             ${request.can_reject ? `
                                 <button onclick="rejectRequest(${request.id})"
                                         class="flex-1 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-semibold">
-                                    <i class="fas fa-times mr-2"></i>Decline Request
+                                    <i class="fas fa-times mr-2"></i>Tolak Permintaan
                                 </button>
                             ` : ''}
                             ${!request.can_accept && !request.can_reject ? `
                                 <div class="flex-1 text-center py-3 bg-gray-100 text-gray-600 rounded-xl">
                                     ${request.both_parties_accepted ?
-                                        '<i class="fas fa-check-circle text-green-600 mr-2"></i>Request accepted by both parties' :
-                                        '<i class="fas fa-clock text-gray-500 mr-2"></i>No actions available'}
+                                        '<i class="fas fa-check-circle text-green-600 mr-2"></i>Permintaan diterima oleh kedua belah pihak' :
+                                        '<i class="fas fa-clock text-gray-500 mr-2"></i>Tidak ada tindakan tersedia'}
                                 </div>
                             ` : ''}
                         </div>
@@ -1011,8 +1011,8 @@ function viewRequestDetails(requestId) {
                 modalContent.innerHTML = `
                     <div class="text-center py-8">
                         <i class="fas fa-exclamation-triangle text-4xl text-red-600 mb-4"></i>
-                        <p class="text-gray-600">Request with ID ${requestId} not found.</p>
-                        <p class="text-gray-500 text-sm mt-2">The request may have been deleted or you don't have access to it.</p>
+                        <p class="text-gray-600">Permintaan dengan ID ${requestId} tidak ditemukan.</p>
+                        <p class="text-gray-500 text-sm mt-2">Permintaan mungkin telah dihapus atau Anda tidak memiliki akses ke permintaan tersebut.</p>
                     </div>
                 `;
             }
@@ -1138,8 +1138,6 @@ function handleResumeUpload(input) {
         if (file.size > maxSize) {
             showAlert('Ukuran file harus kurang dari 5MB', 'error');
             return;
-        }
-
         }
 
         // Here you would typically upload the file to your server

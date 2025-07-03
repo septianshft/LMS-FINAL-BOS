@@ -229,14 +229,14 @@
                 @endif
                 @if($request->budget_range)
                 <tr>
-                    <th>Budget Range</th>
+                    <th>Rentang Anggaran</th>
                     <td>{{ $request->budget_range }}</td>
                 </tr>
                 @endif
                 @if($request->project_duration)
                 <tr>
-                    <th>Duration</th>
-                    <td>{{ $request->project_duration }}</td>
+                    <th>Durasi</th>
+                    <td>{{ preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) }}</td>
                 </tr>
                 @endif
                 @if($request->requirements)

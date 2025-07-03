@@ -143,7 +143,7 @@ class RecruiterController extends Controller
             $myRequests = TalentRequest::with(['talent.user'])
                 ->where('recruiter_id', $recruiter->id)
                 ->latest()
-                ->take(5)
+                ->take(3)
                 ->get();
 
             // Cache top talents and analytics for better performance

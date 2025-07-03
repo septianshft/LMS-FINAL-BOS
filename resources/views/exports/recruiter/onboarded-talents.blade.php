@@ -216,10 +216,10 @@
                     </tr>
                     @endif
                     <tr>
-                        <th>Budget Range</th>
-                        <td>{{ $request->budget_range ?? 'Not specified' }}</td>
-                        <th>Duration</th>
-                        <td>{{ $request->project_duration ?? 'Not specified' }}</td>
+                        <th>Rentang Anggaran</th>
+                        <td>{{ $request->budget_range ?? 'Tidak ditentukan' }}</td>
+                        <th>Durasi</th>
+                        <td>{{ $request->project_duration ? preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) : 'Tidak ditentukan' }}</td>
                     </tr>
                     @if($request->requirements)
                     <tr>

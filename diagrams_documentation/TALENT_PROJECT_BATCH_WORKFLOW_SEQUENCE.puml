@@ -59,7 +59,7 @@ loop For each selected talent
 
     AC -> RM: 18. Create linked talent request
     activate RM
-    RM -> DB: 19. INSERT talent_request (project_id linked)
+    RM -> DB: 19. INSERT talent_request (status='pending_admin', project_id linked)
     activate DB
     DB --> RM: 20. Request created
     deactivate DB
@@ -67,60 +67,88 @@ loop For each selected talent
     deactivate RM
 end
 
-AC --> Recruiter: 22. Batch assignment complete
+AC --> Recruiter: 22. Batch assignment complete - menunggu persetujuan admin
 deactivate AC
 
-== Respons Talent (Paralel) ==
-par Respons Talent
-    Talent -> AC: 23. Terima/Tolak assignment
-    activate AC
-    AC -> AM: 24. Update status assignment
-    activate AM
-    AM -> DB: 25. UPDATE assignment
+== Admin Review Talent Requests ==
+TalentAdmin -> PAC: 23. Review talent requests untuk proyek
+activate PAC
+
+loop For each talent request
+    PAC -> RM: 24. Evaluate talent request
+    activate RM
+    RM -> DB: 25. UPDATE talent_request SET status='approved'/'rejected'
     activate DB
-    DB --> AM: 26. Status diupdate
+    DB --> RM: 26. Status request diupdate
     deactivate DB
-    AM --> AC: 27. Respons tercatat
+    RM --> PAC: 27. Request status updated
+    deactivate RM
+end
+
+PAC --> TalentAdmin: 28. Semua talent requests telah direview
+deactivate PAC
+
+== Respons Talent (Paralel) ==
+par Respons Talent (hanya untuk approved requests)
+    Talent -> AC: 29. Terima/Tolak assignment (untuk approved requests)
+    activate AC
+    AC -> AM: 30. Update status assignment
+    activate AM
+    AM -> DB: 31. UPDATE assignment
+    activate DB
+    DB --> AM: 32. Status diupdate
+    deactivate DB
+    AM --> AC: 33. Respons tercatat
     deactivate AM
-    AC --> Talent: 28. Respons dikonfirmasi
+    
+    AC -> RM: 34. Update talent request final status
+    activate RM
+    RM -> DB: 35. UPDATE talent_request SET status='accepted'/'declined'
+    activate DB
+    DB --> RM: 36. Final status updated
+    deactivate DB
+    RM --> AC: 37. Final status confirmed
+    deactivate RM
+    
+    AC --> Talent: 38. Respons dikonfirmasi
     deactivate AC
 end
 
 == Penyelesaian Proyek & Auto-Closure ==
-Recruiter -> PC: 29. Request penutupan proyek
+Recruiter -> PC: 39. Request penutupan proyek
 activate PC
-PC -> PM: 30. Tandai closure requested
+PC -> PM: 40. Tandai closure requested
 activate PM
-PM -> DB: 31. UPDATE status='closure_requested'
+PM -> DB: 41. UPDATE status='closure_requested'
 activate DB
-DB --> PM: 32. Closure diminta
+DB --> PM: 42. Closure diminta
 deactivate DB
-PM --> PC: 33. Request dicatat
+PM --> PC: 43. Request dicatat
 deactivate PM
-PC --> Recruiter: 34. Menunggu persetujuan admin
+PC --> Recruiter: 44. Menunggu persetujuan admin
 deactivate PC
 
-TalentAdmin -> PAC: 35. Setujui penutupan proyek
+TalentAdmin -> PAC: 45. Setujui penutupan proyek
 activate PAC
-PAC -> PM: 36. Selesaikan proyek
+PAC -> PM: 46. Selesaikan proyek
 activate PM
-PM -> DB: 37. UPDATE status='completed'
+PM -> DB: 47. UPDATE status='completed'
 activate DB
-DB --> PM: 38. Proyek selesai
+DB --> PM: 48. Proyek selesai
 deactivate DB
-PM --> PAC: 39. Closure dikonfirmasi
+PM --> PAC: 49. Closure dikonfirmasi
 deactivate PM
 
-PAC -> RM: 40. Auto-complete linked requests
+PAC -> RM: 50. Auto-complete linked requests
 activate RM
-RM -> DB: 41. UPDATE talent_requests SET status='completed'
+RM -> DB: 51. UPDATE talent_requests SET status='completed'
 activate DB
-DB --> RM: 42. Semua request selesai
+DB --> RM: 52. Semua request selesai
 deactivate DB
-RM --> PAC: 43. Batch completion selesai
+RM --> PAC: 53. Batch completion selesai
 deactivate RM
 
-PAC --> TalentAdmin: 44. Proyek berhasil ditutup
+PAC --> TalentAdmin: 54. Proyek berhasil ditutup
 deactivate PAC
 
 @enduml

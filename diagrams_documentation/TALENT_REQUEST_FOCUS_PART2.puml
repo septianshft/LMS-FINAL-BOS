@@ -1,0 +1,116 @@
+@startuml Talent_Request_Focus_Part2
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Sistem Pencarian Talenta - Bagian 2: Respon Talenta hingga Finalisasi
+
+actor "Perekrut" as Recruiter
+actor "Admin Talenta" as Admin
+actor "Talenta" as Talent
+
+participant "AdminView" as AdminView << View >>
+participant "TalentView" as TalentView << View >>
+
+participant "AdminController" as AdminController << Controller >>
+participant "TalentController" as TalentController << Controller >>
+
+participant "RequestModel" as RequestModel << Model >>
+participant "NotificationService" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+note over Talent, Database
+  **Lanjutan dari Bagian 1:**
+  Permintaan telah disetujui admin
+  dan notifikasi telah dikirim
+end note
+
+== Fase 4: Respon Talenta ==
+Talent -> TalentView: 39. Buka halaman permintaan masuk
+activate TalentView
+TalentView -> TalentController: 40. Tampilkan permintaan untuk saya
+activate TalentController
+TalentController -> RequestModel: 41. Ambil permintaan talenta
+activate RequestModel
+RequestModel -> Database: 42. Cari permintaan untuk talenta ini
+activate Database
+Database --> RequestModel: 43. Data permintaan
+deactivate Database
+RequestModel --> TalentController: 44. Permintaan talenta
+deactivate RequestModel
+TalentController --> TalentView: 45. Kirim data ke halaman
+deactivate TalentController
+TalentView --> Talent: 46. Tampilkan permintaan
+deactivate TalentView
+
+Talent -> TalentView: 47. Terima atau tolak permintaan
+activate TalentView
+TalentView -> TalentController: 48. Kirim respon talenta
+activate TalentController
+TalentController -> RequestModel: 49. Update respon talenta
+activate RequestModel
+RequestModel -> Database: 50. Simpan respon
+activate Database
+Database --> RequestModel: 51. Respon tersimpan
+deactivate Database
+RequestModel --> TalentController: 52. Konfirmasi respon
+deactivate RequestModel
+
+TalentController -> NotificationService: 53. Kirim notifikasi respon
+activate NotificationService
+NotificationService -> Recruiter: 54. Beritahu perekrut respon talenta
+NotificationService -> Admin: 55. Beritahu admin respon talenta
+deactivate NotificationService
+
+TalentController --> TalentView: 56. Konfirmasi respon
+deactivate TalentController
+TalentView --> Talent: 57. Tampilkan pesan berhasil
+deactivate TalentView
+
+== Fase 5: Finalisasi ==
+alt Jika talenta menerima
+    Admin -> AdminView: 58. Mulai proses onboarding
+    activate AdminView
+    AdminView -> AdminController: 59. Proses onboarding
+    activate AdminController
+    AdminController -> RequestModel: 60. Update status ke bergabung
+    activate RequestModel
+    RequestModel -> Database: 61. Simpan status final
+    activate Database
+    Database --> RequestModel: 62. Status terupdate
+    deactivate Database
+    RequestModel --> AdminController: 63. Onboarding selesai
+    deactivate RequestModel
+    
+    AdminController -> NotificationService: 64. Kirim notifikasi selesai
+    activate NotificationService
+    NotificationService -> Recruiter: 65. Beritahu perekrut talenta siap
+    NotificationService -> Talent: 66. Beritahu talenta onboarding selesai
+    deactivate NotificationService
+    
+    AdminController --> AdminView: 67. Konfirmasi onboarding
+    deactivate AdminController
+    AdminView --> Admin: 68. Proses selesai
+    deactivate AdminView
+    
+    note over Admin, Database
+      **Hasil Akhir:**
+      Talenta berhasil bergabung
+      dan siap untuk bekerja
+    end note
+    
+else Jika talenta menolak
+    RequestModel -> Database: 69. Update status ke ditolak
+    activate Database
+    Database --> RequestModel: 70. Status terupdate
+    deactivate Database
+    
+    note over RequestModel, Database
+      **Hasil Akhir:**
+      Permintaan ditutup karena
+      talenta menolak
+    end note
+end
+
+@enduml

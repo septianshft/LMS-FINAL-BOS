@@ -16,9 +16,9 @@
                     </div>
 
                     <!-- Welcome Content -->
-                    <h1 class="text-4xl font-bold mb-4">Join Our Community!</h1>
+                    <h1 class="text-4xl font-bold mb-4">Bergabunglah dengan Komunitas Kami!</h1>
                     <p class="text-lg text-white text-opacity-90 mb-8">
-                        Create your account and start your journey with our comprehensive training platform. Connect, learn, and grow with professionals worldwide.
+                        Buat akun Anda dan mulai perjalanan dengan platform pelatihan komprehensif kami. Terhubung, belajar, dan berkembang bersama profesional di seluruh dunia.
                     </p>
 
                     <!-- Features -->
@@ -29,7 +29,7 @@
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span>Choose your learning path</span>
+                            <span>Pilih jalur pembelajaran Anda</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -37,7 +37,7 @@
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span>Showcase your talents</span>
+                            <span>Tampilkan bakat Anda</span>
                         </div>
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -45,7 +45,7 @@
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                 </svg>
                             </div>
-                            <span>Connect with recruiters</span>
+                            <span>Terhubung dengan perekrut</span>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
-                    Home
+                    Beranda
                 </a>
             </div>
 
@@ -77,8 +77,8 @@
 
                 <!-- Header -->
                 <div class="text-center mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-                    <p class="text-gray-600">Join our training platform today</p>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Buat Akun</h2>
+                    <p class="text-gray-600">Bergabunglah dengan platform pelatihan kami hari ini</p>
                 </div>
 
                 <!-- Registration Form -->
@@ -87,39 +87,39 @@
 
                     <!-- Name -->
                     <div class="space-y-2">
-                        <x-input-label for="name" :value="__('Full Name')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="name" :value="__('Nama Lengkap')" class="text-sm font-semibold text-gray-700" />
                         <x-text-input id="name"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white"
                             type="text"
                             name="name"
                             :value="old('name')"
-                            placeholder="Enter your full name"
+                            placeholder="Masukkan nama lengkap Anda"
                             required autofocus autocomplete="name" />
                         <x-input-error :messages="$errors->get('name')" class="mt-1" />
                     </div>
 
                     <!-- Email Address -->
                     <div class="space-y-2">
-                        <x-input-label for="email" :value="__('Email Address')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="email" :value="__('Alamat Email')" class="text-sm font-semibold text-gray-700" />
                         <x-text-input id="email"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white"
                             type="email"
                             name="email"
                             :value="old('email')"
-                            placeholder="your.email@example.com"
+                            placeholder="email.anda@contoh.com"
                             required autocomplete="email" />
                         <x-input-error :messages="$errors->get('email')" class="mt-1" />
                     </div>
 
                     <!-- Pekerjaan -->
                     <div class="space-y-2">
-                        <x-input-label for="pekerjaan" :value="__('Occupation')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="pekerjaan" :value="__('Pekerjaan')" class="text-sm font-semibold text-gray-700" />
                         <x-text-input id="pekerjaan"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white"
                             type="text"
                             name="pekerjaan"
                             :value="old('pekerjaan')"
-                            placeholder="Your current occupation"
+                            placeholder="Pekerjaan Anda saat ini"
                             required />
                         <x-input-error :messages="$errors->get('pekerjaan')" class="mt-1" />
                     </div>
@@ -127,8 +127,8 @@
                     <!-- Avatar -->
                     <div class="space-y-2">
                         <div class="flex items-center justify-between">
-                            <x-input-label for="avatar" :value="__('Profile Picture')" class="text-sm font-semibold text-gray-700" />
-                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">Optional</span>
+                            <x-input-label for="avatar" :value="__('Foto Profil')" class="text-sm font-semibold text-gray-700" />
+                            <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">Opsional</span>
                         </div>
                         <div class="flex items-center justify-center w-full">
                             <label for="avatar" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition duration-200">
@@ -136,33 +136,33 @@
                                     <svg class="w-8 h-8 mb-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                                     </svg>
-                                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Click to upload</span> or skip for now</p>
-                                    <p class="text-xs text-gray-500">PNG, JPG or JPEG (MAX. 2MB)</p>
+                                    <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">Klik untuk mengunggah</span> atau lewati untuk sekarang</p>
+                                    <p class="text-xs text-gray-500">PNG, JPG atau JPEG (MAKS. 2MB)</p>
                                 </div>
                                 <input id="avatar" type="file" name="avatar" class="hidden" accept="image/*" />
                             </label>
                         </div>
                         <p class="text-xs text-gray-500 mt-1">
-                            You can add a profile picture now or upload one later from your profile settings.
+                            Anda dapat menambahkan foto profil sekarang atau mengunggahnya nanti dari pengaturan profil.
                         </p>
                         <x-input-error :messages="$errors->get('avatar')" class="mt-1" />
                     </div>
 
                     <!-- Role Selection -->
                     <div class="space-y-2">
-                        <x-input-label for="role" :value="__('I want to join as')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="role" :value="__('Saya ingin bergabung sebagai')" class="text-sm font-semibold text-gray-700" />
                         <select id="role" name="role"
                             class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white"
                             required>
-                            <option value="">{{ __('Select your role...') }}</option>
+                            <option value="">{{ __('Pilih peran Anda...') }}</option>
                             <option value="trainee" {{ old('role') == 'trainee' ? 'selected' : '' }}>
-                                {{ __('🎓 Trainee - Learn from courses') }}
+                                {{ __('🎓 Peserta Pelatihan - Belajar dari kursus') }}
                             </option>
-                            <option value="talent" {{ old('role') == 'talent' ? 'selected' : '' }}>
-                                {{ __('⭐ Talent - Showcase your skills') }}
-                            </option>
+                            {{-- <option value="talent" {{ old('role') == 'talent' ? 'selected' : '' }}>
+                                {{ __('⭐ Talenta - Tampilkan keahlian Anda') }}
+                            </option> --}}
                             <option value="recruiter" {{ old('role') == 'recruiter' ? 'selected' : '' }}>
-                                {{ __('👔 Recruiter - Find talented individuals') }}
+                                {{ __('👔 Perekrut - Temukan individu berbakat') }}
                             </option>
                         </select>
                         <x-input-error :messages="$errors->get('role')" class="mt-1" />
@@ -170,13 +170,13 @@
 
                     <!-- Password -->
                     <div class="space-y-2">
-                        <x-input-label for="password" :value="__('Password')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="password" :value="__('Kata Sandi')" class="text-sm font-semibold text-gray-700" />
                         <div class="relative">
                             <x-text-input id="password"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white pr-12"
                                 type="password"
                                 name="password"
-                                placeholder="Create a strong password"
+                                placeholder="Buat kata sandi yang kuat"
                                 required autocomplete="new-password" />
                             <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 hover:text-gray-600 transition duration-200">
                                 <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,20 +186,20 @@
                             </button>
                         </div>
                         <div class="text-xs text-gray-500 mt-1">
-                            Password must be at least 8 characters long
+                            Kata sandi harus minimal 8 karakter
                         </div>
                         <x-input-error :messages="$errors->get('password')" class="mt-1" />
                     </div>
 
                     <!-- Confirm Password -->
                     <div class="space-y-2">
-                        <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-sm font-semibold text-gray-700" />
+                        <x-input-label for="password_confirmation" :value="__('Konfirmasi Kata Sandi')" class="text-sm font-semibold text-gray-700" />
                         <div class="relative">
                             <x-text-input id="password_confirmation"
                                 class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition duration-200 bg-white pr-12"
                                 type="password"
                                 name="password_confirmation"
-                                placeholder="Confirm your password"
+                                placeholder="Konfirmasi kata sandi Anda"
                                 required autocomplete="new-password" />
                             <button type="button" id="togglePasswordConfirmation" class="absolute inset-y-0 right-0 flex items-center px-4 text-gray-400 hover:text-gray-600 transition duration-200">
                                 <svg id="eyeIconConfirmation" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +214,7 @@
                     <!-- Submit Button -->
                     <div>
                         <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-semibold text-white bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200 transform hover:scale-[1.02]">
-                            {{ __('Create Account') }}
+                            {{ __('Buat Akun') }}
                         </button>
                     </div>
 
@@ -224,14 +224,14 @@
                             <div class="w-full border-t border-gray-300"></div>
                         </div>
                         <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-gray-50 text-gray-500">Already have an account?</span>
+                            <span class="px-4 bg-gray-50 text-gray-500">Sudah punya akun?</span>
                         </div>
                     </div>
 
                     <!-- Login Link -->
                     <div class="text-center">
                         <a href="{{ route('login') }}" class="w-full inline-flex justify-center py-3 px-4 border border-purple-300 rounded-xl shadow-sm text-sm font-semibold text-purple-600 bg-white hover:bg-purple-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition duration-200 transform hover:scale-[1.02]">
-                            {{ __('Sign In Instead') }}
+                            {{ __('Masuk Sekarang') }}
                         </a>
                     </div>
                 </form>

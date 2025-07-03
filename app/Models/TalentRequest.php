@@ -384,7 +384,10 @@ class TalentRequest extends Model
      */
     public function getTalentFriendlyAcceptanceStatus()
     {
-        if ($this->both_parties_accepted) {
+        // Check for completed status first
+        if ($this->status === 'completed') {
+            return 'Selesai';
+        } elseif ($this->both_parties_accepted) {
             return 'Both parties accepted - Meeting can be arranged';
         } elseif ($this->talent_accepted && $this->admin_accepted) {
             return 'Both accepted - Processing';
@@ -460,27 +463,32 @@ class TalentRequest extends Model
 
         $duration = strtolower($this->project_duration);
 
-        // Parse various duration formats
-        if (preg_match('/(\d+)\s*(week|weeks)/', $duration, $matches)) {
+        // Parse various duration formats (English and Indonesian)
+        if (preg_match('/(\d+)\s*(week|weeks|minggu)/', $duration, $matches)) {
             return $startDate->copy()->addWeeks($matches[1]);
-        } elseif (preg_match('/(\d+)\s*(month|months)/', $duration, $matches)) {
+        } elseif (preg_match('/(\d+)\s*(month|months|bulan)/', $duration, $matches)) {
             return $startDate->copy()->addMonths($matches[1]);
-        } elseif (preg_match('/(\d+)\s*(day|days)/', $duration, $matches)) {
+        } elseif (preg_match('/(\d+)\s*(day|days|hari)/', $duration, $matches)) {
             return $startDate->copy()->addDays($matches[1]);
-        } elseif (preg_match('/(\d+)-(\d+)\s*(month|months)/', $duration, $matches)) {
-            // Handle ranges like "2-3 months" - use the maximum
+        } elseif (preg_match('/(\d+)-(\d+)\s*(month|months|bulan)/', $duration, $matches)) {
+            // Handle ranges like "2-3 months" or "2-3 bulan" - use the maximum
             return $startDate->copy()->addMonths($matches[2]);
-        } elseif (preg_match('/(\d+)-(\d+)\s*(week|weeks)/', $duration, $matches)) {
+        } elseif (preg_match('/(\d+)-(\d+)\s*(week|weeks|minggu)/', $duration, $matches)) {
             return $startDate->copy()->addWeeks($matches[2]);
         }
 
-        // Default mapping for common durations
+        // Default mapping for common durations (English and Indonesian)
         $durationMap = [
             '1-2 weeks' => ['weeks' => 2],
+            '1-2 minggu' => ['weeks' => 2],
             '1 month' => ['months' => 1],
+            '1 bulan' => ['months' => 1],
             '2-3 months' => ['months' => 3],
+            '2-3 bulan' => ['months' => 3],
             '3-6 months' => ['months' => 6],
+            '3-6 bulan' => ['months' => 6],
             '6+ months' => ['months' => 6],
+            '6+ bulan' => ['months' => 6],
             'ongoing' => ['months' => 12], // Default for ongoing projects
         ];
 
@@ -579,13 +587,13 @@ class TalentRequest extends Model
 
         $duration = strtolower($duration);
 
-        if (str_contains($duration, 'week')) {
+        if (str_contains($duration, 'week') || str_contains($duration, 'minggu')) {
             preg_match('/(\d+)/', $duration, $matches);
             $weeks = isset($matches[0]) ? (int)$matches[0] : 1;
             return max(1, (int)($weeks / 4)); // Convert weeks to months (minimum 1 month)
         }
 
-        if (str_contains($duration, 'month')) {
+        if (str_contains($duration, 'month') || str_contains($duration, 'bulan')) {
             preg_match('/(\d+)/', $duration, $matches);
             return isset($matches[0]) ? (int)$matches[0] : 1;
         }

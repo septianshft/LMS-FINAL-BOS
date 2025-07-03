@@ -287,9 +287,9 @@
                         $totalDays = 0;
 
                         // Extract duration from project_duration field if available
-                        if ($request->project_duration && preg_match('/(\d+)\s*days?/i', $request->project_duration, $matches)) {
+                        if ($request->project_duration && preg_match('/(\d+)\s*(days?|hari)/i', $request->project_duration, $matches)) {
                             $totalDays = (int)$matches[1];
-                            $durationText = $totalDays . ' days';
+                            $durationText = $totalDays . ' hari';
 
                             // Calculate correct end date based on duration
                             if ($startDate && $totalDays > 0) {
@@ -611,6 +611,31 @@
                                     </div>
                                 </div>
                                 @if($availableTalents->count() > 0)
+                                    <!-- Search Bar -->
+                                    <div class="mb-6">
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <i class="fas fa-search text-gray-400"></i>
+                                            </div>
+                                            <input type="text" 
+                                                   id="talentSearchInput" 
+                                                   class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500" 
+                                                   placeholder="Cari berdasarkan nama talenta atau keahlian..." 
+                                                   onkeyup="searchTalents()">
+                                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                                <button type="button" 
+                                                        id="clearSearchBtn" 
+                                                        class="text-gray-400 hover:text-gray-600 hidden" 
+                                                        onclick="clearSearch()">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <!-- Search Results Info -->
+                                        <div id="searchResultsInfo" class="hidden mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <p id="searchResultsText" class="text-blue-800 text-sm"></p>
+                                        </div>
+                                    </div>
                                     <!-- Talent Carousel Container -->
                                     <div class="talent-carousel-container relative">
                                         <!-- Navigation Buttons -->
@@ -630,7 +655,9 @@
                                                         $redflagSummary = $talent->redflag_summary;
                                                     @endphp
                                                     <div class="talent-carousel-slide flex-shrink-0 px-2">
-                                                        <div class="talent-selection-card group relative bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer w-80"
+                                                        <div class="talent-selection-card talent-card group relative bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer w-80"
+                                                             data-talent-name="{{ strtolower($talent->user->name) }}"
+                                                             data-talent-skills="{{ strtolower(implode(' ', array_map(function($skill) { return is_array($skill) ? ($skill['skill_name'] ?? ($skill['name'] ?? '')) : $skill; }, $talent->user->getTalentSkillsArray() ?? []))) }}"
                                                              onclick="toggleTalentSelection('{{ $talent->id }}', '{{ $talent->user->name }}', this, event)">>>
 
                                                 <!-- Selection indicator (Checkbox) -->
@@ -793,11 +820,11 @@
                                         }
                                     @endphp
                                     <option value="">Pilih durasi</option>
-                                    <option value="1-2 weeks">1-2 minggu</option>
-                                    <option value="1 month">1 bulan</option>
-                                    <option value="2-3 months">2-3 bulan</option>
-                                    <option value="3-6 months" {{ str_contains($projectDurationText, 'bulan') ? 'selected' : '' }}>3-6 bulan</option>
-                                    <option value="6+ months">6+ bulan</option>
+                                    <option value="1-2 minggu">1-2 minggu</option>
+                                    <option value="1 bulan">1 bulan</option>
+                                    <option value="2-3 bulan">2-3 bulan</option>
+                                    <option value="3-6 bulan" {{ str_contains($projectDurationText, 'bulan') ? 'selected' : '' }}>3-6 bulan</option>
+                                    <option value="6+ bulan">6+ bulan</option>
                                     <option value="Ongoing">Berkelanjutan</option>
                                     @if($project->expected_start_date && $project->expected_end_date)
                                         <option value="{{ $projectDurationText }}" selected>{{ $projectDurationText }}</option>
@@ -2215,6 +2242,111 @@ function viewTalentDetailsInModal(talentId, talentName) {
     // Use the existing talent details function with API call
     showBasicTalentInfo(talentId, false);
 }
+
+    // Search Functions for Talent Selection
+    function searchTalents() {
+        const searchInput = document.getElementById('talentSearchInput');
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        const talentCards = document.querySelectorAll('.talent-card');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const searchResultsText = document.getElementById('searchResultsText');
+        
+        let visibleCount = 0;
+        let totalCount = talentCards.length;
+        
+        // Show/hide clear button
+        if (searchTerm.length > 0) {
+            clearBtn.classList.remove('hidden');
+        } else {
+            clearBtn.classList.add('hidden');
+        }
+        
+        // Filter talent cards
+        talentCards.forEach(card => {
+            const talentName = card.getAttribute('data-talent-name') || '';
+            const talentSkills = card.getAttribute('data-talent-skills') || '';
+            
+            const nameMatch = talentName.includes(searchTerm.toLowerCase());
+            const skillsMatch = talentSkills.includes(searchTerm.toLowerCase());
+            
+            const slideContainer = card.closest('.talent-carousel-slide');
+            
+            if (searchTerm === '' || nameMatch || skillsMatch) {
+                if (slideContainer) {
+                    slideContainer.style.display = 'block';
+                    slideContainer.classList.remove('hidden');
+                }
+                card.style.display = 'block';
+                card.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                if (slideContainer) {
+                    slideContainer.style.display = 'none';
+                    slideContainer.classList.add('hidden');
+                }
+                card.style.display = 'none';
+                card.classList.add('hidden');
+            }
+        });
+        
+        // Update search results info
+        if (searchTerm.length > 0) {
+            searchResultsInfo.classList.remove('hidden');
+            if (visibleCount === 0) {
+                searchResultsText.textContent = `Tidak ada talenta yang ditemukan untuk "${searchInput.value}"`;
+                searchResultsInfo.className = 'mt-3 p-3 bg-red-50 border border-red-200 rounded-lg';
+                searchResultsText.className = 'text-red-800 text-sm';
+            } else {
+                searchResultsText.textContent = `Ditemukan ${visibleCount} talenta${visibleCount !== 1 ? '' : ''} untuk "${searchInput.value}"`;
+                searchResultsInfo.className = 'mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg';
+                searchResultsText.className = 'text-blue-800 text-sm';
+            }
+        } else {
+            searchResultsInfo.classList.add('hidden');
+        }
+        
+        // Recalculate carousel layout after filtering
+        if (typeof calculateLayout === 'function') {
+            calculateLayout();
+        }
+        if (typeof updateCarousel === 'function') {
+            updateCarousel();
+        }
+    }
+
+    function clearSearch() {
+        const searchInput = document.getElementById('talentSearchInput');
+        const clearBtn = document.getElementById('clearSearchBtn');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const talentCards = document.querySelectorAll('.talent-card');
+        
+        // Clear input
+        searchInput.value = '';
+        
+        // Hide clear button and results info
+        clearBtn.classList.add('hidden');
+        searchResultsInfo.classList.add('hidden');
+        
+        // Show all talent cards
+        talentCards.forEach(card => {
+            const slideContainer = card.closest('.talent-carousel-slide');
+            if (slideContainer) {
+                slideContainer.style.display = 'block';
+                slideContainer.classList.remove('hidden');
+            }
+            card.style.display = 'block';
+            card.classList.remove('hidden');
+        });
+        
+        // Recalculate carousel layout after clearing search
+        if (typeof calculateLayout === 'function') {
+            calculateLayout();
+        }
+        if (typeof updateCarousel === 'function') {
+            updateCarousel();
+        }
+    }
 </script>
 
 <style>

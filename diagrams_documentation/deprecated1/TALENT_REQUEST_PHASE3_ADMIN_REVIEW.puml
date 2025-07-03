@@ -1,0 +1,151 @@
+@startuml Talent_Request_Phase3_Admin_Review
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Fase 3: Review dan Persetujuan Admin
+
+actor "Admin" as Admin
+
+participant "Halaman Admin" as AdminView << View >>
+participant "Pengendali Admin" as AdminController << Controller >>
+participant "Data Permintaan" as RequestModel << Model >>
+participant "Layanan Notifikasi" as NotificationService << Service >>
+
+database "Basis Data" as Database
+
+== Review dan Persetujuan Admin ==
+Admin -> AdminView: 1. Buka halaman review permintaan
+activate AdminView
+note right of AdminView
+  Admin mengakses halaman
+  untuk melihat permintaan
+end note
+
+AdminView -> AdminController: 2. Minta daftar permintaan pending
+activate AdminController
+note right of AdminController
+  Memproses permintaan untuk
+  menampilkan daftar review
+end note
+
+AdminController -> RequestModel: 3. Ambil permintaan yang perlu direview
+activate RequestModel
+note right of RequestModel
+  Model mengambil data
+  permintaan dengan status pending
+end note
+
+RequestModel -> Database: 4. Cari permintaan pending
+activate Database
+note right of Database
+  Query untuk permintaan
+  yang menunggu persetujuan
+end note
+
+Database --> RequestModel: 5. Daftar permintaan pending
+deactivate Database
+note left of Database
+  Mengembalikan daftar
+  permintaan yang perlu direview
+end note
+
+RequestModel --> AdminController: 6. Data permintaan
+deactivate RequestModel
+note left of RequestModel
+  Data permintaan dikirim
+  ke controller
+end note
+
+AdminController --> AdminView: 7. Kirim data ke halaman
+deactivate AdminController
+note left of AdminController
+  Controller mengirim data
+  untuk ditampilkan
+end note
+
+AdminView --> Admin: 8. Tampilkan daftar permintaan
+deactivate AdminView
+note left of AdminView
+  Halaman menampilkan
+  permintaan yang perlu direview
+end note
+
+Admin -> AdminView: 9. Setujui/Tolak permintaan
+activate AdminView
+note right of AdminView
+  Admin membuat keputusan
+  untuk menyetujui atau menolak
+end note
+
+AdminView -> AdminController: 10. Kirim keputusan
+activate AdminController
+note right of AdminController
+  Keputusan admin dikirim
+  untuk diproses
+end note
+
+AdminController -> RequestModel: 11. Update status permintaan
+activate RequestModel
+note right of RequestModel
+  Model memperbarui status
+  sesuai keputusan admin
+end note
+
+RequestModel -> Database: 12. Simpan status baru
+activate Database
+note right of Database
+  Menyimpan perubahan status
+  (approved/rejected)
+end note
+
+Database --> RequestModel: 13. Konfirmasi update
+deactivate Database
+note left of Database
+  Konfirmasi bahwa status
+  berhasil diperbarui
+end note
+
+RequestModel --> AdminController: 14. Status berhasil diupdate
+deactivate RequestModel
+note left of RequestModel
+  Konfirmasi update status
+  ke controller
+end note
+
+AdminController -> NotificationService: 15. Kirim notifikasi hasil
+activate NotificationService
+note right of NotificationService
+  Mengirim pemberitahuan hasil
+  keputusan ke perekrut dan talenta
+end note
+
+NotificationService --> AdminController: 16. Notifikasi terkirim
+deactivate NotificationService
+note left of NotificationService
+  Konfirmasi pengiriman
+  notifikasi berhasil
+end note
+
+AdminController --> AdminView: 17. Konfirmasi ke halaman
+deactivate AdminController
+note left of AdminController
+  Mengirim konfirmasi
+  ke halaman admin
+end note
+
+AdminView --> Admin: 18. Tampilkan konfirmasi
+deactivate AdminView
+note left of AdminView
+  Menampilkan pesan
+  keputusan berhasil diproses
+end note
+
+note over Admin, Database
+  **Hasil Fase 3:**
+  Admin telah membuat keputusan
+  dan semua pihak terkait telah
+  diberitahu tentang hasil review
+end note
+
+@enduml

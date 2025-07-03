@@ -172,13 +172,11 @@ class TalentAdminController extends Controller
 
     public function manageTalents()
     {
-        // Optimize with selective loading and caching
-        $talents = Cache::remember('manage_talents_page', 120, function () {
-            return Talent::with(['user:id,name,email,avatar'])
-                ->select('id', 'user_id', 'is_active', 'created_at')
-                ->orderBy('created_at', 'desc')
-                ->paginate(10);
-        });
+        // Remove caching for pagination to work properly
+        $talents = Talent::with(['user:id,name,email,avatar'])
+            ->select('id', 'user_id', 'is_active', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         $title = 'Manage Talents';
         $roles = 'Talent Admin';
@@ -612,7 +610,7 @@ class TalentAdminController extends Controller
                 'job' => $talent->user->pekerjaan ?? null,
                 'is_active' => $talent->is_active,
                 'avatar' => $talent->user->avatar ? asset('storage/' . $talent->user->avatar) : null,
-                'joined_date' => $talent->created_at->format('M d, Y'),
+                'joined_date' => $talent->created_at->locale('id')->translatedFormat('d F Y'),
                 'skills' => $talent->user->getTalentSkillsArray() ?? [],
                 'portfolio' => [], // Can be extended later if needed
             ];
@@ -732,7 +730,7 @@ class TalentAdminController extends Controller
                     'project_title' => $request->project_title ?? 'Untitled Project',
                     'description' => Str::limit($request->project_description ?? 'No description', 100),
                     'status' => $request->status,
-                    'created_at' => $request->created_at->format('M d, Y')
+                    'created_at' => $request->created_at->locale('id')->translatedFormat('d F Y')
                 ];
             });
 
@@ -760,7 +758,7 @@ class TalentAdminController extends Controller
             'job' => $jobTitle,
             'avatar' => $recruiter->user->avatar ? asset('storage/' . $recruiter->user->avatar) : null,
             'is_active' => $recruiter->is_active,
-            'joined_date' => $recruiter->created_at->format('M d, Y H:i'),
+            'joined_date' => $recruiter->created_at->locale('id')->translatedFormat('d F Y H:i'),
             'company_details' => $companyDetails,
             'stats' => $stats,
             'recent_requests' => $recentRequests
@@ -861,8 +859,8 @@ class TalentAdminController extends Controller
             'requests_handled' => TalentRequest::where('updated_by', $user->id)->count(),
             'talents_managed' => Talent::count(), // Could be more specific if tracking who managed whom
             'recruiters_managed' => Recruiter::count(),
-            'join_date' => $user->created_at->format('M d, Y'),
-            'last_login' => $user->last_login_at ? $user->last_login_at->format('M d, Y H:i') : 'Never',
+            'join_date' => $user->created_at->locale('id')->translatedFormat('d F Y'),
+            'last_login' => $user->last_login_at ? $user->last_login_at->locale('id')->translatedFormat('d F Y H:i') : 'Never',
         ];
 
         return view('talent_admin.show_talent_admin', compact('user', 'stats', 'authUser', 'title', 'roles', 'assignedKelas'));
@@ -987,8 +985,8 @@ class TalentAdminController extends Controller
             'requests_handled' => TalentRequest::where('updated_by', $user->id)->count(),
             'talents_managed' => Talent::count(),
             'recruiters_managed' => Recruiter::count(),
-            'join_date' => $user->created_at->format('M d, Y'),
-            'last_login' => $user->last_login_at ? $user->last_login_at->format('M d, Y H:i') : 'Never',
+            'join_date' => $user->created_at->locale('id')->translatedFormat('d F Y'),
+            'last_login' => $user->last_login_at ? $user->last_login_at->locale('id')->translatedFormat('d F Y H:i') : 'Never',
         ];
 
         return response()->json([
@@ -996,8 +994,8 @@ class TalentAdminController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
-            'created_at' => $user->created_at->format('M d, Y H:i'),
-            'updated_at' => $user->updated_at->format('M d, Y H:i'),
+            'created_at' => $user->created_at->locale('id')->translatedFormat('d F Y H:i'),
+            'updated_at' => $user->updated_at->locale('id')->translatedFormat('d F Y H:i'),
             'stats' => $stats,
             // Note: We don't return password for security reasons
         ]);
@@ -1666,11 +1664,11 @@ class TalentAdminController extends Controller
                         'id' => $request->id,
                         'project_title' => $request->project_title,
                         'project_description' => $request->project_description,
-                        'completed_at' => $request->updated_at->format('M d, Y'),
+                        'completed_at' => $request->updated_at->locale('id')->translatedFormat('d F Y'),
                         'recruiter_name' => $request->recruiter && $request->recruiter->user ? $request->recruiter->user->name : 'Unknown',
                         'is_redflagged' => $request->is_redflagged,
                         'redflag_reason' => $request->redflag_reason,
-                        'redflagged_at' => $request->redflagged_at ? $request->redflagged_at->format('M d, Y') : null,
+                        'redflagged_at' => $request->redflagged_at ? $request->redflagged_at->locale('id')->translatedFormat('d F Y') : null,
                         'redflagged_by_name' => $request->redflaggedBy ? $request->redflaggedBy->name : null
                     ];
                 });
@@ -1770,7 +1768,7 @@ class TalentAdminController extends Controller
                     'project_title' => $request->project_title,
                     'project_description' => $request->project_description,
                     'redflag_reason' => $request->redflag_reason,
-                    'redflagged_at' => $request->redflagged_at ? $request->redflagged_at->format('M d, Y') : null,
+                    'redflagged_at' => $request->redflagged_at ? $request->redflagged_at->locale('id')->translatedFormat('d F Y') : null,
                     'redflagged_by_name' => $request->redflaggedBy ? $request->redflaggedBy->name : 'Unknown',
                     'recruiter_name' => $request->recruiter && $request->recruiter->user ? $request->recruiter->user->name : 'Unknown'
                 ];
@@ -1961,13 +1959,13 @@ class TalentAdminController extends Controller
                     'talent_accepted' => $request->talent_accepted,
                     'admin_accepted' => $request->admin_accepted,
                     'project_title' => $request->project ? $request->project->title : ($request->project_title ?? 'N/A'),
-                    'project_end_date' => $request->project ? ($request->project->expected_end_date ? $request->project->expected_end_date->format('d M Y') : 'N/A') : ($request->project_end_date ? $request->project_end_date->format('d M Y') : 'N/A'),
-                    'created_at' => $request->created_at->format('d M Y H:i'),
-                    'updated_at' => $request->updated_at->format('d M Y H:i'),
+                    'project_end_date' => $request->project ? ($request->project->expected_end_date ? $request->project->expected_end_date->locale('id')->translatedFormat('d F Y') : 'N/A') : ($request->project_end_date ? $request->project_end_date->locale('id')->translatedFormat('d F Y') : 'N/A'),
+                    'created_at' => $request->created_at->locale('id')->translatedFormat('d F Y H:i'),
+                    'updated_at' => $request->updated_at->locale('id')->translatedFormat('d F Y H:i'),
                     'talent_project_count' => $request->talent ? $request->talent->assignments->count() : 0,
                     'talent_redflag_count' => $request->talent ? $request->talent->getRedflagCount() : 0,
                     'talent_metrics' => $talentMetrics,
-                    'workflow_completed_at' => $request->workflow_completed_at ? $request->workflow_completed_at->format('d M Y H:i') : null
+                    'workflow_completed_at' => $request->workflow_completed_at ? $request->workflow_completed_at->locale('id')->translatedFormat('d F Y H:i') : null
                 ];
             });
 

@@ -1,0 +1,80 @@
+@startuml Talent_Request_Phase1_Search
+!theme plain
+skinparam monochrome true
+skinparam shadowing false
+
+title Fase 1: Pencarian dan Pemilihan Talenta
+
+actor "Perekrut" as Recruiter
+
+participant "Halaman Perekrut" as RecruiterView << View >>
+participant "Pengendali Perekrut" as RecruiterController << Controller >>
+participant "Data Pengguna" as UserModel << Model >>
+
+database "Basis Data" as Database
+
+== Pencarian dan Pemilihan Talenta ==
+Recruiter -> RecruiterView: 1. Buka halaman cari talenta
+activate RecruiterView
+note right of RecruiterView
+  Perekrut mengakses sistem
+  untuk mencari talenta
+end note
+
+RecruiterView -> RecruiterController: 2. Tampilkan daftar talenta
+activate RecruiterController
+note right of RecruiterController
+  Sistem memproses permintaan
+  untuk menampilkan talenta
+end note
+
+RecruiterController -> UserModel: 3. Ambil talenta yang tersedia
+activate UserModel
+note right of UserModel
+  Model mengambil data talenta
+  dari basis data
+end note
+
+UserModel -> Database: 4. Cari talenta aktif
+activate Database
+note right of Database
+  Query database untuk
+  talenta dengan status aktif
+end note
+
+Database --> UserModel: 5. Daftar talenta
+deactivate Database
+note left of Database
+  Mengembalikan hasil
+  pencarian talenta
+end note
+
+UserModel --> RecruiterController: 6. Data talenta
+deactivate UserModel
+note left of UserModel
+  Data talenta dikirim
+  ke controller
+end note
+
+RecruiterController --> RecruiterView: 7. Kirim data ke halaman
+deactivate RecruiterController
+note left of RecruiterController
+  Controller mengirim data
+  untuk ditampilkan
+end note
+
+RecruiterView --> Recruiter: 8. Tampilkan daftar talenta
+deactivate RecruiterView
+note left of RecruiterView
+  Halaman menampilkan
+  daftar talenta tersedia
+end note
+
+note over Recruiter, Database
+  **Hasil Fase 1:**
+  Perekrut dapat melihat daftar talenta
+  yang tersedia dan memilih kandidat
+  yang sesuai untuk permintaan
+end note
+
+@enduml

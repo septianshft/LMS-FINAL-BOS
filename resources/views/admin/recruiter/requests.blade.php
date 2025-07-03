@@ -333,7 +333,7 @@
                                                             </div>
                                                             <div>
                                                                 <div class="text-xs text-purple-600 font-semibold uppercase tracking-wide">Durasi</div>
-                                                                <div class="font-bold text-purple-800">{{ $request->project_duration }}</div>
+                                                                <div class="font-bold text-purple-800">{{ preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) }}</div>
                                                             </div>
                                                         </div>
                                                     @endif
@@ -363,7 +363,7 @@
                                             <!-- Submitted Date Column -->
                                             <td class="py-6 px-6">
                                                 <div class="text-sm">
-                                                    <div class="font-semibold text-gray-900">{{ $request->created_at->format('M d, Y') }}</div>
+                                                    <div class="font-semibold text-gray-900">{{ $request->created_at->locale('id')->translatedFormat('d F Y') }}</div>
                                                     <div class="text-gray-500 text-xs">{{ $request->created_at->format('h:i A') }}</div>
                                                     <div class="text-gray-400 text-xs mt-1">{{ $request->created_at->diffForHumans() }}</div>
                                                 </div>
@@ -379,7 +379,7 @@
                                                                 {{ json_encode($request->project_description) }},
                                                                 {{ json_encode($request->requirements ?? '') }},
                                                                 {{ json_encode($request->budget_range ?? 'Tidak ditentukan') }},
-                                                                {{ json_encode($request->project_duration ?? 'Tidak ditentukan') }}
+                                                                {{ json_encode($request->project_duration ? preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) : 'Tidak ditentukan') }}
                                                             )">>
                                                         <i class="fas fa-eye mr-1.5 text-xs"></i>Lihat Detail
                                                     </button>
@@ -485,7 +485,7 @@
                                                 </div>
                                                 <span class="text-xs text-purple-600 font-bold uppercase tracking-wide">Durasi</span>
                                             </div>
-                                            <div class="font-bold text-purple-800 text-sm">{{ $request->project_duration }}</div>
+                                            <div class="font-bold text-purple-800 text-sm">{{ preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) }}</div>
                                         </div>
                                     @endif
                                 </div>
@@ -498,7 +498,7 @@
                                         </div>
                                         <div>
                                             <div class="text-xs text-gray-600 font-semibold uppercase tracking-wide">Dikirim</div>
-                                            <div class="font-bold text-gray-800">{{ $request->created_at->format('M d, Y') }}</div>
+                                            <div class="font-bold text-gray-800">{{ $request->created_at->locale('id')->translatedFormat('d F Y') }}</div>
                                             <div class="text-gray-500 text-xs">{{ $request->created_at->diffForHumans() }}</div>
                                         </div>
                                     </div>
@@ -513,7 +513,7 @@
                                                 {{ json_encode($request->project_description) }},
                                                 {{ json_encode($request->requirements ?? '') }},
                                                 {{ json_encode($request->budget_range ?? 'Tidak ditentukan') }},
-                                                {{ json_encode($request->project_duration ?? 'Tidak ditentukan') }}
+                                                {{ json_encode($request->project_duration ? preg_replace(['/\b(\d+)\s+months?\b/', '/\b(\d+)\s+weeks?\b/', '/\b(\d+)\s+days?\b/', '/\bmonths?\b/', '/\bweeks?\b/', '/\bdays?\b/'], ['$1 bulan', '$1 minggu', '$1 hari', 'bulan', 'minggu', 'hari'], $request->project_duration) : 'Tidak ditentukan') }}
                                             )">
                                         <i class="fas fa-eye mr-2"></i>Lihat Detail
                                     </button>

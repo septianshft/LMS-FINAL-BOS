@@ -106,7 +106,7 @@
                                         @endif
                                     </td>
                                     <td class="py-6 px-4">
-                                        <div class="text-gray-900 font-medium text-sm">{{ $recruiter->created_at->format('M d, Y') }}</div>
+                                        <div class="text-gray-900 font-medium text-sm">{{ $recruiter->created_at->locale('id')->translatedFormat('d F Y') }}</div>
                                         <div class="text-gray-500 text-xs">{{ $recruiter->created_at->format('H:i') }}</div>
                                     </td>
                                     <td class="py-6 px-4">
@@ -259,7 +259,7 @@
                 <!-- Content will be loaded here -->
                 <div class="text-center py-8">
                     <i class="fas fa-spinner fa-spin text-3xl text-indigo-600 mb-4"></i>
-                    <p class="text-gray-600">Loading recruiter details...</p>
+                    <p class="text-gray-600">Memuat detail perekrut...</p>
                 </div>
             </div>
         </div>
@@ -274,7 +274,7 @@
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
                 <h3 class="text-2xl font-bold text-gray-900 flex items-center">
                     <i class="fas fa-edit text-blue-600 mr-3"></i>
-                    Edit Recruiter
+                    Edit Perekrut
                 </h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 transition-colors">
                     <i class="fas fa-times text-xl"></i>
@@ -291,11 +291,11 @@
                 <div class="bg-gray-50 rounded-xl p-6">
                     <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-user text-indigo-600 mr-2"></i>
-                        Basic Information
+                        Informasi Dasar
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="editName" class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                            <label for="editName" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap *</label>
                             <input type="text" id="editName" name="name" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
@@ -305,7 +305,7 @@
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="editPhone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <label for="editPhone" class="block text-sm font-medium text-gray-700 mb-1">Telepon</label>
                             <input type="text" id="editPhone" name="phone"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
@@ -313,12 +313,12 @@
                             <!-- Empty space for grid alignment -->
                         </div>
                         <div>
-                            <label for="editPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password (leave blank to keep current)</label>
+                            <label for="editPassword" class="block text-sm font-medium text-gray-700 mb-1">Password Baru (kosongkan untuk tetap menggunakan yang lama)</label>
                             <input type="password" id="editPassword" name="password"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="editPasswordConfirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                            <label for="editPasswordConfirmation" class="block text-sm font-medium text-gray-700 mb-1">Konfirmasi Password Baru</label>
                             <input type="password" id="editPasswordConfirmation" name="password_confirmation"
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
@@ -329,19 +329,19 @@
                 <div class="bg-blue-50 rounded-xl p-6">
                     <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-building text-blue-600 mr-2"></i>
-                        Company Information
+                        Informasi Perusahaan
                     </h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label for="editCompanyName" class="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                            <label for="editCompanyName" class="block text-sm font-medium text-gray-700 mb-1">Nama Perusahaan *</label>
                             <input type="text" id="editCompanyName" name="company_name" required
                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
                         <div>
-                            <label for="editIndustry" class="block text-sm font-medium text-gray-700 mb-1">Industry *</label>
+                            <label for="editIndustry" class="block text-sm font-medium text-gray-700 mb-1">Industri *</label>
                             <select id="editIndustry" name="industry" required
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select Industry</option>
+                                <option value="">Pilih Industri</option>
                                 <option value="Technology">Technology</option>
                                 <option value="Finance">Finance</option>
                                 <option value="Healthcare">Healthcare</option>
@@ -354,16 +354,16 @@
                             </select>
                         </div>
                         <div>
-                            <label for="editCompanySize" class="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+                            <label for="editCompanySize" class="block text-sm font-medium text-gray-700 mb-1">Ukuran Perusahaan</label>
                             <select id="editCompanySize" name="company_size"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                <option value="">Select Size</option>
-                                <option value="1-10">1-10 employees</option>
-                                <option value="11-50">11-50 employees</option>
-                                <option value="51-200">51-200 employees</option>
-                                <option value="201-500">201-500 employees</option>
-                                <option value="501-1000">501-1000 employees</option>
-                                <option value="1000+">1000+ employees</option>
+                                <option value="">Pilih Ukuran</option>
+                                <option value="1-10">1-10 karyawan</option>
+                                <option value="11-50">11-50 karyawan</option>
+                                <option value="51-200">51-200 karyawan</option>
+                                <option value="201-500">201-500 karyawan</option>
+                                <option value="501-1000">501-1000 karyawan</option>
+                                <option value="1000+">1000+ karyawan</option>
                             </select>
                         </div>
                         <div>
@@ -373,15 +373,15 @@
                                    placeholder="https://example.com">
                         </div>
                         <div class="md:col-span-2">
-                            <label for="editAddress" class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                            <label for="editAddress" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
                             <textarea id="editAddress" name="address" rows="2"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
                         </div>
                         <div class="md:col-span-2">
-                            <label for="editCompanyDescription" class="block text-sm font-medium text-gray-700 mb-1">Company Description</label>
+                            <label for="editCompanyDescription" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi Perusahaan</label>
                             <textarea id="editCompanyDescription" name="company_description" rows="3"
                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                      placeholder="Brief description of the company..."></textarea>
+                                      placeholder="Deskripsi singkat tentang perusahaan..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -390,12 +390,12 @@
                 <div class="flex justify-end space-x-4 pt-6 border-t border-gray-200">
                     <button type="button" onclick="closeEditModal()"
                             class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                        Cancel
+                        Batal
                     </button>
                     <button type="submit"
                             class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
                         <i class="fas fa-save mr-2"></i>
-                        Update Recruiter
+                        Perbarui Perekrut
                     </button>
                 </div>
             </form>
@@ -431,13 +431,13 @@ function editRecruiter(recruiterId) {
                 document.getElementById('editAddress').value = recruiter.address || '';
                 document.getElementById('editCompanyDescription').value = recruiter.company_description || '';
             } else {
-                showNotification('error', 'Failed to load recruiter data');
+                showNotification('error', 'Gagal memuat data perekrut');
                 closeEditModal();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showNotification('error', 'Error loading recruiter data');
+            showNotification('error', 'Kesalahan memuat data perekrut');
             closeEditModal();
         });
 }
@@ -456,7 +456,7 @@ document.getElementById('editRecruiterForm').addEventListener('submit', function
     // Show loading state
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Updating...';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Memperbarui...';
     submitBtn.disabled = true;
 
     // Convert FormData to JSON
@@ -486,7 +486,7 @@ document.getElementById('editRecruiterForm').addEventListener('submit', function
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            showNotification('success', data.message || 'Recruiter updated successfully!');
+            showNotification('success', data.message || 'Perekrut berhasil diperbarui!');
             closeEditModal();
 
             // Refresh the page to show updated data
@@ -494,12 +494,12 @@ document.getElementById('editRecruiterForm').addEventListener('submit', function
                 window.location.reload();
             }, 1500);
         } else {
-            showNotification('error', data.message || 'Failed to update recruiter');
+            showNotification('error', data.message || 'Gagal memperbarui perekrut');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        showNotification('error', 'An error occurred while updating the recruiter');
+        showNotification('error', 'Terjadi kesalahan saat memperbarui perekrut');
     })
     .finally(() => {
         // Restore button state
@@ -523,7 +523,7 @@ function viewRecruiterDetails(recruiterId) {
     document.getElementById('recruiterDetailsContent').innerHTML = `
         <div class="text-center py-8">
             <i class="fas fa-spinner fa-spin text-3xl text-indigo-600 mb-4"></i>
-            <p class="text-gray-600">Loading recruiter details...</p>
+            <p class="text-gray-600">Memuat detail perekrut...</p>
         </div>
     `;
 
@@ -537,8 +537,8 @@ function viewRecruiterDetails(recruiterId) {
             document.getElementById('recruiterDetailsContent').innerHTML = `
                 <div class="text-center py-8">
                     <i class="fas fa-exclamation-triangle text-3xl text-red-600 mb-4"></i>
-                    <p class="text-red-600">Error loading recruiter details</p>
-                    <p class="text-gray-600 text-sm mt-2">Please try again later</p>
+                    <p class="text-red-600">Kesalahan memuat detail perekrut</p>
+                    <p class="text-gray-600 text-sm mt-2">Silakan coba lagi nanti</p>
                 </div>
             `;
         });
@@ -557,11 +557,11 @@ function displayRecruiterDetails(recruiter) {
                         </div>`
                     }
                     <h4 class="text-xl font-bold text-gray-900 mb-2">${recruiter.name}</h4>
-                    <p class="text-gray-600 mb-2">${recruiter.company || 'Company not specified'}</p>
-                    <p class="text-gray-500 text-sm mb-4">${recruiter.job || 'Position not specified'}</p>
+                    <p class="text-gray-600 mb-2">${recruiter.company || 'Perusahaan tidak ditentukan'}</p>
+                    <p class="text-gray-500 text-sm mb-4">${recruiter.job || 'Posisi tidak ditentukan'}</p>
                     <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${recruiter.is_active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
                         <i class="fas fa-${recruiter.is_active ? 'check-circle' : 'pause-circle'} mr-1"></i>
-                        ${recruiter.is_active ? 'Active' : 'Inactive'}
+                        ${recruiter.is_active ? 'Aktif' : 'Tidak Aktif'}
                     </div>
                 </div>
             </div>
@@ -572,7 +572,7 @@ function displayRecruiterDetails(recruiter) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-address-card text-indigo-600 mr-2"></i>
-                        Contact Information
+                        Informasi Kontak
                     </h5>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
@@ -581,14 +581,14 @@ function displayRecruiterDetails(recruiter) {
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Phone</label>
-                            <p class="text-gray-900 font-medium">${recruiter.phone || 'Not provided'}</p>
+                            <p class="text-gray-900 font-medium">${recruiter.phone || 'Tidak disediakan'}</p>
                         </div>
                         <div>
                             <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Company</label>
-                            <p class="text-gray-900 font-medium">${recruiter.company || 'Not provided'}</p>
+                            <p class="text-gray-900 font-medium">${recruiter.company || 'Tidak disediakan'}</p>
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Joined Date</label>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Tanggal Bergabung</label>
                             <p class="text-gray-900 font-medium">${recruiter.joined_date}</p>
                         </div>
                     </div>
@@ -599,16 +599,16 @@ function displayRecruiterDetails(recruiter) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-building text-purple-600 mr-2"></i>
-                        Company Information
+                        Informasi Perusahaan
                     </h5>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Industry</label>
-                            <p class="text-gray-900 font-medium">${recruiter.company_details.industry || 'Not specified'}</p>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Industri</label>
+                            <p class="text-gray-900 font-medium">${recruiter.company_details.industry || 'Tidak ditentukan'}</p>
                         </div>
                         <div>
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Company Size</label>
-                            <p class="text-gray-900 font-medium">${recruiter.company_details.size || 'Not specified'}</p>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Ukuran Perusahaan</label>
+                            <p class="text-gray-900 font-medium">${recruiter.company_details.size || 'Tidak ditentukan'}</p>
                         </div>
                         <div class="sm:col-span-2">
                             <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Website</label>
@@ -618,13 +618,13 @@ function displayRecruiterDetails(recruiter) {
                                         ${recruiter.company_details.website}
                                         <i class="fas fa-external-link-alt ml-1 text-xs"></i>
                                     </a>` :
-                                    'Not provided'
+                                    'Tidak disediakan'
                                 }
                             </p>
                         </div>
                         ${recruiter.company_details.description ? `
                         <div class="sm:col-span-2">
-                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</label>
+                            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Deskripsi</label>
                             <p class="text-gray-900 font-medium">${recruiter.company_details.description}</p>
                         </div>
                         ` : ''}
@@ -636,24 +636,24 @@ function displayRecruiterDetails(recruiter) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-chart-bar text-green-600 mr-2"></i>
-                        Recruitment Activity
+                        Aktivitas Rekrutmen
                     </h5>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div class="text-center">
                             <div class="text-2xl font-bold text-blue-600">${recruiter.stats?.total_requests || 0}</div>
-                            <div class="text-xs text-gray-500">Total Requests</div>
+                            <div class="text-xs text-gray-500">Total Permintaan</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-green-600">${recruiter.stats?.approved_requests || 0}</div>
-                            <div class="text-xs text-gray-500">Approved</div>
+                            <div class="text-xs text-gray-500">Disetujui</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-orange-600">${recruiter.stats?.pending_requests || 0}</div>
-                            <div class="text-xs text-gray-500">Pending</div>
+                            <div class="text-xs text-gray-500">Menunggu</div>
                         </div>
                         <div class="text-center">
                             <div class="text-2xl font-bold text-purple-600">${recruiter.stats?.success_rate || 0}%</div>
-                            <div class="text-xs text-gray-500">Success Rate</div>
+                            <div class="text-xs text-gray-500">Tingkat Keberhasilan</div>
                         </div>
                     </div>
                 </div>
@@ -663,7 +663,7 @@ function displayRecruiterDetails(recruiter) {
                 <div class="bg-white border border-gray-200 rounded-2xl p-6">
                     <h5 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <i class="fas fa-history text-yellow-600 mr-2"></i>
-                        Recent Talent Requests
+                        Permintaan Talenta Terbaru
                     </h5>
                     <div class="space-y-3">
                         ${recruiter.recent_requests.slice(0, 3).map(request => `
@@ -692,14 +692,14 @@ function displayRecruiterDetails(recruiter) {
         <!-- Action Buttons -->
         <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
             <button onclick="closeRecruiterModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors">
-                Close
+                Tutup
             </button>
             <button onclick="deleteRecruiter(${recruiter.id}, '${recruiter.name}')" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors btn-delete">
                 <i class="fas fa-trash mr-2"></i>
-                Delete Account
+                Hapus Akun
             </button>
             <button onclick="toggleRecruiterStatus(${recruiter.id}, ${recruiter.is_active})" class="px-6 py-2 ${recruiter.is_active ? 'bg-orange-600 hover:bg-orange-700' : 'bg-green-600 hover:bg-green-700'} text-white rounded-lg transition-colors">
-                ${recruiter.is_active ? 'Deactivate' : 'Activate'} Recruiter
+                ${recruiter.is_active ? 'Nonaktifkan' : 'Aktifkan'} Perekrut
             </button>
         </div>
     `;
@@ -712,7 +712,7 @@ function closeRecruiterModal() {
 }
 
 function toggleRecruiterStatus(recruiterId, isActive) {
-    if (confirm(`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this recruiter?`)) {
+    if (confirm(`Apakah Anda yakin ingin ${isActive ? 'menonaktifkan' : 'mengaktifkan'} perekrut ini?`)) {
         // Submit the form or make an AJAX request
         const form = document.createElement('form');
         form.method = 'POST';
@@ -739,13 +739,13 @@ function toggleRecruiterStatus(recruiterId, isActive) {
 function deleteRecruiter(recruiterId, recruiterName) {
     // Enhanced confirmation dialog
     const confirmed = confirm(
-        `⚠️ WARNING: Delete Recruiter Account\n\n` +
-        `Are you absolutely sure you want to delete "${recruiterName}"?\n\n` +
-        `This action will:\n` +
-        `• Permanently delete the recruiter account\n` +
-        `• Remove all associated data\n` +
-        `• Cannot be undone\n\n` +
-        `Type "DELETE" to confirm this action.`
+        `⚠️ PERINGATAN: Hapus Akun Perekrut\n\n` +
+        `Apakah Anda benar-benar yakin ingin menghapus "${recruiterName}"?\n\n` +
+        `Tindakan ini akan:\n` +
+        `• Menghapus akun perekrut secara permanen\n` +
+        `• Menghapus semua data terkait\n` +
+        `• Tidak dapat dibatalkan\n\n` +
+        `Ketik "DELETE" untuk mengkonfirmasi tindakan ini.`
     );
 
     if (!confirmed) {
@@ -754,11 +754,11 @@ function deleteRecruiter(recruiterId, recruiterName) {
 
     // Additional security confirmation
     const confirmText = prompt(
-        `To confirm deletion of "${recruiterName}", please type "DELETE" (in uppercase):`
+        `Untuk mengkonfirmasi penghapusan "${recruiterName}", silakan ketik "DELETE" (dalam huruf besar):`
     );
 
     if (confirmText !== 'DELETE') {
-        alert('❌ Deletion cancelled. Confirmation text did not match.');
+        alert('❌ Penghapusan dibatalkan. Teks konfirmasi tidak cocok.');
         return;
     }
 
@@ -771,8 +771,8 @@ function deleteRecruiter(recruiterId, recruiterName) {
             <div class="mb-4">
                 <i class="fas fa-spinner fa-spin text-4xl text-red-600"></i>
             </div>
-            <h3 class="text-lg font-semibold text-gray-900 mb-2">Deleting Recruiter...</h3>
-            <p class="text-gray-600">Please wait while we process the deletion.</p>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Menghapus Perekrut...</h3>
+            <p class="text-gray-600">Harap tunggu sementara kami memproses penghapusan.</p>
         </div>
     `;
     document.body.appendChild(loadingModal);
@@ -793,7 +793,7 @@ function deleteRecruiter(recruiterId, recruiterName) {
 
         if (data.success) {
             // Success notification
-            showNotification('success', data.message || 'Recruiter deleted successfully!');
+            showNotification('success', data.message || 'Perekrut berhasil dihapus!');
 
             // Close modal if open
             closeRecruiterModal();
@@ -804,7 +804,7 @@ function deleteRecruiter(recruiterId, recruiterName) {
             }, 1500);
         } else {
             // Error notification
-            showNotification('error', data.message || 'Failed to delete recruiter.');
+            showNotification('error', data.message || 'Gagal menghapus perekrut.');
         }
     })
     .catch(error => {
@@ -814,7 +814,7 @@ function deleteRecruiter(recruiterId, recruiterName) {
         }
 
         console.error('Delete error:', error);
-        showNotification('error', 'An error occurred while deleting the recruiter. Please try again.');
+        showNotification('error', 'Terjadi kesalahan saat menghapus perekrut. Silakan coba lagi.');
     });
 }
 

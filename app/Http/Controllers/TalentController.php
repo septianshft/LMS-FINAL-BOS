@@ -606,4 +606,54 @@ class TalentController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Export talent requests to PDF
+     */
+    public function exportMyRequestsPDF()
+    {
+        try {
+            $userId = Auth::id();
+            $user = User::with('talent')->find($userId);
+            $talent = $user->talent;
+
+            if (!$talent) {
+                return redirect()->route('talent.my_requests')
+                    ->with('error', 'Profil talent tidak ditemukan.');
+            }
+
+            // Get all requests for this talent (without pagination)
+            $requests = TalentRequest::with(['recruiter.user'])
+                ->where('talent_id', $talent->id)
+                ->latest()
+                ->get();
+
+            // Calculate statistics
+            $stats = [
+                'total' => $requests->count(),
+                'pending' => $requests->where('status', 'pending')->count(),
+                'accepted' => $requests->whereIn('status', ['approved', 'accepted'])->count(),
+                'rejected' => $requests->where('status', 'rejected')->count(),
+                'completed' => $requests->where('both_parties_accepted', true)->count(),
+            ];
+
+            $data = [
+                'user' => $user,
+                'requests' => $requests,
+                'stats' => $stats
+            ];
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.talent.my-requests-pdf', $data);
+            $pdf->setPaper('a4', 'landscape');
+
+            $filename = 'permintaan-saya-' . now()->format('Y-m-d-H-i-s') . '.pdf';
+
+            return $pdf->download($filename);
+
+        } catch (Exception $e) {
+            Log::error('Export my requests PDF error: ' . $e->getMessage());
+            return redirect()->route('talent.my_requests')
+                ->with('error', 'Gagal mengekspor permintaan ke PDF. Silakan coba lagi nanti.');
+        }
+    }
 }

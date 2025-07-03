@@ -744,9 +744,25 @@ function rejectRequest(requestId) {
 
 // PDF Download Function
 function downloadPDF() {
-    // Placeholder function for PDF download
-    // This will be implemented later with actual PDF generation logic
-    alert('Fitur unduh PDF akan segera diimplementasikan!');
+    // Redirect to the PDF export route
+    window.location.href = '{{ route("talent.export.my_requests_pdf") }}';
+    
+    // Show loading message
+    const loadingToast = document.createElement('div');
+    loadingToast.className = 'fixed bottom-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg z-50 flex items-center';
+    loadingToast.innerHTML = `
+        <i class="fas fa-spinner fa-spin mr-2"></i>
+        <span>Menghasilkan PDF, harap tunggu...</span>
+    `;
+    document.body.appendChild(loadingToast);
+    
+    // Remove the toast after 3 seconds
+    setTimeout(() => {
+        if (document.body.contains(loadingToast)) {
+            document.body.removeChild(loadingToast);
+        }
+    }, 3000);
+    
     console.log('PDF download requested for talent requests page');
 }
 </script>

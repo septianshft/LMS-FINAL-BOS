@@ -243,6 +243,7 @@ Route::middleware('auth')->group(function () {
         Route::get('talent/my-requests', [TalentController::class, 'myRequests'])->name('talent.my_requests');
         Route::get('talent/api/my-requests', [TalentController::class, 'getMyRequests'])->name('talent.api.my_requests');
         Route::get('talent/api/request/{talentRequest}', [TalentController::class, 'getRequestDetails'])->name('talent.api.request_details');
+        Route::get('talent/export/my-requests-pdf', [TalentController::class, 'exportMyRequestsPDF'])->name('talent.export.my_requests_pdf');
     });
 
     // Recruiter Routes

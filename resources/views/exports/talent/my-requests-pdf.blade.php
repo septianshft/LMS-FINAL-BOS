@@ -96,6 +96,16 @@
             font-size: 10px;
         }
 
+        table th:nth-child(1) { width: 4%; }
+        table th:nth-child(2) { width: 22%; }
+        table th:nth-child(3) { width: 13%; }
+        table th:nth-child(4) { width: 13%; }
+        table th:nth-child(5) { width: 10%; }
+        table th:nth-child(6) { width: 8%; }
+        table th:nth-child(7) { width: 8%; }
+        table th:nth-child(8) { width: 11%; }
+        table th:nth-child(9) { width: 11%; }
+
         th {
             background: #4f46e5;
             color: white;
@@ -165,6 +175,8 @@
         <div><strong>Email:</strong> {{ $user->email }}</div>
         <div><strong>Tanggal Laporan:</strong> {{ now()->locale('id')->translatedFormat('d F Y, H:i') }}</div>
         <div><strong>Total Permintaan:</strong> {{ $requests->count() }}</div>
+        <div><strong>Proyek Aktif:</strong> {{ $requests->whereNotNull('project_end_date')->where('project_end_date', '>=', now())->count() }}</div>
+        <div><strong>Proyek Berakhir:</strong> {{ $requests->whereNotNull('project_end_date')->where('project_end_date', '<', now())->count() }}</div>
     </div>
 
     <div class="stats-summary">
@@ -199,7 +211,8 @@
                 <th>Anggaran</th>
                 <th>Durasi</th>
                 <th>Status</th>
-                <th>Tanggal</th>
+                <th>Tanggal Dibuat</th>
+                <th>Tanggal Berakhir</th>
             </tr>
         </thead>
         <tbody>
@@ -239,6 +252,7 @@
                     <td>{{ $request->project_duration }}</td>
                     <td><span class="status-badge {{ $statusClass }}">{{ $statusText }}</span></td>
                     <td>{{ $request->created_at->locale('id')->translatedFormat('d M Y') }}</td>
+                    <td>{{ $request->project_end_date ? $request->project_end_date->locale('id')->translatedFormat('d M Y') : 'Belum ditentukan' }}</td>
                 </tr>
             @endforeach
         </tbody>

@@ -447,7 +447,10 @@
                         <div class="talent-card bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 p-6 relative {{ $redflagSummary['has_redflags'] ? 'has-redflags' : '' }}" 
                              data-talent-id="{{ $talent->id }}"
                              data-talent-name="{{ strtolower($talent->user->name ?? '') }}" 
-                             data-talent-skills="{{ strtolower($skillsString) }}">
+                             data-talent-skills="{{ strtolower($skillsString) }}"
+                             data-talent-certificates="{{ $metrics['certifications']['total_certificates'] ?? 0 }}"
+                             data-talent-quiz-avg="{{ $metrics['quiz_performance']['average_score'] ?? 0 }}"
+                             data-talent-availability="{{ isset($talent->availability_status) && $talent->availability_status['available'] ? 'available' : 'unavailable' }}">
                             <!-- Compare Checkbox (Hidden by default) -->
                             <div class="compare-checkbox hidden absolute top-4 right-4 z-10">
                                 @php
@@ -802,11 +805,11 @@
                                 <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                         id="projectDuration" name="project_duration" required>
                                     <option value="">Pilih durasi</option>
-                                    <option value="1-2 minggu">1-2 minggu</option>
+                                    <option value="1 minggu">1 minggu</option>
                                     <option value="1 bulan">1 bulan</option>
-                                    <option value="2-3 bulan">2-3 bulan</option>
-                                    <option value="3-6 bulan">3-6 bulan</option>
-                                    <option value="6+ bulan">6+ bulan</option>
+                                    <option value="2 bulan">2 bulan</option>
+                                    <option value="3 bulan">3 bulan</option>
+                                    <option value="6 bulan">6 bulan</option>
                                     <option value="Ongoing">Ongoing</option>
                                 </select>
                                 <p class="text-xs text-gray-500 mt-1">Diperlukan untuk pemblokiran waktu guna mencegah proyek yang tumpang tindih</p>
@@ -983,6 +986,52 @@ function showAllSkills(talentId, talentName, skills, isRedflagged, redflagReason
     document.getElementById('totalSkillsCount').textContent = totalSkills;
     document.getElementById('advancedSkillsCount').textContent = advancedCount;
     document.getElementById('intermediateSkillsCount').textContent = intermediateCount;
+
+    // Show modal
+    $('#talentSkillsModal').modal('show');
+}
+
+function showAllSkillsForSearch(talentId, talentName, skillsString) {
+    // Parse skills from comma-separated string
+    const skills = skillsString.split(',').filter(skill => skill.trim() !== '').map(skill => ({
+        skill_name: skill.trim(),
+        proficiency: 'Unknown'
+    }));
+    
+    // Update modal title
+    document.getElementById('skillsModalTalentName').textContent = talentName;
+    document.getElementById('talentSkillsModalLabel').innerHTML = `
+        <div class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
+            <i class="fas fa-star text-white"></i>
+        </div>
+        ${talentName}'s Skills
+    `;
+
+    // Populate skills container
+    const skillsContainer = document.getElementById('allSkillsContainer');
+    skillsContainer.innerHTML = '';
+
+    skills.forEach(skill => {
+        // Create skill card
+        const skillCard = document.createElement('div');
+        skillCard.className = 'bg-white border rounded-lg p-4 hover:shadow-md transition-shadow';
+
+        skillCard.innerHTML = `
+            <div class="flex justify-between items-start mb-2">
+                <h6 class="font-semibold text-gray-900 text-sm">${skill.skill_name || 'Keahlian Tidak Diketahui'}</h6>
+                <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    Tidak Diketahui
+                </span>
+            </div>
+        `;
+
+        skillsContainer.appendChild(skillCard);
+    });
+
+    // Update summary counts
+    document.getElementById('totalSkillsCount').textContent = skills.length;
+    document.getElementById('advancedSkillsCount').textContent = 0;
+    document.getElementById('intermediateSkillsCount').textContent = 0;
 
     // Show modal
     $('#talentSkillsModal').modal('show');
@@ -1815,55 +1864,278 @@ document.addEventListener('DOMContentLoaded', function() {
 // Search Functions
 function searchTalents() {
     const searchInput = document.getElementById('talentSearchInput');
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const talentCards = document.querySelectorAll('.talent-card');
+    const searchTerm = searchInput.value.trim();
     const clearBtn = document.getElementById('clearSearchBtn');
     const searchResultsInfo = document.getElementById('searchResultsInfo');
     const searchResultsText = document.getElementById('searchResultsText');
-    
-    let visibleCount = 0;
-    let totalCount = talentCards.length;
+    const talentGrid = document.querySelector('.talent-grid');
     
     // Show/hide clear button
     if (searchTerm.length > 0) {
         clearBtn.classList.remove('hidden');
     } else {
         clearBtn.classList.add('hidden');
+        // If search is cleared, reload the page to show original paginated results
+        if (searchTerm === '') {
+            location.reload();
+            return;
+        }
     }
     
-    // Filter talent cards
-    talentCards.forEach(card => {
-        const talentName = card.getAttribute('data-talent-name') || '';
-        const talentSkills = card.getAttribute('data-talent-skills') || '';
-        
-        const nameMatch = talentName.includes(searchTerm.toLowerCase());
-        const skillsMatch = talentSkills.includes(searchTerm.toLowerCase());
-        
-        if (searchTerm === '' || nameMatch || skillsMatch) {
-            card.style.display = 'block';
-            card.classList.remove('hidden');
-            visibleCount++;
-        } else {
-            card.style.display = 'none';
-            card.classList.add('hidden');
-        }
-    });
+    // Don't search if term is too short
+    if (searchTerm.length < 2) {
+        searchResultsInfo.classList.add('hidden');
+        return;
+    }
     
-    // Update search results info
-    if (searchTerm.length > 0) {
-        searchResultsInfo.classList.remove('hidden');
-        if (visibleCount === 0) {
-            searchResultsText.textContent = `No talents found matching "${searchInput.value}"`;
+    // Show loading state
+    searchResultsInfo.classList.remove('hidden');
+    searchResultsInfo.className = 'mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg';
+    searchResultsText.textContent = 'Searching...';
+    searchResultsText.className = 'text-gray-600 text-sm';
+    
+    // Make AJAX request to search all talents
+    fetch(`{{ route('recruiter.search_talents') }}?query=${encodeURIComponent(searchTerm)}`, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Clear existing talent cards
+            const existingCards = document.querySelectorAll('.talent-card');
+            existingCards.forEach(card => card.remove());
+            
+            // Hide pagination if search results are shown
+            const pagination = document.querySelector('.pagination');
+            if (pagination) {
+                pagination.style.display = 'none';
+            }
+            
+            if (data.talents.length === 0) {
+                // No results found
+                searchResultsText.textContent = `No talents found matching "${searchTerm}"`;
+                searchResultsInfo.className = 'mb-4 p-3 bg-red-50 border border-red-200 rounded-lg';
+                searchResultsText.className = 'text-red-800 text-sm';
+                
+                // Show empty state
+                talentGrid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fas fa-search text-gray-400 text-4xl mb-4"></i>
+                        <p class="text-gray-600 text-lg mb-2">No talents found</p>
+                        <p class="text-gray-500">Try adjusting your search terms</p>
+                    </div>
+                `;
+            } else {
+                // Show results
+                searchResultsText.textContent = `Found ${data.total} talent${data.total !== 1 ? 's' : ''} matching "${searchTerm}"`;
+                searchResultsInfo.className = 'mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg';
+                searchResultsText.className = 'text-blue-800 text-sm';
+                
+                // Render talent cards
+                renderSearchResults(data.talents);
+            }
+        } else {
+            // Error occurred
+            searchResultsText.textContent = 'Error occurred while searching. Please try again.';
             searchResultsInfo.className = 'mb-4 p-3 bg-red-50 border border-red-200 rounded-lg';
             searchResultsText.className = 'text-red-800 text-sm';
-        } else {
-            searchResultsText.textContent = `Found ${visibleCount} talent${visibleCount !== 1 ? 's' : ''} matching "${searchInput.value}"`;
-            searchResultsInfo.className = 'mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg';
-            searchResultsText.className = 'text-blue-800 text-sm';
         }
-    } else {
-        searchResultsInfo.classList.add('hidden');
+    })
+    .catch(error => {
+        console.error('Search error:', error);
+        searchResultsText.textContent = 'Error occurred while searching. Please try again.';
+        searchResultsInfo.className = 'mb-4 p-3 bg-red-50 border border-red-200 rounded-lg';
+        searchResultsText.className = 'text-red-800 text-sm';
+    });
+}
+
+// Function to render search results
+function renderSearchResults(talents) {
+    const talentGrid = document.getElementById('talentCardsContainer');
+    if (!talentGrid) {
+        console.error('Talent cards container not found');
+        return;
     }
+    
+    // Clear existing content
+    talentGrid.innerHTML = '';
+    
+    talents.forEach(talent => {
+        // Process skills similar to the original template
+        const skills = talent.skills || [];
+        const skillsString = skills.map(skill => skill.skill_name || skill.name || skill).join(' ');
+        
+        // Build skills HTML for display (show first 3 skills)
+        const skillsHtml = skills.slice(0, 3).map(skill => {
+            const skillName = skill.skill_name || skill.name || skill;
+            const proficiency = skill.proficiency || 'intermediate';
+            let badgeClass = 'bg-blue-100 text-blue-800';
+            let proficiencyText = 'Menengah';
+            
+            if (proficiency.toLowerCase() === 'advanced' || proficiency.toLowerCase() === 'expert') {
+                badgeClass = 'bg-green-100 text-green-800';
+                proficiencyText = proficiency.toLowerCase() === 'expert' ? 'Ahli' : 'Mahir';
+            } else if (proficiency.toLowerCase() === 'beginner') {
+                badgeClass = 'bg-yellow-100 text-yellow-800';
+                proficiencyText = 'Pemula';
+            }
+            
+            return `
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-gray-700 font-medium">${skillName}</span>
+                    <span class="px-2 py-1 rounded-full text-xs font-medium ${badgeClass}">${proficiencyText}</span>
+                </div>
+            `;
+        }).join('');
+        
+        // Show all skills button if more than 3
+        const showAllSkillsBtn = skills.length > 3 ? `
+            <div class="mt-2 text-center">
+                <button onclick="showAllSkillsForSearch('${talent.id}', '${talent.name}', '${skills.map(s => s.skill_name || s.name || s).join(',')}')" 
+                        class="text-xs text-blue-600 hover:text-blue-800 font-medium underline decoration-dotted hover:decoration-solid transition-all">
+                    <i class="fas fa-eye mr-1"></i>Lihat semua ${skills.length} keahlian
+                </button>
+            </div>
+        ` : '';
+        
+        // Availability status
+        const availabilityHtml = talent.availability && talent.availability.available ? `
+            <div class="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                Tersedia Sekarang
+            </div>
+        ` : `
+            <div class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
+                <div class="w-2 h-2 bg-orange-500 rounded-full mr-2"></div>
+                ${talent.availability ? talent.availability.status || 'Tidak Tersedia' : 'Status Tidak Diketahui'}
+            </div>
+        `;
+        
+        // Use the exact same structure as the original talent cards
+        const cardHtml = `
+            <div class="talent-card bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 p-6 relative"
+                 data-talent-id="${talent.id}"
+                 data-talent-name="${talent.name.toLowerCase()}"
+                 data-talent-skills="${skillsString.toLowerCase()}"
+                 data-talent-certificates="${talent.certificates_count || 0}"
+                 data-talent-quiz-avg="${talent.quiz_avg || 0}"
+                 data-talent-availability="${talent.availability && talent.availability.available ? 'available' : 'unavailable'}">
+                
+                <!-- Compare Checkbox (Hidden by default) -->
+                <div class="compare-checkbox hidden absolute top-4 right-4 z-10">
+                    <input type="checkbox"
+                           class="talent-compare-check w-5 h-5 text-emerald-600 rounded focus:ring-emerald-500"
+                           data-talent-id="${talent.id}"
+                           data-talent-name="${talent.name}"
+                           data-talent-email="${talent.email}"
+                           data-talent-position="${talent.job || 'Tidak ditentukan'}"
+                           data-talent-score="${talent.overall_score || 0}"
+                           data-talent-courses="${talent.completed_courses || 0}"
+                           data-talent-certificates="${talent.certificates_count || 0}"
+                           data-talent-quiz-avg="${talent.quiz_avg || 0}"
+                           data-talent-skills="${skills.map(s => s.skill_name || s.name || s).join(',')}"
+                           data-talent-redflag-count="0"
+                           data-talent-completed-projects="${talent.completed_projects || 0}"
+                           data-talent-redflag-rate="0"
+                           data-talent-has-redflags="false">
+                </div>
+
+                <!-- Profile -->
+                <div class="text-center mb-4">
+                    <img class="w-16 h-16 rounded-full mx-auto mb-3 object-cover"
+                         src="${talent.avatar || '{{ asset("images/default-avatar.png") }}'}"
+                         alt="${talent.name}">
+
+                    <h3 class="font-bold text-lg text-gray-900">${talent.name}</h3>
+                    ${talent.job ? `<p class="text-gray-600 text-sm">${talent.job}</p>` : ''}
+                </div>
+
+                <!-- Score -->
+                <div class="text-center mb-4">
+                    <div class="inline-flex items-center px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+                        <span class="font-bold">Skor: ${talent.overall_score || 0}/100</span>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+                    <div class="bg-gray-50 py-2 rounded">
+                        <div class="text-xs text-gray-600">Kursus</div>
+                        <div class="font-bold">${talent.completed_courses || 0}</div>
+                    </div>
+                    <div class="bg-gray-50 py-2 rounded">
+                        <div class="text-xs text-gray-600">Sertifikat</div>
+                        <div class="font-bold">${talent.certificates_count || 0}</div>
+                    </div>
+                    <div class="bg-gray-50 py-2 rounded">
+                        <div class="text-xs text-gray-600">Rata-rata Kuis</div>
+                        <div class="font-bold">${talent.quiz_avg || 0}%</div>
+                    </div>
+                </div>
+                
+                <!-- Completed Projects Count -->
+                <div class="mb-4 text-center">
+                    <span class="inline-flex items-center px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                        <i class="fas fa-check-circle mr-1"></i>
+                        Proyek Selesai: <span class="font-bold ml-1">${talent.completed_projects || 0}</span>
+                    </span>
+                </div>
+
+                <!-- Availability Status -->
+                <div class="mb-4 text-center">
+                    ${availabilityHtml}
+                </div>
+
+                <!-- Skills Section -->
+                <div class="mb-4">
+                    ${skills.length > 0 ? `
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-star text-yellow-500 mr-1"></i>Keahlian
+                            </h4>
+                            <div class="space-y-1">
+                                ${skillsHtml}
+                                ${showAllSkillsBtn}
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="bg-gray-50 rounded-lg p-3">
+                            <div class="text-center text-gray-500 text-sm">
+                                <i class="fas fa-graduation-cap text-gray-400 mb-1"></i>
+                                <div>Belum ada keahlian yang tercatat</div>
+                            </div>
+                        </div>
+                    `}
+                </div>
+
+                <!-- Actions -->
+                <div class="space-y-2">
+                    ${talent.availability && talent.availability.available ? `
+                        <button onclick="openRequestModal('${talent.id}', '${talent.name}', false, '0')"
+                                class="w-full px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors">
+                            <i class="fas fa-handshake mr-2"></i>Minta Talenta
+                        </button>
+                    ` : ''}
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="viewScoutingReport('${talent.id}', '${talent.name}', ${JSON.stringify(talent.metrics || {}).replace(/"/g, '&quot;')}, false, '0', ${JSON.stringify(talent.completed_projects || []).replace(/"/g, '&quot;')})"
+                                class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm">
+                            <i class="fas fa-chart-line mr-1"></i>Laporan
+                        </button>
+                        <a href="mailto:${talent.email}"
+                           class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-center text-sm">
+                            <i class="fas fa-envelope mr-1"></i>Email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        talentGrid.insertAdjacentHTML('beforeend', cardHtml);
+    });
 }
 
 function clearSearch() {

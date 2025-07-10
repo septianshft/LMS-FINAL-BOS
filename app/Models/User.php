@@ -38,6 +38,7 @@ class User extends Authenticatable
         'portfolio_url',
         'location',
         'phone',
+        'experience_level',
         'is_active_talent',
     ];
 

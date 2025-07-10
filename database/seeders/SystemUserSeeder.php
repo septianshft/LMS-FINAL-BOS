@@ -36,7 +36,8 @@ class SystemUserSeeder extends Seeder
         // Create talent admin profile
         TalentAdmin::firstOrCreate([
             'user_id' => $talentAdminUser->id
-        ], [
+        ], 
+        [
             'is_active' => true
         ]);
         $this->command->info('   ✓ Talent Admin created: talent.admin@scout.test');

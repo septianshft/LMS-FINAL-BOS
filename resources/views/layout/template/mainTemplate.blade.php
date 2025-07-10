@@ -116,7 +116,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Konfirmasi Logout</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
@@ -132,13 +132,12 @@
                             dibawah ini.
                         </div>
                     </div>
-
                 </div>
                 <div class="modal-footer">
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button class="btn btn-secondary animate-btn-small" type="button"
-                            data-dismiss="modal">Cancel</button>
+                            data-bs-dismiss="modal">Cancel</button>
                         <button class="btn btn-danger animate-btn-small" type="submit">Logout</button>
                     </form>
                 </div>

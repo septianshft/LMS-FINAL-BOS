@@ -183,9 +183,9 @@
              <!-- Nav Item - Pages Collapse Menu -->
              <li
                  class="nav-item {{ explode('/', Request::segment(2))[0] == $assignedKelasItem['mapel']->id ? 'active' : '' }} ">
-                 <a class="nav-link collapsed" href="#" data-toggle="collapse"
-                     data-target="#collapseTarget{{ $loop->iteration }}" aria-expanded="true"
-                     aria-controls="collapseTarget">
+                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse"
+                    data-bs-target="#collapseTarget{{ $loop->iteration }}" aria-expanded="true"
+                    aria-controls="collapseTarget">
                      <i class="fa-solid fa-book-bookmark"></i>
                      <span>{{ $assignedKelasItem['mapel']->name }}</span>
                  </a>

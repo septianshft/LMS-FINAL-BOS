@@ -12,7 +12,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Exception;
 
 class ProjectAssignmentController extends Controller
 {
@@ -562,5 +564,61 @@ class ProjectAssignmentController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Extension request submitted successfully!');
+    }
+
+    /**
+     * Export talent assignments to PDF
+     */
+    public function exportAssignmentsPDF(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $talent = $user->talent;
+
+            if (!$talent) {
+                return redirect()->route('talent.assignments.index')
+                    ->with('error', 'Profil talent tidak ditemukan.');
+            }
+
+            // Get all assignments for this talent (without pagination)
+            $query = ProjectAssignment::with(['project.recruiter.user', 'project.timelineEvents'])
+                ->where('talent_id', $talent->id);
+
+            // Apply status filter if provided
+            if ($request->has('status') && $request->status) {
+                $query->where('status', $request->status);
+            }
+
+            $assignments = $query->orderBy('created_at', 'desc')->get();
+
+            // Calculate statistics
+            $allAssignments = ProjectAssignment::where('talent_id', $talent->id)->get();
+            $stats = [
+                'total' => $allAssignments->count(),
+                'pending' => $allAssignments->where('status', 'pending')->count(),
+                'accepted' => $allAssignments->where('status', 'accepted')->count(),
+                'declined' => $allAssignments->where('status', 'declined')->count(),
+                'completed' => $allAssignments->where('status', 'completed')->count(),
+            ];
+
+            $data = [
+                'user' => $user,
+                'assignments' => $assignments,
+                'stats' => $stats,
+                'filterStatus' => $request->status ?? 'all'
+            ];
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.talent.assignments-pdf', $data);
+            $pdf->setPaper('a4', 'landscape');
+
+            $filename = 'penugasan-saya-' . now()->format('Y-m-d-H-i-s') . '.pdf';
+
+            return $pdf->download($filename);
+
+        } catch (Exception $e) {
+            Log::error('Export assignments PDF error: ' . $e->getMessage());
+            return redirect()->route('talent.assignments.index')
+                ->with('error', 'Gagal mengekspor penugasan ke PDF. Silakan coba lagi nanti.');
+        }
     }
 }

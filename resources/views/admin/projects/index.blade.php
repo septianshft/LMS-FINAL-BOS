@@ -56,23 +56,23 @@
     <div class="mb-6">
         <nav class="flex space-x-8" aria-label="Tabs">
             <a href="{{ route('admin.projects.index') }}"
-               class="@if(request('status') == '' || !request('status')) text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="{{ (request('status') == '' || !request('status')) ? 'text-blue-600 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Semua Proyek
             </a>
             <a href="{{ route('admin.projects.index', ['status' => 'pending']) }}"
-               class="@if(request('status') == 'pending') text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="{{ request('status') == 'pending' ? 'text-blue-600 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Menunggu Persetujuan
             </a>
             <a href="{{ route('admin.projects.index', ['status' => 'active']) }}"
-               class="@if(request('status') == 'active') text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="{{ request('status') == 'active' ? 'text-blue-600 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Proyek Aktif
             </a>
             <a href="{{ route('admin.projects.index', ['status' => 'extensions']) }}"
-               class="@if(request('status') == 'extensions') text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="{{ request('status') == 'extensions' ? 'text-blue-600 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Permintaan Perpanjangan Proyek
             </a>
             <a href="{{ route('admin.projects.index', ['status' => 'closure_requested']) }}"
-               class="@if(request('status') == 'closure_requested') text-blue-600 border-blue-500 @else text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300 @endif whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+               class="{{ request('status') == 'closure_requested' ? 'text-blue-600 border-blue-500' : 'text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
                 Permintaan Penutupan Proyek
             </a>
         </nav>
@@ -95,7 +95,19 @@
                                 @endif
                             </p>
                         </div>
-                        <span class="@if($project->status === 'pending_admin') bg-yellow-100 text-yellow-800 @elseif($project->status === 'approved') bg-green-100 text-green-800 @elseif($project->status === 'active') bg-blue-100 text-blue-800 @elseif($project->status === 'completed') bg-gray-100 text-gray-800 @elseif($project->status === 'cancelled') bg-red-100 text-red-800 @elseif($project->status === 'overdue') bg-red-100 text-red-800 @elseif($project->status === 'closure_requested') bg-purple-100 text-purple-800 @else bg-gray-100 text-gray-800 @endif px-2 py-1 rounded-full text-xs font-medium">
+                        @php
+                            $statusClasses = [
+                                'pending_admin' => 'bg-yellow-100 text-yellow-800',
+                                'approved' => 'bg-green-100 text-green-800',
+                                'active' => 'bg-blue-100 text-blue-800',
+                                'completed' => 'bg-gray-100 text-gray-800',
+                                'cancelled' => 'bg-red-100 text-red-800',
+                                'overdue' => 'bg-red-100 text-red-800',
+                                'closure_requested' => 'bg-purple-100 text-purple-800'
+                            ];
+                            $statusClass = $statusClasses[$project->status] ?? 'bg-gray-100 text-gray-800';
+                        @endphp
+                        <span class="{{ $statusClass }} px-2 py-1 rounded-full text-xs font-medium">
                             {{ ucwords(str_replace('_', ' ', $project->status)) }}
                         </span>
                     </div>
@@ -190,10 +202,10 @@
                                 Tinjau
                             </button>
                         @else
-                            <a href="{{ route('admin.projects.show', $project) }}"
-                               class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                            <button onclick="window.location.href='{{ route('admin.projects.show', $project) }}'"
+                                    class="flex-1 bg-blue-600 text-white text-center py-2 px-4 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
                                 Lihat Detail
-                            </a>
+                            </button>
                         @endif
 
                         @if($project->pendingExtensions->count() > 0)

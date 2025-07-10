@@ -7,13 +7,18 @@ use App\Models\ProjectAssignment;
 use App\Models\ProjectExtension;
 use App\Models\ProjectTimelineEvent;
 use App\Models\Talent;
+use App\Models\TalentRequest;
 use App\Models\Recruiter;
 use App\Models\TalentAdmin;
 use App\Models\TimelineConflict;
+use App\Services\ProjectTalentService;
+use App\DTOs\ProjectViewDataDTO;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use Exception;
 
 class ProjectController extends Controller
 {    /**
@@ -126,23 +131,20 @@ class ProjectController extends Controller
 
     /**
      * Display the specified project
-     */    public function show(Project $project)
+     */
+    public function show(Project $project, ProjectTalentService $talentService)
     {
         $user = Auth::user();
         $title = 'Project Details';
         $roles = 'Recruiter';
         $assignedKelas = [];
-
-        // Check access permissions
-        if ($user->recruiter && $user->recruiter->id !== $project->recruiter_id) {
-            return redirect()->route('projects.index')->with('error', 'Access denied.');
-        }
-
+        
+        // Load project with all necessary relationships
         $project->load([
             'recruiter.user',
             'assignments.talent.user',
             'talentRequests.talent.user',
-            'talentRequests.talentUser', // Add direct user relationship for talent requests
+            'talentRequests.talentUser',
             'timelineEvents' => function($query) {
                 $query->latest();
             },
@@ -153,47 +155,77 @@ class ProjectController extends Controller
             'adminApprovedBy'
         ]);
 
-        // Get available talents for assignment (if project is approved or active)
-        // Enhanced with scouting metrics and red flag data like dashboard
-        $availableTalents = collect();
-        if (in_array($project->status, [Project::STATUS_APPROVED, Project::STATUS_ACTIVE])) {
-            try {
-                $availableTalents = Talent::with(['user', 'assignments'])
-                    ->where('is_active', true)
-                    ->whereHas('user', function($query) {
-                        $query->whereNotNull('name')
-                              ->whereNotNull('email')
-                              ->where('available_for_scouting', true);
-                    })
-                    ->whereNotExists(function($query) use ($project) {
-                        $query->select(DB::raw(1))
-                              ->from('project_assignments')
-                              ->whereColumn('project_assignments.talent_id', 'talents.id')
-                              ->where('project_assignments.project_id', $project->id);
-                    })
-                    ->get()
-                    ->map(function($talent) {
-                        // Enhance talent data with metrics and red flag info
-                        $metrics = $talent->scouting_metrics;
-                        if (is_string($metrics)) {
-                            $metrics = json_decode($metrics, true);
-                        }
+        // Get available talents and talent interactions
+        $availableTalents = $this->getAvailableTalents($user, $project);
+        $talentInteractions = $talentService->getTalentInteractions($project);
 
-                        $talent->parsed_metrics = $metrics ?: [
-                            'learning_velocity' => 0,
-                            'consistency' => 0,
-                            'adaptability' => 0
-                        ];
+        // Create structured view data
+        $viewData = ProjectViewDataDTO::fromProject(
+            $project,
+            $availableTalents,
+            $talentInteractions,
+            $user
+        );
 
-                        $talent->redflag_summary = $talent->getRedflagSummary();
-                        $talent->project_count = $talent->assignments->count();
+        return view('projects.show', compact('viewData', 'talentService', 'user', 'title', 'roles', 'assignedKelas'));
+    }
 
-                        return $talent;
-                    });
-            } catch (\Exception $e) {
-                $availableTalents = collect();
-            }
-        }        return view('projects.show', compact('project', 'availableTalents', 'user', 'title', 'roles', 'assignedKelas'));
+    /**
+     * Get available talents for the project
+     */
+    private function getAvailableTalents($user, Project $project)
+    {
+        $recruiter = $user->recruiter;
+        $isRecruiter = (bool) $recruiter;
+        $isProjectOwner = $isRecruiter && $recruiter->id === $project->recruiter_id;
+
+        if (!($isRecruiter && $isProjectOwner && in_array($project->status, [Project::STATUS_APPROVED, Project::STATUS_ACTIVE]))) {
+            return collect();
+        }
+
+        try {
+            $availableTalents = Talent::with(['user', 'assignments'])
+                ->where('is_active', true)
+                ->whereHas('user', function($query) {
+                    $query->whereNotNull('name')
+                          ->whereNotNull('email')
+                          ->where('available_for_scouting', true);
+                })
+                ->whereNotExists(function($query) use ($project) {
+                    $query->select(DB::raw(1))
+                          ->from('project_assignments')
+                          ->whereColumn('project_assignments.talent_id', 'talents.id')
+                          ->where('project_assignments.project_id', $project->id);
+                })
+                ->get()
+                ->filter(function($talent) {
+                    // Filter out talents who are busy on other requests
+                    $activeBlockingRequests = TalentRequest::getActiveBlockingRequestsForTalent($talent->user->id);
+                    return $activeBlockingRequests->isEmpty();
+                })
+                ->map(function($talent) {
+                    // Enhance talent data with metrics and red flag info
+                    $metrics = $talent->scouting_metrics;
+                    if (is_string($metrics)) {
+                        $metrics = json_decode($metrics, true);
+                    }
+
+                    $talent->parsed_metrics = $metrics ?: [
+                        'learning_velocity' => 0,
+                        'consistency' => 0,
+                        'adaptability' => 0
+                    ];
+
+                    $talent->redflag_summary = $talent->getRedflagSummary();
+                    $talent->project_count = $talent->assignments->count();
+
+                    return $talent;
+                });
+        } catch (\Exception $e) {
+            return collect();
+        }
+
+        return $availableTalents;
     }
 
     /**
@@ -547,6 +579,67 @@ class ProjectController extends Controller
             DB::rollback();
 
             return redirect()->back()->with('error', 'Failed to reject project closure. Please try again.');
+        }
+    }
+
+    /**
+     * Export project history to PDF
+     */
+    public function exportProjectHistory(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $recruiter = $user->recruiter;
+
+            if (!$recruiter) {
+                return redirect()->route('projects.index')
+                    ->with('error', 'Access denied. Recruiter account required.');
+            }
+
+            // Get all projects for this recruiter with related data
+            $projects = Project::with([
+                'assignments.talent.user',
+                'timelineEvents',
+                'extensions',
+                'recruiter.user'
+            ])
+            ->byRecruiter($recruiter->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            // Calculate statistics
+            $stats = [
+                'total' => $projects->count(),
+                'active' => $projects->where('status', 'active')->count(),
+                'completed' => $projects->where('status', 'completed')->count(),
+                'cancelled' => $projects->where('status', 'cancelled')->count(),
+                'total_budget' => $projects->sum(function($project) {
+                    // Use the maximum budget if available, otherwise use minimum budget
+                    return $project->overall_budget_max ?? $project->overall_budget_min ?? 0;
+                }),
+                'total_assignments' => $projects->sum(function($project) {
+                    return $project->assignments->count();
+                })
+            ];
+
+            $data = [
+                'user' => $user,
+                'recruiter' => $recruiter,
+                'projects' => $projects,
+                'stats' => $stats
+            ];
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('exports.recruiter.project-history-pdf', $data);
+            $pdf->setPaper('a4', 'landscape');
+
+            $filename = 'riwayat-proyek-' . now()->format('Y-m-d-H-i-s') . '.pdf';
+
+            return $pdf->download($filename);
+
+        } catch (Exception $e) {
+            Log::error('Export project history PDF error: ' . $e->getMessage());
+            return redirect()->route('projects.index')
+                ->with('error', 'Gagal mengekspor riwayat proyek ke PDF. Silakan coba lagi nanti.');
         }
     }
 }

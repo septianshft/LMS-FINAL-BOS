@@ -6,11 +6,11 @@
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Penugasan Proyek Saya</h1>
-            <p class="text-gray-600 mt-2">Kelola penugasan proyek Anda dan lacak progress</p>
+            <p class="text-gray-600 mt-2">Kelola penugasan proyek Anda dan lacak progress\</p>
         </div>
         <div class="flex space-x-3">
             <button onclick="downloadPDF()"
-                    class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl">
+                    class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-300 font-medium shadow-lg hover:shadow-xl">
                 <i class="fas fa-file-pdf mr-2"></i>
                 Unduh PDF
             </button>
@@ -415,10 +415,20 @@ window.onclick = function(event) {
 
 // PDF Download Function
 function downloadPDF() {
-    // Placeholder function for PDF download
-    // This will be implemented later with actual PDF generation logic
-    alert('Fitur unduh PDF akan segera diimplementasikan!');
-    console.log('PDF download requested for talent assignments page');
+    // Dapatkan status filter saat ini dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const status = urlParams.get('status');
+    
+    // Buat URL untuk download PDF dengan filter yang sama
+    let downloadUrl = "{{ route('talent.assignments.export-pdf') }}";
+    
+    // Tambahkan parameter status jika ada
+    if (status) {
+        downloadUrl += `?status=${status}`;
+    }
+    
+    // Buka URL di tab baru
+    window.open(downloadUrl, '_blank');
 }
 </script>
 @endsection

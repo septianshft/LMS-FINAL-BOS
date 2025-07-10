@@ -42,22 +42,22 @@
                     </button>
                     <div id="exportDropdownMenuRequests" class="absolute right-0 top-full mt-1 w-56 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transition-all duration-200 z-10">
                         <div class="py-2">
-                            <a href="{{ route('recruiter.export_request_history') }}"
-                               class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <button onclick="window.location.href='{{ route('recruiter.export_request_history') }}'"
+                               class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-history mr-3 text-blue-500"></i>
                                 <div>
                                     <div class="font-medium">Riwayat Permintaan</div>
                                     <div class="text-xs text-gray-500">Semua permintaan talenta Anda</div>
                                 </div>
-                            </a>
-                            <a href="{{ route('recruiter.export_onboarded_talents') }}"
-                               class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            </button>
+                            <button onclick="window.location.href='{{ route('recruiter.export_onboarded_talents') }}'"
+                               class="w-full flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-user-check mr-3 text-green-500"></i>
                                 <div>
                                     <div class="font-medium">Talenta Terdaftar</div>
                                     <div class="text-xs text-gray-500">Talenta yang berhasil dipekerjakan</div>
                                 </div>
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>

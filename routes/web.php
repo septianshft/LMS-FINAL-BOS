@@ -256,8 +256,11 @@ Route::middleware('auth')->group(function () {
         Route::get('recruiter/talent/{talent}/redflag-history', [RecruiterController::class, 'getTalentRedflagHistory'])->name('recruiter.talent_redflag_history');
 
         // Talent details routes for recruiters
-        Route::get('recruiter/talents/{talent}/details', [RecruiterController::class, 'getTalentDetails'])->name('recruiter.talent_details');
-        Route::get('recruiter/users/{user}/talent-details', [RecruiterController::class, 'getTalentDetailsByUserId'])->name('recruiter.talent_details_by_user');
+    Route::get('recruiter/talents/{talent}/details', [RecruiterController::class, 'getTalentDetails'])->name('recruiter.talent_details');
+    Route::get('recruiter/users/{user}/talent-details', [RecruiterController::class, 'getTalentDetailsByUserId'])->name('recruiter.talent_details_by_user');
+    
+    // AJAX search route for all talents
+    Route::get('recruiter/search-talents', [RecruiterController::class, 'searchTalents'])->name('recruiter.search_talents');
 
         // Enhanced Analytics & Recommendations API
         Route::prefix('recruiter/api')->name('recruiter.api.')->group(function () {
@@ -491,6 +494,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Talent Assignment Routes
     Route::middleware(['auth', 'role:talent'])->prefix('talent')->name('talent.')->group(function () {
         Route::get('assignments', [ProjectAssignmentController::class, 'talentIndex'])->name('assignments.index');
+        Route::get('assignments/export-pdf', [ProjectAssignmentController::class, 'exportAssignmentsPDF'])->name('assignments.export-pdf');
         Route::get('assignments/{assignment}', [ProjectAssignmentController::class, 'talentShow'])->name('assignments.show');
         Route::put('assignments/{assignment}/respond', [ProjectAssignmentController::class, 'respond'])->name('assignments.respond');
         Route::put('assignments/{assignment}/progress', [ProjectAssignmentController::class, 'updateProgress'])->name('assignments.progress');

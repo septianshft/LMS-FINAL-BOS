@@ -44,13 +44,13 @@
                         <i class="fas fa-arrow-left text-lg"></i>
                     </a>
                     <div>
-                        <h1 class="text-3xl font-bold text-gray-900">{{ $project->title }}</h1>
+                        <h1 class="text-3xl font-bold text-gray-900">{{ $viewData->project->title }}</h1>
                         <p class="text-gray-600 mt-1">
                             Dibuat
-                            @if($project->created_at instanceof \Carbon\Carbon)
-                                {{ $project->created_at->diffForHumans() }}
-                            @elseif($project->created_at)
-                                {{ \Carbon\Carbon::parse($project->created_at)->diffForHumans() }}
+                            @if($viewData->project->created_at instanceof \Carbon\Carbon)
+                                {{ $viewData->project->created_at->diffForHumans() }}
+                            @elseif($viewData->project->created_at)
+                                {{ \Carbon\Carbon::parse($viewData->project->created_at)->diffForHumans() }}
                             @else
                                 baru-baru ini
                             @endif
@@ -59,22 +59,8 @@
                 </div>
 
                 <!-- Status Badge -->
-                @php
-                    $statusColors = [
-                        'draft' => 'bg-gray-100 text-gray-800',
-                        'pending_admin' => 'bg-yellow-100 text-yellow-800',
-                        'approved' => 'bg-blue-100 text-blue-800',
-                        'active' => 'bg-green-100 text-green-800',
-                        'completed' => 'bg-gray-100 text-gray-800',
-                        'cancelled' => 'bg-red-100 text-red-800',
-                        'overdue' => 'bg-red-100 text-red-800',
-                        'extension_requested' => 'bg-orange-100 text-orange-800',
-                        'closure_requested' => 'bg-purple-100 text-purple-800'
-                    ];
-                    $statusClass = $statusColors[$project->status] ?? 'bg-gray-100 text-gray-800';
-                @endphp
-                <span class="px-4 py-2 rounded-full text-sm font-medium {{ $statusClass }}">
-                    {{ ucwords(str_replace('_', ' ', $project->status)) }}
+                <span class="px-4 py-2 rounded-full text-sm font-medium {{ $viewData->getStatusBadgeClass() }}">
+                    {{ $viewData->getFormattedStatus() }}
                 </span>
             </div>
 
@@ -83,39 +69,39 @@
                 <div class="space-y-4">
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Industri</h3>
-                        <p class="text-lg text-gray-900">{{ $project->industry ?? 'Tidak ditentukan' }}</p>
+                        <p class="text-lg text-gray-900">{{ $viewData->project->industry ?? 'Tidak ditentukan' }}</p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Durasi</h3>
-                        <p class="text-lg text-gray-900">{{ $project->estimated_duration_days }} hari</p>
+                        <p class="text-lg text-gray-900">{{ $viewData->project->estimated_duration_days }} hari</p>
                     </div>
                 </div>
                   <div class="space-y-4">
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Tanggal Mulai</h3>
                         <p class="text-lg text-gray-900">
-                            {{ $project->expected_start_date ? $project->expected_start_date->format('M d, Y') : 'Tidak ditetapkan' }}
+                            {{ $viewData->project->expected_start_date ? $viewData->project->expected_start_date->format('M d, Y') : 'Tidak ditetapkan' }}
                         </p>
                     </div>
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Tanggal Selesai</h3>
                         <p class="text-lg text-gray-900">
-                            {{ $project->expected_end_date ? $project->expected_end_date->format('M d, Y') : 'Tidak ditetapkan' }}
+                            {{ $viewData->project->expected_end_date ? $viewData->project->expected_end_date->format('M d, Y') : 'Tidak ditetapkan' }}
                         </p>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    @if($project->overall_budget_min || $project->overall_budget_max)
+                    @if($viewData->project->overall_budget_min || $viewData->project->overall_budget_max)
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Rentang Budget</h3>
                         <p class="text-lg text-gray-900">
-                            @if($project->overall_budget_min && $project->overall_budget_max)
-                                Rp {{ number_format($project->overall_budget_min, 0, ',', '.') }} - Rp {{ number_format($project->overall_budget_max, 0, ',', '.') }}
-                            @elseif($project->overall_budget_min)
-                                Dari Rp {{ number_format($project->overall_budget_min, 0, ',', '.') }}
+                            @if($viewData->project->overall_budget_min && $viewData->project->overall_budget_max)
+                                Rp {{ number_format($viewData->project->overall_budget_min, 0, ',', '.') }} - Rp {{ number_format($viewData->project->overall_budget_max, 0, ',', '.') }}
+                            @elseif($viewData->project->overall_budget_min)
+                                Dari Rp {{ number_format($viewData->project->overall_budget_min, 0, ',', '.') }}
                             @else
-                                Hingga Rp {{ number_format($project->overall_budget_max, 0, ',', '.') }}
+                                Hingga Rp {{ number_format($viewData->project->overall_budget_max, 0, ',', '.') }}
                             @endif
                         </p>
                     </div>
@@ -123,7 +109,7 @@
 
                     <div>
                         <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Interaksi Talenta</h3>
-                        <p class="text-lg text-gray-900">{{ $project->assignments->count() + $project->talentRequests->count() }} total interaksi</p>
+                        <p class="text-lg text-gray-900">{{ $viewData->project->assignments->count() + $viewData->project->talentRequests->count() }} total interaksi</p>
                     </div>
                 </div>
             </div>
@@ -131,49 +117,45 @@
             <!-- Description -->
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-3">Deskripsi Proyek</h3>
-                <p class="text-gray-700 leading-relaxed">{{ $project->description }}</p>
+                <p class="text-gray-700 leading-relaxed">{{ $viewData->project->description }}</p>
             </div>
 
             <!-- General Requirements -->
-            @if($project->general_requirements)
+            @if($viewData->project->general_requirements)
             <div class="mb-6">
                 <h3 class="text-lg font-semibold text-gray-900 mb-3">Persyaratan Umum</h3>
-                <p class="text-gray-700 leading-relaxed">{{ $project->general_requirements }}</p>
+                <p class="text-gray-700 leading-relaxed">{{ $viewData->project->general_requirements }}</p>
             </div>
             @endif
 
             <!-- Action Buttons -->
             <div class="flex flex-wrap gap-3">
                 @php
-                    $isRecruiter = auth()->user() && auth()->user()->hasRole('recruiter');
-                    $isProjectOwner = auth()->user() && auth()->user()->recruiter && auth()->user()->recruiter->id === $project->recruiter_id;
-                    $hasPendingExtensions = $project->extensions()->where('status', 'pending')->exists();
+                    $hasPendingExtensions = $viewData->project->extensions()->where('status', 'pending')->exists();
                 @endphp
 
-
-
-                @if($isRecruiter && $isProjectOwner && $project->status === 'pending_admin')
-                    <a href="{{ route('projects.edit', $project) }}"
+                @if($viewData->canEdit() && $viewData->project->status === 'pending_admin')
+                    <a href="{{ route('projects.edit', $viewData->project) }}"
                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                         <i class="fas fa-edit mr-2"></i>Edit Proyek
                     </a>
                 @endif
 
-                @if($isRecruiter && $isProjectOwner && in_array($project->status, ['approved', 'active']))
+                @if($viewData->canRequestTalents())
                     <button onclick="showProjectTalentModal()"
                             class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                         <i class="fas fa-user-plus mr-2"></i>Ajukan Permintaan Talenta
                     </button>
                 @endif
 
-                @if($isRecruiter && $isProjectOwner && in_array($project->status, ['active', 'overdue']) && !$hasPendingExtensions)
+                @if($viewData->canRequestExtension() && !$hasPendingExtensions)
                     <button onclick="showExtensionModal()"
                             class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                         <i class="fas fa-clock mr-2"></i>Minta Perpanjangan Proyek
                     </button>
                 @endif
 
-                @if($isRecruiter && $isProjectOwner && in_array($project->status, ['active', 'overdue']) && $project->status !== 'closure_requested')
+                @if($viewData->canRequestClosure() && $viewData->project->status !== 'closure_requested')
                     <button onclick="showClosureRequestModal()"
                             class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                         <i class="fas fa-times mr-2"></i>Minta Penutupan Proyek
@@ -189,18 +171,18 @@
             <button onclick="showTab('assignments')"
                     class="tab-button active border-b-2 border-blue-500 py-2 px-1 text-sm font-medium text-blue-600"
                     id="assignments-tab">
-                Manajemen Talenta ({{ $project->assignments->count() + $project->talentRequests->count() }})
+                Manajemen Talenta ({{ $viewData->getTabCounts()['assignments'] }})
             </button>
             <button onclick="showTab('timeline')"
                     class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     id="timeline-tab">
                 Timeline Peristiwa
             </button>
-            @if($project->extensions->count() > 0)
+            @if($viewData->getTabCounts()['extensions'] > 0)
             <button onclick="showTab('extensions')"
                     class="tab-button border-b-2 border-transparent py-2 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
                     id="extensions-tab">
-                Perpanjangan ({{ $project->extensions->count() }})
+                Perpanjangan ({{ $viewData->getTabCounts()['extensions'] }})
             </button>
             @endif
         </nav>
@@ -212,128 +194,18 @@
             <div class="p-6">
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-semibold text-gray-900">Manajemen Talenta</h2>
-                    @if($isRecruiter && $isProjectOwner && $project->status === 'approved')
+                    @if($viewData->canRequestTalents())
                         <div class="flex space-x-2">
-                            @if($availableTalents->count() > 0)
-                                <button onclick="showProjectTalentModal()"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
-                                    <i class="fas fa-plus mr-2"></i>Tambah Talenta
-                                </button>
-                            @endif
+                            <button onclick="showProjectTalentModal()"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200">
+                                <i class="fas fa-plus mr-2"></i>Tambah Talenta
+                            </button>
                         </div>
                     @endif
                 </div>
-                @php
-                    // Talent Management: Collect all talent interactions (assignments and requests)
-                    // with proper contract duration calculation and progress tracking
-                    $allInteractions = collect();
-                    $assignedTalentIds = collect();
-
-                    // Add assignments first and track assigned talent IDs
-                    foreach($project->assignments as $assignment) {
-                        // Track this talent as assigned to avoid duplicates
-                        $assignedTalentIds->push($assignment->talent_id);
-                        // Calculate duration details for assignment
-                        $startDate = $assignment->talent_start_date;
-                        $endDate = $assignment->talent_end_date;
-                        $durationText = null;
-                        $daysRemaining = null;
-                        $isOverdue = false;
-                        $totalDays = 0;
-
-                        if ($startDate && $endDate) {
-                            $totalDays = $assignment->getDurationInDays();
-                            $durationText = $totalDays . ' days';
-
-                            if ($assignment->isActive()) {
-                                $daysRemaining = $assignment->getRemainingDays();
-                                $isOverdue = $assignment->isOverdue();
-                            }
-                        }
-
-                        $allInteractions->push([
-                            'type' => 'assignment',
-                            'id' => $assignment->id,
-                            'name' => $assignment->talent->user->name ?? 'Unknown Talent',
-                            'role' => $assignment->specific_role,
-                            'status' => $assignment->status,
-                            'created_at' => $assignment->created_at,
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                            'duration_text' => $durationText,
-                            'days_remaining' => $daysRemaining,
-                            'is_overdue' => $isOverdue,
-                            'total_days' => $totalDays
-                        ]);
-                    }
-
-                    // Add talent requests (only if not already assigned)
-                    foreach($project->talentRequests as $request) {
-                        // Skip if this talent already has an assignment
-                        if ($assignedTalentIds->contains($request->talent_id)) {
-                            continue;
-                        }
-                        $name = 'Unknown Talent';
-                        if ($request->talentUser && $request->talentUser->name) {
-                            $name = $request->talentUser->name;
-                        } elseif ($request->talent && $request->talent->user && $request->talent->user->name) {
-                            $name = $request->talent->user->name;
-                        }
-
-                        // Calculate duration for talent request
-                        $startDate = $request->project_start_date;
-                        $endDate = $request->project_end_date;
-                        $durationText = null;
-                        $totalDays = 0;
-
-                        // Extract duration from project_duration field if available
-                        if ($request->project_duration && preg_match('/(\d+)\s*(days?|hari)/i', $request->project_duration, $matches)) {
-                            $totalDays = (int)$matches[1];
-                            $durationText = $totalDays . ' hari';
-
-                            // Calculate correct end date based on duration
-                            if ($startDate && $totalDays > 0) {
-                                $calculatedEndDate = \Carbon\Carbon::parse($startDate)->addDays($totalDays);
-                                $endDate = $calculatedEndDate->format('Y-m-d H:i:s');
-                            }
-                        }
-                        // Fall back to calculating from stored dates
-                        elseif ($startDate && $endDate) {
-                            $totalDays = \Carbon\Carbon::parse($startDate)->diffInDays(\Carbon\Carbon::parse($endDate));
-                            $durationText = $totalDays . ' days';
-                        }
-                        // Use project dates as fallback
-                        elseif ($project->expected_start_date && $project->expected_end_date) {
-                            $startDate = $project->expected_start_date;
-                            $endDate = $project->expected_end_date;
-                            $totalDays = $project->expected_start_date->diffInDays($project->expected_end_date);
-                            $durationText = $totalDays . ' days (from project timeline)';
-                        }
-                        // Display duration text as-is
-                        elseif ($request->project_duration) {
-                            $durationText = $request->project_duration;
-                        }
-
-                        $allInteractions->push([
-                            'type' => 'talent_request',
-                            'id' => $request->id,
-                            'name' => $name,
-                            'role' => null,
-                            'status' => $request->status,
-                            'created_at' => $request->created_at,
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                            'duration_text' => $durationText,
-                            'days_remaining' => null,
-                            'is_overdue' => false,
-                            'total_days' => $totalDays
-                        ]);
-                    }
-                @endphp
-
-                @if($allInteractions->count() > 0)
+                @if($viewData->hasInteractions())
                     <div class="space-y-4">
-                        @foreach($allInteractions as $item)
+                        @foreach($viewData->talentInteractions as $item)
                             <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow duration-200">
                                 <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0">
                                     <div class="flex items-center space-x-3 flex-1 min-w-0">
@@ -341,7 +213,17 @@
                                             <i class="fas fa-user text-blue-600"></i>
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <h4 class="font-semibold text-gray-900 truncate">{{ $item['name'] }}</h4>
+                                            <h4 class="font-semibold truncate">
+                                @if($item['talent_data'])
+                                    <button type="button" 
+                                            onclick="viewTalentDetailsInModal({{ json_encode($item['talent_data']) }})"
+                                            class="text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200 text-left">
+                                        {{ $item['name'] }}
+                                    </button>
+                                @else
+                                    <span class="text-gray-900">{{ $item['name'] }}</span>
+                                @endif
+                            </h4>
                                             @if($item['role'])
                                                 <p class="text-sm text-gray-600 truncate">{{ $item['role'] }}</p>
                                             @endif
@@ -349,11 +231,7 @@
                                                 <span class="px-2 py-1 text-xs rounded-full {{ $item['type'] === 'assignment' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' }}">
                                                     {{ $item['type'] === 'assignment' ? 'Penugasan' : 'Permintaan Talenta' }}
                                                 </span>
-                                                <span class="px-2 py-1 text-xs rounded-full {{
-                                                    $item['status'] === 'active' ? 'bg-green-100 text-green-800' :
-                                                    ($item['status'] === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                                                    ($item['status'] === 'completed' ? 'bg-gray-100 text-gray-800' : 'bg-gray-100 text-gray-800'))
-                                                }}">
+                                                <span class="px-2 py-1 text-xs rounded-full {{ $talentService->getStatusColorClass($item['status']) }}">
                                                     {{ ucwords(str_replace('_', ' ', $item['status'])) }}
                                                 </span>
                                                 @if($item['is_overdue'])
@@ -392,17 +270,15 @@
 
                                                 @if($item['days_remaining'] !== null && $item['type'] === 'assignment' && $item['status'] === 'active')
                                                     @php
-                                                        $totalDays = $item['total_days'] ?? 1;
-                                                        $daysElapsed = $totalDays - $item['days_remaining'];
-                                                        $progressPercent = $totalDays > 0 ? min(100, max(0, ($daysElapsed / $totalDays) * 100)) : 0;
+                                                        $progressPercent = $talentService->calculateProgress($item);
                                                     @endphp
 
                                                     <!-- Progress Bar -->
                                                     <div class="w-full sm:w-24 bg-gray-200 rounded-full h-2 mb-2">
-                                                        <div class="{{ $item['is_overdue'] ? 'bg-red-500' : ($item['days_remaining'] <= 7 ? 'bg-orange-500' : 'bg-blue-600') }} h-2 rounded-full transition-all duration-300" style="width: {{ $progressPercent }}%"></div>
+                                                        <div class="{{ $talentService->getProgressColorClass($item) }} h-2 rounded-full transition-all duration-300" style="width: {{ $progressPercent }}%"></div>
                                                     </div>
 
-                                                    <div class="text-xs font-medium {{ $item['is_overdue'] ? 'text-red-600' : ($item['days_remaining'] <= 7 ? 'text-orange-600' : 'text-green-600') }}">
+                                                    <div class="text-xs font-medium {{ $talentService->getRemainingDaysColorClass($item) }}">
                                                         @if($item['is_overdue'])
                                                             <i class="fas fa-exclamation-triangle mr-1"></i>Terlambat
                                                         @elseif($item['days_remaining'] == 0)
@@ -439,14 +315,12 @@
                         </div>
                         <h3 class="text-lg font-semibold text-gray-900 mb-2">Tidak Ada Interaksi Talenta</h3>
                         <p class="text-gray-600 mb-6">Mulai membangun tim Anda dengan meminta talenta untuk proyek ini.</p>
-                        @if(in_array($project->status, ['approved', 'active']))
-                            @if($availableTalents->count() > 0)
-                                <button onclick="showProjectTalentModal()"
-                                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
-                                    <i class="fas fa-plus mr-2"></i>Ajukan Permintaan Talenta
-                                </button>
-                            @endif
-                        @elseif($project->status === 'pending_admin')
+                        @if($viewData->canRequestTalents())
+                            <button onclick="showProjectTalentModal()"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
+                                <i class="fas fa-plus mr-2"></i>Ajukan Permintaan Talenta
+                            </button>
+                        @elseif($viewData->project->status === 'pending_admin')
                             <p class="text-sm text-gray-500">Proyek perlu persetujuan admin sebelum Anda dapat meminta talenta.</p>
                         @endif
                     </div>
@@ -461,9 +335,9 @@
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Timeline Proyek</h2>
 
-                @if($project->timelineEvents->count() > 0)
+                @if($viewData->project->timelineEvents->count() > 0)
                     <div class="space-y-4">
-                        @foreach($project->timelineEvents as $event)                            <div class="flex items-start space-x-4 pb-4 border-b border-gray-100 last:border-b-0">
+                        @foreach($viewData->project->timelineEvents as $event)                            <div class="flex items-start space-x-4 pb-4 border-b border-gray-100 last:border-b-0">
                                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
                                     <i class="fas fa-circle text-blue-600 text-xs"></i>
                                 </div>
@@ -499,14 +373,14 @@
     </div>
 
     <!-- Extensions Tab -->
-    @if($project->extensions->count() > 0)
+    @if($viewData->getTabCounts()['extensions'] > 0)
     <div id="extensions-content" class="tab-content hidden">
         <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
             <div class="p-6">
                 <h2 class="text-xl font-semibold text-gray-900 mb-6">Permintaan Perpanjangan</h2>
 
                 <div class="space-y-4">
-                    @foreach($project->extensions as $extension)
+                    @foreach($viewData->project->extensions as $extension)
                         <div class="border border-gray-200 rounded-lg p-4">
                             <div class="flex items-center justify-between mb-3">
                                 <h3 class="font-semibold text-gray-900">Permintaan Perpanjangan</h3>
@@ -559,7 +433,7 @@
 </div>
 
 <!-- Unified Talent Request Modal (Canonical Implementation from Dashboard) -->
-@if(in_array($project->status, ['approved', 'active']))
+@if($viewData->canRequestTalents())
 <div class="modal fade" id="talentRequestModal" tabindex="-1" role="dialog" aria-labelledby="talentRequestModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content rounded-2xl border-0 shadow-2xl">
@@ -568,7 +442,7 @@
                     <div class="w-8 h-8 bg-white bg-opacity-20 rounded-lg flex items-center justify-center mr-3">
                         <i class="fas fa-handshake text-white"></i>
                     </div>
-                    Minta Talenta untuk Proyek: {{ $project->title }}
+                    Minta Talenta untuk Proyek: {{ $viewData->project->title }}
                 </h5>
                 <button type="button" class="text-white hover:text-gray-200 transition-colors duration-200" data-dismiss="modal" aria-label="Close">
                     <i class="fas fa-times text-xl"></i>
@@ -590,7 +464,7 @@
                     </div>
 
                     <!-- Hidden fields for project context -->
-                    <input type="hidden" name="project_id" value="{{ $project->id }}">
+                    <input type="hidden" name="project_id" value="{{ $viewData->project->id }}">
                     <input type="hidden" name="is_project_assignment" value="1">
 
                     <div class="grid grid-cols-1 gap-8">
@@ -602,7 +476,8 @@
                                         Pilih Talenta <span class="text-red-500">*</span>
                                         <span class="text-xs font-normal text-gray-500">(Pilihan ganda diperbolehkan)</span>
                                     </label>
-                                    <div class="flex space-x-2">                                    <button type="button" onclick="selectAllTalents(event)" class="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 border border-blue-200 rounded">
+                                    <div class="flex space-x-2">                                    
+                                        <button type="button" onclick="selectAllTalents(event)" class="text-xs text-blue-600 hover:text-blue-800 px-2 py-1 border border-blue-200 rounded">
                                         <i class="fas fa-check-double mr-1"></i>Pilih Semua
                                     </button>
                                     <button type="button" onclick="clearAllTalentSelections(event)" class="text-xs text-gray-600 hover:text-gray-800 px-2 py-1 border border-gray-200 rounded">
@@ -610,7 +485,7 @@
                                     </button>
                                     </div>
                                 </div>
-                                @if($availableTalents->count() > 0)
+                                @if($viewData->availableTalents->count() > 0)
                                     <!-- Search Bar -->
                                     <div class="mb-6">
                                         <div class="relative">
@@ -649,16 +524,17 @@
                                         <!-- Carousel Track -->
                                         <div class="talent-carousel-track overflow-hidden px-12">
                                             <div class="talent-carousel-content flex transition-transform duration-500 ease-in-out" id="talentCarousel">
-                                                @foreach($availableTalents as $talent)
+                                                @foreach($viewData->availableTalents as $talent)
                                                     @php
                                                         $metrics = $talent->parsed_metrics;
                                                         $redflagSummary = $talent->redflag_summary;
                                                     @endphp
                                                     <div class="talent-carousel-slide flex-shrink-0 px-2">
                                                         <div class="talent-selection-card talent-card group relative bg-white border-2 border-gray-200 rounded-xl p-4 hover:border-blue-500 hover:shadow-lg transition-all duration-300 cursor-pointer w-80"
+                                                             data-talent-id="{{ $talent->id }}"
                                                              data-talent-name="{{ strtolower($talent->user->name) }}"
                                                              data-talent-skills="{{ strtolower(implode(' ', array_map(function($skill) { return is_array($skill) ? ($skill['skill_name'] ?? ($skill['name'] ?? '')) : $skill; }, $talent->user->getTalentSkillsArray() ?? []))) }}"
-                                                             onclick="toggleTalentSelection('{{ $talent->id }}', '{{ $talent->user->name }}', this, event)">>>
+                                                             onclick="toggleTalentSelection('{{ $talent->id }}', '{{ addslashes($talent->user->name) }}', this, event)">
 
                                                 <!-- Selection indicator (Checkbox) -->
                                                 <div class="absolute top-3 right-3">
@@ -693,9 +569,9 @@
                                             @if($talent->user->email_verified_at)
                                                 <span class="w-2 h-2 bg-green-400 rounded-full" title="Verified"></span>
                                             @endif
-                                        </div>
-                                                    </div>
-                                                </div>
+                                        </div>           
+                                    </div>  
+                                </div>
 
                                                 <!-- Performance Metrics -->
                                                 <div class="mt-4 grid grid-cols-3 gap-2">
@@ -728,23 +604,21 @@
                                                         </div>
                                                     </div>
                                                 @endif
-
                                                 <!-- View Details Button -->
                                                 <div class="mt-3 pt-3 border-t border-gray-100">
-                                                    <button type="button" onclick="event.stopPropagation(); viewTalentDetailsInModal('{{ $talent->id }}', '{{ $talent->user->name }}');"
+                                                    <button type="button" onclick="event.stopPropagation(); viewTalentDetailsInModal('{{ $talent->id }}', '{{ addslashes($talent->user->name) }}');"
                                                             class="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center">
                                                         <i class="fas fa-eye mr-1"></i>Lihat Detail
                                                     </button>
-                                                </div>
-                                                        </div>
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
+                                                </div>                                                        
+                                            </div>                                                    
+                                        </div>                                                
+                                        @endforeach                                            
+                                    </div>                                        
+                                </div>
 
                                         <!-- Carousel Indicators (optional dots) -->
-                                        <div class="flex justify-center mt-4 space-x-2" id="carouselIndicators">
-                                            <!-- Indicators will be dynamically generated -->
+                                        <div class="flex justify-center mt-4 space-x-2" id="carouselIndicators">                                            
                                         </div>
                                     </div>
 
@@ -773,7 +647,7 @@
                                 @endif
                             </div>
 
-                            @if($availableTalents->count() > 0)
+                            @if($viewData->availableTalents->count() > 0)
                             <!-- Project Title (Auto-filled from project) -->
                             <div>
                                 <label for="projectTitle" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -781,7 +655,7 @@
                                 </label>
                                 <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                        id="projectTitle" name="project_title" required readonly
-                                       value="{{ $project->title }}">
+                                       value="{{ $viewData->project->title }}">
                                 <p class="text-xs text-gray-500 mt-1">Diisi otomatis dari proyek saat ini</p>
                             </div>
 
@@ -812,11 +686,11 @@
                                 <select class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
                                         id="projectDuration" name="project_duration" required>
                                     @php
-                                        $projectDurationText = $project->estimated_duration_days ? "{$project->estimated_duration_days} hari" : '3-6 bulan';
-                                        if ($project->expected_start_date && $project->expected_end_date) {
-                                            $projectDurationText = $project->expected_start_date->diffInDays($project->expected_end_date) . ' hari (' .
-                                                                 $project->expected_start_date->format('M d') . ' - ' .
-                                                                 $project->expected_end_date->format('M d, Y') . ')';
+                                        $projectDurationText = $viewData->project->estimated_duration_days ? "{$viewData->project->estimated_duration_days} hari" : '3-6 bulan';
+                                        if ($viewData->project->expected_start_date && $viewData->project->expected_end_date) {
+                                            $projectDurationText = $viewData->project->expected_start_date->diffInDays($viewData->project->expected_end_date) . ' hari (' .
+                                                                 $viewData->project->expected_start_date->format('M d') . ' - ' .
+                                                                 $viewData->project->expected_end_date->format('M d, Y') . ')';
                                         }
                                     @endphp
                                     <option value="">Pilih durasi</option>
@@ -826,7 +700,7 @@
                                     <option value="3-6 bulan" {{ str_contains($projectDurationText, 'bulan') ? 'selected' : '' }}>3-6 bulan</option>
                                     <option value="6+ bulan">6+ bulan</option>
                                     <option value="Ongoing">Berkelanjutan</option>
-                                    @if($project->expected_start_date && $project->expected_end_date)
+                                    @if($viewData->project->expected_start_date && $viewData->project->expected_end_date)
                                         <option value="{{ $projectDurationText }}" selected>{{ $projectDurationText }}</option>
                                     @endif
                                 </select>
@@ -839,7 +713,7 @@
                                     Deskripsi Proyek <span class="text-red-500">*</span>
                                 </label>
                                 <textarea class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
-                                          id="projectDescription" name="project_description" rows="4" required>{{ $project->description }}</textarea>
+                                          id="projectDescription" name="project_description" rows="4" required>{{ $viewData->project->description }}</textarea>
                                 <p class="text-xs text-gray-500 mt-1">Diisi sebelumnya dari deskripsi proyek (dapat diedit)</p>
                             </div>
 
@@ -848,7 +722,7 @@
                                 <label for="requirements" class="block text-sm font-semibold text-gray-700 mb-2">Kebutuhan Spesifik</label>
                                 <textarea class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
                                           id="requirements" name="requirements" rows="3"
-                                          placeholder="Daftarkan skill, teknologi, atau kualifikasi spesifik yang dibutuhkan untuk peran ini...">{{ $project->general_requirements }}</textarea>
+                                          placeholder="Daftarkan skill, teknologi, atau kualifikasi spesifik yang dibutuhkan untuk peran ini...">{{ $viewData->project->general_requirements }}</textarea>
                             </div>
                             @endif
                         </div>
@@ -870,7 +744,7 @@
 @endif
 
 <!-- Extension Request Modal -->
-@if(in_array($project->status, ['active', 'overdue']) && !$project->extensions()->pending()->exists())
+@if(in_array($viewData->project->status, ['active', 'overdue']) && !$viewData->project->extensions()->pending()->exists())
 <div id="extensionModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
     <div class="flex items-center justify-center min-h-screen p-4">
         <div class="bg-white rounded-lg shadow-xl max-w-lg w-full">
@@ -882,16 +756,16 @@
                     </button>
                 </div>
 
-                <form action="{{ route('projects.request-extension', $project) }}" method="POST" class="space-y-6">
+                <form action="{{ route('projects.request-extension', $viewData->project) }}" method="POST" class="space-y-6">
                     @csrf
 
                     <div>
                         <label for="new_end_date" class="block text-sm font-medium text-gray-700 mb-2">
                             New End Date <span class="text-red-500">*</span>
                         </label>                        <input type="date" id="new_end_date" name="new_end_date" required
-                               min="{{ $project->expected_end_date ? $project->expected_end_date->addDay()->format('Y-m-d') : '' }}"
+                               min="{{ $viewData->project->expected_end_date ? $viewData->project->expected_end_date->addDay()->format('Y-m-d') : '' }}"
                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                        <p class="text-sm text-gray-500 mt-1">Current end date: {{ $project->expected_end_date ? $project->expected_end_date->format('M d, Y') : 'Not set' }}</p>
+                        <p class="text-sm text-gray-500 mt-1">Current end date: {{ $viewData->project->expected_end_date ? $viewData->project->expected_end_date->format('M d, Y') : 'Not set' }}</p>
                     </div>
 
                     <div>
@@ -921,11 +795,11 @@
 @endif
 
 <!-- Talent Details Modal -->
-<div id="talent-details-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+<div id="talent-details-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden" style="z-index: 1060;">
     <div class="relative top-20 mx-auto p-5 border w-full max-w-3xl shadow-lg rounded-md bg-white">
         <div class="flex justify-between items-center pb-3">
             <h3 class="text-2xl font-bold text-gray-900">Detail Talenta</h3>
-            <div class="modal-close cursor-pointer z-50" onclick="closeModal('talent-details-modal')">
+            <div class="modal-close cursor-pointer" style="z-index: 1070;" onclick="closeModal('talent-details-modal')">
                 <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18">
                     <path d="M14.53 4.53l-1.06-1.06L9 7.94 4.53 3.47 3.47 4.53 7.94 9l-4.47 4.47 1.06 1.06L9 10.06l4.47 4.47 1.06-1.06L10.06 9z"></path>
                 </svg>
@@ -961,7 +835,7 @@
             </div>
 
             <!-- Modal Content -->
-            <form action="{{ route('projects.request-closure', $project) }}" method="POST">
+            <form action="{{ route('projects.request-closure', $viewData->project) }}" method="POST">
                 @csrf
                 <div class="space-y-6">
                     <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
@@ -1051,7 +925,7 @@ function showProjectTalentModal() {
     // Set project context fields with null checks
     const projectIdField = document.querySelector('input[name="project_id"]');
     if (projectIdField) {
-        projectIdField.value = '{{ $project->id }}';
+        projectIdField.value = '{{ $viewData->project->id }}';
     }
     
     const isProjectAssignmentField = document.querySelector('input[name="is_project_assignment"]');
@@ -1061,18 +935,18 @@ function showProjectTalentModal() {
     
     const projectTitleField = document.getElementById('projectTitle');
     if (projectTitleField) {
-        projectTitleField.value = '{{ $project->title }}';
+        projectTitleField.value = '{{ $viewData->project->title }}';
     }
     
     const projectDescriptionField = document.getElementById('projectDescription');
     if (projectDescriptionField) {
-        projectDescriptionField.value = '{{ addslashes($project->description) }}';
+        projectDescriptionField.value = '{{ addslashes($viewData->project->description) }}';
     }
 
     // Pre-fill requirements if available
     const requirementsField = document.getElementById('requirements');
-    if (requirementsField && '{{ $project->general_requirements }}') {
-        requirementsField.value = '{{ addslashes($project->general_requirements) }}';
+    if (requirementsField && '{{ $viewData->project->general_requirements }}') {
+        requirementsField.value = '{{ addslashes($viewData->project->general_requirements) }}';
     }
 
     // Reset talent selection (both old dropdown and new card-based)
@@ -1279,8 +1153,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Success - talent request submitted
                     $('#talentRequestModal').modal('hide');
 
+                    // Clear talent selection state immediately after successful submission
+                    selectedTalents.clear();
+                    clearAllTalentSelections();
+                    updateSelectedTalentsDisplay();
+
                     // Show success message
-                    const talentCount = selectedTalents.size;
+                    const talentCount = data.successful_requests ? data.successful_requests.length : 1;
                     const talentText = talentCount === 1 ? 'talenta' : 'talenta';
                     const successHtml = `
                         <div class="fixed inset-0 z-50 overflow-y-auto" style="background: rgba(0,0,0,0.5);">
@@ -1294,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <p class="text-gray-600 mb-4">Permintaan Anda untuk ${talentCount} ${talentText} telah dikirim untuk direview.</p>
                                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                                             <div class="text-sm">
-                                                <p><strong>Proyek:</strong> {{ $project->title }}</p>
+                                                <p><strong>Proyek:</strong> {{ $viewData->project->title }}</p>
                                                 <p><strong>Talenta Terpilih:</strong> ${currentRequestTalentName}</p>
                                                 <p><strong>ID Permintaan:</strong> ${data.request_id || 'Dibuat'}</p>
                                                 <p><strong>Timeline:</strong> ${data.project_timeline?.start_date || 'TBD'} - ${data.project_timeline?.end_date || 'TBD'}</p>
@@ -1902,10 +1781,28 @@ function updateSelectedTalentsDisplay() {
     // Build the selected talents list
     selectedList.innerHTML = '';
     selectedTalents.forEach(talentId => {
-        const talentCard = document.querySelector(`[onclick*="${talentId}"]`);
+        // Primary: Use data-talent-id selector to find the talent card
+        let talentCard = document.querySelector(`[data-talent-id="${talentId}"]`);
+        
+        // Fallback: Use onclick selector if data-talent-id not found
+        if (!talentCard) {
+            talentCard = document.querySelector(`[onclick*="toggleTalentSelection('${talentId}'"]`);
+        }
+        
         if (talentCard) {
-            const talentName = talentCard.querySelector('h4').textContent.trim();
-            const talentRole = talentCard.querySelector('p').textContent.trim();
+            const h4Element = talentCard.querySelector('h4');
+            const pElement = talentCard.querySelector('p');
+            
+            const talentName = h4Element ? h4Element.textContent.trim() : 'Unknown Talent';
+            const talentRole = pElement ? pElement.textContent.trim() : 'Unknown Role';
+
+            // Debug logging to identify the issue
+            if (talentName === 'Unknown Talent') {
+                console.warn(`Could not find talent name for ID: ${talentId}`);
+                console.warn('Talent card found:', talentCard);
+                console.warn('H4 element:', h4Element);
+                console.warn('All h4 elements in card:', talentCard.querySelectorAll('h4'));
+            }
 
             const talentItem = document.createElement('div');
             talentItem.className = 'flex items-center justify-between bg-white rounded-lg p-3 border border-blue-200';
@@ -1924,6 +1821,8 @@ function updateSelectedTalentsDisplay() {
                 </button>
             `;
             selectedList.appendChild(talentItem);
+        } else {
+            console.warn(`Could not find talent card for ID: ${talentId}`);
         }
     });
 }
@@ -1935,11 +1834,25 @@ function removeTalentSelection(talentId, event) {
         event.preventDefault();
     }
 
-    const talentCard = document.querySelector(`[onclick*="${talentId}"]`);
+    // Primary: Use data-talent-id selector to find the talent card
+    let talentCard = document.querySelector(`[data-talent-id="${talentId}"]`);
+    
+    // Fallback: Use onclick selector if data-talent-id not found
+    if (!talentCard) {
+        talentCard = document.querySelector(`[onclick*="toggleTalentSelection('${talentId}'"]`);
+    }
+    
     if (talentCard) {
         // Find the talent name for the card
-        const talentName = talentCard.querySelector('h4').textContent.trim();
+        const h4Element = talentCard.querySelector('h4');
+        const talentName = h4Element ? h4Element.textContent.trim() : 'Unknown Talent';
+        
         toggleTalentSelection(talentId, talentName, talentCard, event);
+    } else {
+        console.warn(`Could not find talent card for removal, ID: ${talentId}`);
+        // Fallback: just remove from selectedTalents set
+        selectedTalents.delete(talentId);
+        updateSelectedTalentsDisplay();
     }
 }
 
@@ -1951,8 +1864,19 @@ function selectAllTalents(event) {
     }
 
     document.querySelectorAll('.talent-selection-card').forEach(card => {
-        const talentId = card.getAttribute('onclick').match(/'([^']+)'/)[1];
-        const talentName = card.querySelector('h4').textContent.trim();
+        const onclickAttr = card.getAttribute('onclick');
+        if (!onclickAttr) {
+            return;
+        }
+        
+        const match = onclickAttr.match(/'([^']+)'/);
+        if (!match) {
+            return;
+        }
+        
+        const talentId = match[1];
+        const h4Element = card.querySelector('h4');
+        const talentName = h4Element ? h4Element.textContent.trim() : 'Unknown Talent';
 
         if (!selectedTalents.has(talentId)) {
             selectedTalents.add(talentId);
@@ -2239,8 +2163,165 @@ function closeModal(modalId) {
 }
 
 function viewTalentDetailsInModal(talentId, talentName) {
-    // Use the existing talent details function with API call
-    showBasicTalentInfo(talentId, false);
+    // Show the modal
+    const modal = document.getElementById('talent-details-modal');
+    const contentDiv = document.getElementById('modal-talent-content');
+    const loadingDiv = document.getElementById('modal-loading-state');
+    
+    if (!modal) {
+        console.error('Talent details modal not found');
+        return;
+    }
+    
+    if (!talentId) {
+        console.error('No talent ID provided');
+        alert('ID talenta tidak tersedia');
+        return;
+    }
+    
+    // Show modal and loading state
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Show loading state
+    if (loadingDiv) {
+        loadingDiv.classList.remove('hidden');
+    }
+    if (contentDiv) {
+        contentDiv.classList.add('hidden');
+    }
+    
+    // Fetch talent details from server
+    const endpoint = `/recruiter/talents/${talentId}/details`;
+    
+    fetch(endpoint)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Talent data received:', data);
+            
+            // Hide loading state
+            if (loadingDiv) {
+                loadingDiv.classList.add('hidden');
+            }
+            
+            // Check if response is successful and has talent data
+            if (data.success && data.talent) {
+                // Display talent details with the talent object
+                displayTalentDetails(data.talent);
+            } else {
+                throw new Error('Invalid response format or missing talent data');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching talent details:', error);
+            
+            // Hide loading state
+            if (loadingDiv) {
+                loadingDiv.classList.add('hidden');
+            }
+            
+            // Show error message
+            if (contentDiv) {
+                let errorMessage = 'Network error occurred';
+                if (error.message.includes('HTTP 404')) {
+                    errorMessage = 'Talent not found';
+                } else if (error.message.includes('HTTP 403')) {
+                    errorMessage = 'Access denied - insufficient permissions';
+                } else if (error.message.includes('HTTP 500')) {
+                    errorMessage = 'Server error occurred';
+                }
+                
+                contentDiv.innerHTML = `
+                    <div class="text-center p-8">
+                        <i class="fas fa-exclamation-triangle text-4xl text-red-500 mb-4"></i>
+                        <p class="text-red-600 font-medium mb-2">Error memuat detail talenta</p>
+                        <p class="text-gray-600 text-sm">${errorMessage}</p>
+                        <p class="text-gray-500 text-xs mt-2">Endpoint: ${endpoint}</p>
+                        <button onclick="viewTalentDetailsInModal('${talentId}', '${talentName || 'Unknown'}')" 
+                                class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-redo mr-2"></i>Coba Lagi
+                        </button>
+                    </div>
+                `;
+                contentDiv.classList.remove('hidden');
+            }
+        });
+}
+
+function displayTalentDetails(talent) {
+    const contentDiv = document.getElementById('modal-talent-content');
+    const loadingDiv = document.getElementById('modal-loading-state');
+    
+    const html = `
+        <div class="space-y-6">
+            <!-- Header Section -->
+            <div class="flex items-start space-x-4">
+                <div class="flex-shrink-0">
+                    ${talent.avatar ? 
+                        `<img src="${talent.avatar}" alt="${talent.name}" class="w-20 h-20 rounded-full object-cover border-2 border-gray-200">` :
+                        `<div class="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center border-2 border-gray-200">
+                            <i class="fas fa-user text-2xl text-gray-400"></i>
+                        </div>`
+                    }
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-xl font-bold text-gray-900">${talent.name}</h4>
+                    <p class="text-gray-600">${talent.email}</p>
+                    ${talent.phone ? `<p class="text-gray-600"><i class="fas fa-phone mr-2"></i>${talent.phone}</p>` : ''}
+                    ${talent.location ? `<p class="text-gray-600"><i class="fas fa-map-marker-alt mr-2"></i>${talent.location}</p>` : ''}
+                    ${talent.job ? `<p class="text-gray-600"><i class="fas fa-briefcase mr-2"></i>${talent.job}</p>` : ''}
+                    ${talent.joined_date ? `<p class="text-gray-600"><i class="fas fa-calendar mr-2"></i>Bergabung: ${talent.joined_date}</p>` : ''}
+                </div>
+            </div>
+            
+            <!-- Skills Section -->
+            ${talent.skills && talent.skills.length > 0 ? `
+                <div>
+                    <h5 class="text-lg font-semibold text-gray-900 mb-3">Keahlian</h5>
+                    <div class="flex flex-wrap gap-2">
+                        ${talent.skills.map(skill => `
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+                                ${typeof skill === 'object' ? (skill.skill_name || skill.name || 'Unknown Skill') : skill}
+                            </span>
+                        `).join('')}
+                    </div>
+                </div>
+            ` : `
+                <div>
+                    <h5 class="text-lg font-semibold text-gray-900 mb-3">Keahlian</h5>
+                    <p class="text-gray-500 text-sm">Belum ada keahlian yang terdaftar</p>
+                </div>
+            `}            
+            <!-- Status Section -->
+            <div>
+                <h5 class="text-lg font-semibold text-gray-900 mb-3">Status</h5>
+                <div class="flex items-center space-x-4">
+                    <span class="px-3 py-1 rounded-full text-sm ${
+                        talent.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                    }">
+                        ${talent.is_active ? 'Aktif' : 'Tidak Aktif'}
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    contentDiv.innerHTML = html;
+    loadingDiv.classList.add('hidden');
+    contentDiv.classList.remove('hidden');
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
 }
 
     // Search Functions for Talent Selection

@@ -68,15 +68,9 @@
 
                     {{-- User Avatar with Status --}}
                     <div class="relative">
-                        @if (Auth::user()->gambar)
-                            <img src="{{ asset('storage/user-images/' . Auth::user()->gambar) }}"
-                                 alt="{{ Auth::user()->name }}"
-                                 class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md">
-                        @else
-                            <img src="/asset/icons/profile-women.svg"
-                                 alt="Default Avatar"
-                                 class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md">
-                        @endif
+                        <img src="{{ Auth::user()->avatar_url }}"
+                             alt="{{ Auth::user()->name }}"
+                             class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md">
                         <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full" title="Online"></div>
                     </div>
 
@@ -123,15 +117,9 @@
                     <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-4 text-white">
                         <div class="flex items-center space-x-3">
                             <div class="relative">
-                                @if (Auth::user()->gambar)
-                                    <img src="{{ asset('storage/user-images/' . Auth::user()->gambar) }}"
-                                         alt="{{ Auth::user()->name }}"
-                                         class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
-                                @else
-                                    <img src="/asset/icons/profile-women.svg"
-                                         alt="Default Avatar"
-                                         class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
-                                @endif
+                                <img src="{{ Auth::user()->avatar_url }}"
+                                     alt="{{ Auth::user()->name }}"
+                                     class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md">
                                 <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                             </div>
                             <div class="flex-1 min-w-0">
@@ -168,7 +156,7 @@
                             }
                         @endphp
 
-                        <a class="flex items-center p-3 rounded-xl hover:bg-blue-50 transition-colors group" href="{{ $profileRoute }}">
+                        <a class="flex items-center p-3 rounded-xl hover:bg-blue-50 transition-colors group no-underline" href="{{ $profileRoute }}">
                             <div class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors">
                                 <i class="fas fa-user-circle text-blue-600"></i>
                             </div>
@@ -204,23 +192,11 @@
                             </div>
                             <i class="fas fa-external-link-alt text-xs text-gray-400 group-hover:text-purple-600 transition-colors"></i>
                         </a>
-
-                        {{-- Settings --}}
-                        <a class="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-colors group" href="#">
-                            <div class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg group-hover:bg-gray-200 transition-colors">
-                                <i class="fas fa-cog text-gray-600"></i>
-                            </div>
-                            <div class="ml-3 flex-1">
-                                <div class="text-sm font-medium text-gray-800">Settings</div>
-                                <div class="text-xs text-gray-500">Preferences & notifications</div>
-                            </div>
-                            <i class="fas fa-chevron-right text-xs text-gray-400 group-hover:text-gray-600 transition-colors"></i>
-                        </a>
                     </div>
 
                     {{-- Educational Logout --}}
                     <div class="border-t border-gray-100 p-2">
-                        <a class="flex items-center p-3 rounded-xl hover:bg-red-50 transition-colors group"
+                        <a class="flex items-center p-3 rounded-xl hover:bg-red-50 transition-colors group no-underline"
                            href="#"
                            data-bs-toggle="modal"
                            data-bs-target="#logoutModal">

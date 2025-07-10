@@ -218,7 +218,7 @@
                         <p class="text-green-100 text-sm">Permintaan baru dan yang sudah diterima talent, menunggu persetujuan admin</p>
                     </div>
                 </div>
-                <a href="{{ route('talent_admin.manage_requests') }}" class="px-4 py-2 bg-white text-green-600 rounded-xl hover:bg-green-50 transition-all duration-200 font-medium text-sm shadow-sm border border-white border-opacity-30">
+                <a href="{{ route('talent_admin.manage_requests') }}" class="px-4 py-2 bg-white text-green-600 rounded-xl hover:bg-green-50 transition-all duration-200 font-medium text-sm shadow-sm border border-white border-opacity-30 no-underline">
                     <i class="fas fa-eye mr-2"></i>Lihat Semua Permintaan
                 </a>
             </div>
@@ -268,7 +268,7 @@
                                     </form>
                                 @endif
                                 <a href="{{ route('talent_admin.show_request', $request) }}"
-                                   class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm">
+                                   class="px-3 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 text-sm no-underline">
                                     <i class="fas fa-eye mr-1"></i>Detail
                                 </a>
                             </div>
@@ -376,7 +376,7 @@
                             </div>
                             <div class="flex space-x-2">
                                 <a href="{{ route('admin.projects.show', $project) }}"
-                                   class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-sm">
+                                   class="px-3 py-1 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all duration-200 text-sm no-underline">
                                     <i class="fas fa-eye mr-1"></i>Detail
                                 </a>
                             </div>

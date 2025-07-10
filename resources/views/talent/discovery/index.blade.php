@@ -775,7 +775,7 @@ function createOptimizedTalentCard(talent, index) {
     card.setAttribute('data-talent-id', talent.id);
 
     // Lazy load images
-    const avatarSrc = talent.avatar || '/images/default-avatar.png';
+    const avatarSrc = talent.avatar || '/images/default-avatar.svg';
     const lazyAvatar = `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect width='64' height='64' fill='%23f3f4f6'/%3E%3C/svg%3E"
                                  data-src="${avatarSrc}"
                                  alt="${talent.name}"
@@ -1155,7 +1155,7 @@ function createTalentProfileHTML(talent) {
     return `
         <div class="space-y-6">
             <div class="flex items-center space-x-4">
-                <img src="${talent.avatar || '/images/default-avatar.png'}"
+                <img src="${talent.avatar || '/images/default-avatar.svg'}"
                      alt="${talent.name}"
                      class="w-20 h-20 rounded-full object-cover">
                 <div>

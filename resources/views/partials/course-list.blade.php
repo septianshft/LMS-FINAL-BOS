@@ -40,7 +40,7 @@
 
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 flex shrink-0 rounded-full overflow-hidden">
-                        <img src="{{ $trainerUser->avatar_url ?? asset('images/default-avatar.png') }}" class="w-full h-full object-cover" alt="avatar">
+                        <img src="{{ $trainerUser->avatar_url ?? asset('images/default-avatar.svg') }}" class="w-full h-full object-cover" alt="avatar">
                     </div>
                     <div class="flex flex-col">
                         <p class="font-semibold">{{ $trainerUser->name ?? 'Unknown Trainer' }}</p>

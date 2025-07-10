@@ -148,9 +148,13 @@
             @endif
 
             <div class="talent-section">
+                @php
+                    $talentUser = $request->getTalentUser();
+                @endphp
+                
                 <div class="talent-header">
-                    <div class="talent-name">{{ $request->talent->user->name ?? 'N/A' }}</div>
-                    <div class="talent-title">{{ $request->talent->user->pekerjaan ?? $request->project_title }} - Status: {{ ucfirst($request->status) }}</div>
+                    <div class="talent-name">{{ $talentUser->name ?? 'N/A' }}</div>
+                    <div class="talent-title">{{ $talentUser->pekerjaan ?? $request->project_title }} - Status: {{ ucfirst($request->status) }}</div>
                 </div>
 
                 <!-- Personal Information -->
@@ -158,31 +162,28 @@
                 <table>
                     <tr>
                         <th width="25%">Full Name</th>
-                        <td>{{ $request->talent->user->name ?? 'N/A' }}</td>
+                        <td>{{ $talentUser->name ?? 'N/A' }}</td>
                         <th width="25%">Email</th>
-                        <td>{{ $request->talent->user->email ?? 'N/A' }}</td>
+                        <td>{{ $talentUser->email ?? 'N/A' }}</td>
                     </tr>
                     <tr>
                         <th>Phone</th>
-                        <td>{{ $request->talent->user->phone ?? 'Not provided' }}</td>
+                        <td>{{ $talentUser->phone ?? 'Not provided' }}</td>
                         <th>Location</th>
-                        <td>{{ $request->talent->user->location ?? 'Not specified' }}</td>
+                        <td>{{ $talentUser->alamat ?? 'Not specified' }}</td>
                     </tr>
-                    <tr>
-                        <th>Experience Level</th>
-                        <td colspan="3">{{ ucfirst($request->talent->user->experience_level ?? 'Not specified') }}</td>
-                    </tr>
-                    @if($request->talent->user->talent_bio)
+                    @if($talentUser && $talentUser->talent_bio)
                     <tr>
                         <th>Bio</th>
-                        <td colspan="3">{{ $request->talent->user->talent_bio }}</td>
+                        <td colspan="3">{{ $talentUser->talent_bio }}</td>
                     </tr>
                     @endif
                 </table>
 
                 <!-- Skills -->
                 @php
-                    $skills = $request->talent->user->getTalentSkillsArray();
+                    // Use pre-loaded skills or fallback to relationship method
+                    $skills = $request->talentSkills ?? ($request->getTalentUser() ? $request->getTalentUser()->getTalentSkillsArray() : []);
                 @endphp
                 @if(is_array($skills) && count($skills) > 0)
                 <div class="section-title">Skills & Expertise</div>
@@ -198,6 +199,14 @@
                                 @endif
                             @endforeach
                         </td>
+                    </tr>
+                </table>
+                @else
+                <div class="section-title">Skills & Expertise</div>
+                <table>
+                    <tr>
+                        <th>Skills</th>
+                        <td>No skills information available</td>
                     </tr>
                 </table>
                 @endif
@@ -255,37 +264,37 @@
                 </table>
 
                 <!-- Performance Metrics -->
-                @if($request->talent->user->completed_courses_count || $request->talent->user->certificates_count || $request->talent->user->average_quiz_score)
+                @if($talentUser && ($talentUser->completed_courses_count || $talentUser->certificates_count || $talentUser->average_quiz_score))
                 <div class="section-title">Performance Metrics</div>
                 <table>
                     <tr>
-                        @if($request->talent->user->completed_courses_count)
+                        @if($talentUser->completed_courses_count)
                         <th>Completed Courses</th>
-                        <td>{{ $request->talent->user->completed_courses_count }} courses</td>
+                        <td>{{ $talentUser->completed_courses_count }} courses</td>
                         @endif
-                        @if($request->talent->user->certificates_count)
+                        @if($talentUser->certificates_count)
                         <th>Certificates Earned</th>
-                        <td>{{ $request->talent->user->certificates_count }} certificates</td>
+                        <td>{{ $talentUser->certificates_count }} certificates</td>
                         @endif
                     </tr>
-                    @if($request->talent->user->average_quiz_score)
+                    @if($talentUser->average_quiz_score)
                     <tr>
                         <th>Average Quiz Score</th>
-                        <td>{{ number_format($request->talent->user->average_quiz_score, 1) }}%</td>
+                        <td>{{ number_format($talentUser->average_quiz_score, 1) }}%</td>
                         <th>Member Since</th>
-                        <td>{{ $request->talent->user->created_at->format('M Y') }}</td>
+                        <td>{{ $talentUser->created_at->format('M Y') }}</td>
                     </tr>
                     @endif
                 </table>
                 @endif
 
                 <!-- Portfolio -->
-                @if($request->talent->user->portfolio_url)
+                @if($talentUser && $talentUser->portfolio_url)
                 <div class="section-title">Portfolio & Contact</div>
                 <table>
                     <tr>
                         <th width="25%">Portfolio URL</th>
-                        <td colspan="3">{{ $request->talent->user->portfolio_url }}</td>
+                        <td colspan="3">{{ $talentUser->portfolio_url }}</td>
                     </tr>
                 </table>
                 @endif

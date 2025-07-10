@@ -18,37 +18,37 @@
                 </button>
                 <div id="exportDropdownMenu" class="absolute right-0 top-full mt-1 w-64 bg-white rounded-lg shadow-lg border border-gray-200 opacity-0 invisible transition-all duration-200 z-10">
                     <div class="py-2">
-                        <a href="{{ route('projects.export_project_history') }}"
-                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                        <button onclick="window.location.href='{{ route('projects.export_project_history') }}'"
+                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left">
                             <i class="fas fa-project-diagram mr-3 text-blue-500"></i>
                             <div>
                                 <div class="font-medium">Riwayat Proyek</div>
                                 <div class="text-xs text-gray-500">Semua proyek dengan detail talent</div>
                             </div>
-                        </a>
-                        <a href="{{ route('projects.export_completed_projects') }}"
-                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                        </button>
+                        <button onclick="window.location.href='{{ route('projects.export_completed_projects') }}'"
+                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left">
                             <i class="fas fa-check-circle mr-3 text-green-500"></i>
                             <div>
                                 <div class="font-medium">Proyek Selesai</div>
                                 <div class="text-xs text-gray-500">Proyek yang berhasil diselesaikan</div>
                             </div>
-                        </a>
-                        <a href="{{ route('projects.export_talent_participation') }}"
-                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                        </button>
+                        <button onclick="window.location.href='{{ route('projects.export_talent_participation') }}'"
+                           class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors w-full text-left">
                             <i class="fas fa-users mr-3 text-purple-500"></i>
                             <div>
                                 <div class="font-medium">Partisipasi Talent</div>
                                 <div class="text-xs text-gray-500">Proyek berdasarkan talent yang berpartisipasi</div>
                             </div>
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
-            <a href="{{ route('projects.create') }}"
+            <button onclick="window.location.href='{{ route('projects.create') }}'"
                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                 <i class="fas fa-plus mr-2"></i>Buat Proyek Baru
-            </a>
+            </button>
         </div>
     </div>
 
@@ -94,7 +94,7 @@
                             <div class="flex-1">
                                 <h3 class="text-xl font-semibold text-gray-900 mb-2">
                                     <a href="{{ route('projects.show', $project) }}"
-                                       class="hover:text-blue-600 transition duration-200">
+                                       class="text-black no-underline hover:text-blue-600 transition duration-200">
                                         {{ $project->title }}
                                     </a>
                                 </h3>
@@ -178,16 +178,16 @@
 
                             <!-- Actions -->
                             <div class="flex space-x-2">
-                                <a href="{{ route('projects.show', $project) }}"
-                                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
+                                <button onclick="window.location.href='{{ route('projects.show', $project) }}'"
+                                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
                                     Lihat Detail
-                                </a>
+                                </button>
 
                                 @if($project->status === 'pending_approval')
-                                    <a href="{{ route('projects.edit', $project) }}"
-                                       class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
+                                    <button onclick="window.location.href='{{ route('projects.edit', $project) }}'"
+                                            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded text-sm font-medium transition duration-200">
                                         Edit
-                                    </a>
+                                    </button>
                                 @endif
 
                                 @if(in_array($project->status, ['active', 'overdue']))
@@ -244,10 +244,10 @@
                     Mulai perjalanan rekrutmen talent Anda dengan membuat proyek pertama.
                     Setelah disetujui, Anda dapat menugaskan beberapa talent dan mengelola siklus proyek yang lengkap.
                 </p>
-                <a href="{{ route('projects.create') }}"
+                <button onclick="window.location.href='{{ route('projects.create') }}'"
                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition duration-200">
                     <i class="fas fa-plus mr-2"></i>Buat Proyek Pertama Anda
-                </a>
+                </button>
             </div>
         </div>
     @endif

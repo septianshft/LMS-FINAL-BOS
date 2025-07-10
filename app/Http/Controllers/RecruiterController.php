@@ -856,12 +856,22 @@ class RecruiterController extends Controller
             }
 
             // Get successfully onboarded talents (both admin and talent accepted)
-            $onboardedRequests = TalentRequest::with(['talent.user', 'recruiter.user'])
+            $onboardedRequests = TalentRequest::with(['talent.user', 'talentUser', 'recruiter.user'])
                 ->where('recruiter_id', $recruiter->id)
                 ->whereIn('status', ['onboarded', 'completed'])
                 ->where('both_parties_accepted', true)
                 ->orderBy('created_at', 'desc')
                 ->get();
+
+            // Ensure each request has access to talent user data
+            $onboardedRequests->each(function($request) {
+                // Use the helper method to get talent user
+                $talentUser = $request->getTalentUser();
+                if ($talentUser) {
+                    // Ensure skills are loaded
+                    $request->talentSkills = $talentUser->getTalentSkillsArray();
+                }
+            });
 
             $data = [
                 'recruiter' => $recruiter,
@@ -1003,6 +1013,102 @@ class RecruiterController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while retrieving talent details.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Search talents via AJAX - returns all matching talents without pagination
+     */
+    public function searchTalents(Request $request)
+    {
+        try {
+            $query = $request->get('query', '');
+            
+            if (empty($query)) {
+                return response()->json([
+                    'success' => true,
+                    'talents' => [],
+                    'total' => 0
+                ]);
+            }
+
+            // Get current recruiter
+            $user = Auth::user();
+            $recruiter = $user->recruiter;
+
+            if (!$recruiter) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Recruiter profile not found'
+                ], 404);
+            }
+
+            // Search talents by name or skills - no pagination limit
+            $talents = Talent::with(['user', 'talentRequests' => function($q) use ($recruiter) {
+                $q->where('recruiter_id', $recruiter->id ?? 0);
+            }])
+                ->where('is_active', true)
+                ->whereHas('user', function($q) use ($query) {
+                    $q->whereNotNull('name')
+                      ->whereNotNull('email')
+                      ->where('available_for_scouting', true)
+                      ->where(function($subQuery) use ($query) {
+                          $subQuery->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($query) . '%'])
+                                   ->orWhereRaw('LOWER(talent_skills) LIKE ?', ['%' . strtolower($query) . '%']);
+                      });
+                })
+                ->latest()
+                ->get();
+
+            // Transform talents for frontend
+            $transformedTalents = $talents->map(function($talent) {
+                // Get scouting metrics
+                $cacheKey = "talent_metrics_{$talent->id}";
+                $metrics = cache()->get($cacheKey);
+                
+                if (!$metrics) {
+                    $metrics = $this->scoutingService->getTalentScoutingMetrics($talent);
+                    cache()->put($cacheKey, $metrics, now()->addHours(24));
+                }
+
+                // Get availability status
+                $availabilityStatus = $this->matchingService->isTalentAvailable($talent->user_id);
+
+                return [
+                    'id' => $talent->id,
+                    'user_id' => $talent->user_id,
+                    'name' => $talent->user->name,
+                    'email' => $talent->user->email,
+                    'skills' => $talent->user->getTalentSkillsArray() ?? [],
+                    'avatar' => $talent->user->avatar ? asset('storage/' . $talent->user->avatar) : null,
+                    'location' => $talent->user->alamat ?? 'Not specified',
+                    'job' => $talent->user->pekerjaan ?? 'Not specified',
+                    'joined_date' => $talent->created_at->format('M d, Y'),
+                    'metrics' => $metrics,
+                    'availability' => $availabilityStatus,
+                    'certificates_count' => $metrics['certifications']['total_certificates'] ?? 0,
+                    'completed_courses' => $metrics['progress_tracking']['completed_courses'] ?? 0,
+                    'quiz_avg' => $metrics['quiz_performance']['average_score'] ?? 0,
+                    'overall_score' => $metrics['overall_score'] ?? 0,
+                    'completed_projects' => $metrics['project_completion']['total_completed'] ?? 0,
+                    'is_active' => $talent->is_active
+                ];
+            });
+
+            return response()->json([
+                'success' => true,
+                'talents' => $transformedTalents,
+                'total' => $transformedTalents->count(),
+                'query' => $query
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Talent search error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to search talents',
                 'error' => $e->getMessage()
             ], 500);
         }

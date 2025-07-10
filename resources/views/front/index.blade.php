@@ -171,7 +171,7 @@
                                 <div class="flex items-center gap-2">
                                     <div class="w-8 h-8 flex shrink-0 rounded-full overflow-hidden">
                                         <img
-                                            src="{{ $trainerUser->avatar_url ?? asset('images/default-avatar.png') }}"
+                                            src="{{ $trainerUser->avatar_url ?? asset('images/default-avatar.svg') }}"
                                             class="w-full h-full object-cover"
                                             alt="avatar">
                                     </div>
